@@ -1,0 +1,42 @@
+{
+    "name": "free-types",
+    "version": "0.0.5",
+    "description": "A type-level library enabling the creation and the manipulation of type constructors which are detached from their type parameters.",
+    "keywords:": [
+        "higher kinded type",
+        "type constructor",
+        "typescript"
+    ],
+    "exports": {
+        ".": {
+            "import": "./index.ts"
+        },
+        "./utility-types": {
+            "import": "./utility-types/index.ts"
+        },
+        "./core": {
+            "import": "./core/index.ts"
+        }
+    },
+    "types": "./src/index.ts",
+    "author": "Geoffrey Gourdet",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/geoffreyTools/free-types"
+    },
+    "license": "ICS",
+    "devDependencies": {
+        "foo": "github:geoffreytools/foo",
+        "ts-test": "github:geoffreytools/ts-test",
+        "ts-trace": "github:geoffreytools/ts-trace",
+        "typescript": "^4.8.4"
+    },
+    "scripts": {
+        "test": "tsc",
+        "test: watch": "tsc --watch",
+        "trace": "bash ./node_modules/ts-trace/ts-trace.sh"
+    },
+    "dependencies": {
+        "free-types-core": "github:geoffreytools/free-types-core"
+    }
+}
