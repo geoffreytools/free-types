@@ -243,8 +243,101 @@ interface $Foo extends Type<1> {
 ```
 
 The problem is twofold:
-1) Carrying over type constraints so that callers are forced to apply the correct arguments;
-1) Defusing type constraint errors at the `type` definition site.
+1) Defusing type constraint errors at the `type` definition site;
+1) Carrying over type constraints so that callers are forced to apply the correct arguments.
+
+### Defusing type constraint errors
+
+Let's first enumerate the different ways we can deal with type constraints and discuss their tradeoffs regarding free types.
+
+Reviving our `$Tuple` example:
+
+
+#### Intersection
+```typescript
+type: Tuple<this[0] & number>
+```
+Intersection has some quirks, such as the one we mentioned about tuples, but is perfectly suitable for most types.
+
+The TS language server also does not always simplify intersections (notoriously with function types), so you might simply not like the way some of your types appear in tooltips.
+
+Finally, the situations in which intersecting the input can help prevent infinite recursion are certainly very rare.
+
+#### Inline conditional
+```typescript
+type: Tuple<this[0] extends number ? this[0] : never>
+```
+This pattern does not have the disadvantages of intersection and can make it a little easier to work with recursion because it is pretty easy to handle a `never` case explicitly in `Tuple` and return early:
+
+```typescript
+type Tuple<N extends number, R extends unknown[] = []> =
+    [N] extends [never] ? TupleType // <-- this is all we need to add
+    : N extends R['length'] ? R : Tuple<N, [0, ...R]>;
+
+// for lack of a better solution
+type TupleType = unknown[] & { length: 0|1|2|3|4|5... }
+```
+It also allows us to care a little more about the implicit return type of `$Tuple`: `TupleType` is better than `never` or `[]`.
+
+#### Surrounding conditional
+```typescript
+type: this[0] extends number ? Tuple<this[0]> : TupleType
+```
+This approach helps separating concerns, as it does not require modifying `Tuple` directly, but it has the downside of rapidly becoming noisy when more than one constraint need to be dealt with.
+
+#### Strategy
+Despite the disadvantages of intersection, I would prefer it as a first-line treatment because it produces simpler implicit return types. I found that the compiler seemed to "give up" resolving conditionals past a certain point of complexity.
+
+Then I would choose inline conditionals if the implicit return type works out alright, or a surrounding conditional otherwise.
+
+### Helpers
+The following helpers take care of indexing and defusing type constraints in one step. On top of reducing boilerplate, this prevents mistakenly asserting a type constraint for the wrong parameter.
+
+#### `Lossy<i, this>`
+`Lossy` behave like `At` but additionally performs an intersection with the relevant type constraint:
+
+```typescript
+interface $Foo extends Type<[string]> {
+    type: `Foo_${Lossy<0, this>}`
+}
+
+// is equivalent to:
+interface $Foo extends Type<[string]> {
+    type: `Foo_${this[0] & string}`
+}
+```
+
+#### `Checked<i, this, F?>`
+`Checked` will instead perform an inline conditional on the arguments:
+
+```typescript
+interface $Foo extends Type<[unknown[]]> {
+    type: [1, ...Checked<0, this>]
+}
+
+// is equivalent to:
+interface $Foo extends Type<[unknown[]]> {
+    type: [1, ...(this[0] extends unknown[] ? this[0] : unknown[])]
+}
+```
+
+#### `(A|B|C|D|E)<this?>`
+
+Alphabetical helpers are shorthands for `Lossy`. They are the go to solution for indexing `this` with arities up to 5 as they don't take more real estate than `this[i]` but offer much more functionality:
+
+```typescript
+interface $Foo extends Type<[string]> {
+    type: `Foo_${A<this>}`
+}
+```
+
+When no argument is provided, they are aliases for `0`, `1`, `2`, `3`, `4`, allowing you to remain consistent when using `At`, `Checked` or a surrounding conditional:
+
+```typescript
+interface $Foo extends Type<[unknown, unknown[]]> {
+    type: [A<this>, ...Checked<B, this>]
+}
+```
 
 ### Wiring constraints
 
@@ -402,98 +495,6 @@ interface $Foo extends Type<1> {
 
 This limitation could be lifted with thunks but it feels a bit out of scope for a user library. We would kind of be re-implementing generics.
 
-### Defusing type constraint errors
-
-Let's first enumerate the different ways we can deal with type constraints and discuss their tradeoffs regarding free types.
-
-Reviving our `$Tuple` example:
-
-
-#### Intersection
-```typescript
-type: Tuple<this[0] & number>
-```
-Intersection has some quirks, such as the one we mentioned about tuples, but is perfectly suitable for most types.
-
-The TS language server also does not always simplify intersections (notoriously with function types), so you might simply not like the way some of your types appear in tooltips.
-
-Finally, the situations in which intersecting the input can help prevent infinite recursion are certainly very rare.
-
-#### Inline conditional
-```typescript
-type: Tuple<this[0] extends number ? this[0] : never>
-```
-This pattern does not have the disadvantages of intersection and can make it a little easier to work with recursion because it is pretty easy to handle a `never` case explicitly in `Tuple` and return early:
-
-```typescript
-type Tuple<N extends number, R extends unknown[] = []> =
-    [N] extends [never] ? TupleType // <-- this is all we need to add
-    : N extends R['length'] ? R : Tuple<N, [0, ...R]>;
-
-// for lack of a better solution
-type TupleType = unknown[] & { length: 0|1|2|3|4|5... }
-```
-It also allows us to care a little more about the implicit return type of `$Tuple`: `TupleType` is better than `never` or `[]`.
-
-#### Surrounding conditional
-```typescript
-type: this[0] extends number ? Tuple<this[0]> : TupleType
-```
-This approach helps separating concerns, as it does not require modifying `Tuple` directly, but it has the downside of rapidly becoming noisy when more than one constraint need to be dealt with.
-
-#### Strategy
-Despite the disadvantages of intersection, I would prefer it as a first-line treatment because it produces simpler implicit return types. I found that the compiler seemed to "give up" resolving conditionals past a certain point of complexity.
-
-Then I would choose inline conditionals if the implicit return type works out alright, or a surrounding conditional otherwise.
-
-### Helpers
-The following helpers take care of indexing and defusing type constraints in one step. On top of reducing boilerplate, this prevents mistakenly asserting a type constraint for the wrong parameter.
-
-#### `Lossy<i, this>`
-`Lossy` behave like `At` but additionally performs an intersection with the relevant type constraint:
-
-```typescript
-interface $Foo extends Type<[string]> {
-    type: `Foo_${Lossy<0, this>}`
-}
-
-// is equivalent to:
-interface $Foo extends Type<[string]> {
-    type: `Foo_${this[0] & string}`
-}
-```
-
-#### `Checked<i, this, F?>`
-`Checked` will instead perform an inline conditional on the arguments:
-
-```typescript
-interface $Foo extends Type<[unknown[]]> {
-    type: [1, ...Checked<0, this>]
-}
-
-// is equivalent to:
-interface $Foo extends Type<[unknown[]]> {
-    type: [1, ...(this[0] extends unknown[] ? this[0] : unknown[])]
-}
-```
-
-#### `(A|B|C|D|E)<this?>`
-
-Alphabetical helpers are shorthands for `Lossy`. They are the go to solution for indexing `this` with arities up to 5 as they don't take more real estate than `this[i]` but offer much more functionality:
-
-```typescript
-interface $Foo extends Type<[string]> {
-    type: `Foo_${A<this>}`
-}
-```
-
-When no argument is provided, they are aliases for `0`, `1`, `2`, `3`, `4`, allowing you to remain consistent when using `At`, `Checked` or a surrounding conditional:
-
-```typescript
-interface $Foo extends Type<[unknown, unknown[]]> {
-    type: [A<this>, ...Checked<B, this>]
-}
-```
 ## Contracts&nbsp;[↸](#guide)
 
 Since `Type` can express constraints both on the parameters and on the return type, it enables programing to an interface and inverting dependencies.
