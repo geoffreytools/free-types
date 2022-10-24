@@ -188,7 +188,10 @@ Variadic free types can be created by extending exactly `Type`, `Type<number>` o
 Contrary to functions, variadic free types can't be passed as an argument to a type expecting a specific arity:
 
 ```typescript
-type ExpectUnary<$T extends Type<1>> = apply<$T, ['foo']>
+type ExpectUnary<$T extends Type<1>> = apply<$T, ['foo']>;
+
+interface $Foo extends Type { type: ... }
+
 type Woops = ExpectUnary<$Foo>;
 //                       -----
 // Type '$Foo' does not satisfy the constraint 'Type<1, unknown>'
