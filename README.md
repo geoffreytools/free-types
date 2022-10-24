@@ -31,6 +31,8 @@ interface $Foo extends Type<[number]> {
 ```
 Which can then be passed as an argument to another type responsible for applying it.
 ```typescript
+import { apply } from 'free-types';
+
 type Foo42 = Apply42<$Foo>; // Foo<42>
 
 type Apply42<$T extends Type<[number]>> = apply<$T, [42]>;
