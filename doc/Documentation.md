@@ -11,7 +11,7 @@
 | [Composition](#composition-)
 | [Adapters](#adapters)
 | [Higher order types](#higher-order-types)
-| [Operators](#operators)
+| [Operators](#operators-and-other-utils)
 
 #### Foreword
 
