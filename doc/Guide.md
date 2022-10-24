@@ -152,7 +152,7 @@ interface $Tuple extends Type {
     type: Tuple<this[0], this[1]>
 }
 ```
-Now the return type of `$Tuple` is `unknown[]` as you can tell by inspecting `$Tuple['type']` or by using [`Signature`](./Documentation.md/#signaturet-t).
+Now the return type of `$Tuple` is `unknown[]` as you can tell by inspecting `$Tuple['type']` or by using [`Signature`](./Documentation.md/#signaturet--t).
 
 Focusing on the happy path truly breaks down when designing free types, so try to consider edge cases even when you are confident no user will trigger them, because the compiler will.
 
