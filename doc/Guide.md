@@ -887,7 +887,7 @@ This enables exposing a familiar API to the user while using the power of free t
 
 ### Lightweight partial and full application
 
-The need for `partial` can be tempered by the use of [`$Optional`](./Documentation.md/#optinal-args)
+The need for `partial` can be tempered by the use of [`$Optional`](./Documentation.md/#optionalt-args)
 
 It is also possible to create free types types which can be fully applied in the traditional way:
 
