@@ -98,6 +98,14 @@ This happens because `this[1]` always has a set value: `unknown`, so the compile
 
 In this very example the trouble is that `unknown` never extends `R['length']` in our implementation of `Tuple`, so we recur indefinitely.
 
+> As I am proofreading this months later it appears that in my current setup the error is only picked up by the compiler when I try to apply the type (which is weird):
+> ```typescript
+> type Fail = apply<$Tuple, ['foo', 5]>
+> //         ~~~~~~~~~~~~~~~~~~~~~~~~~~
+> // Type instantiation is excessively deep and possibly infinite.
+> ```
+> I don't know if my mental model is still accurate but the problem still exists and my recommendations still apply.
+
 There is no solution to this problem, but there are workarounds:
 
 1) We can tune the type, for example by inverting the predicate:
