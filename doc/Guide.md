@@ -454,8 +454,8 @@ type MapOver<T extends $T['constraints'][0][], $T extends Type<1>> = {
     [K in keyof T]: K extends keyof [] ? T[K] : apply<$T, [T[K]]>
 }
 
-type Woops = MapOver<['a', 'b', 'c'], $Next>
-//               ---------------
+type Woops = MapOver<['a', 'b', 'c'], $Next> // with $Next: Type<[number]>
+//                   ---------------
 // Type '["a", "b", "c"]' does not satisfy the constraint 'number[]'
 ```
 
