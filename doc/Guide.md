@@ -309,55 +309,6 @@ Despite the disadvantages of intersection, I would prefer it as a first-line tre
 
 Then I would choose inline conditionals if the implicit return type works out alright, or a surrounding conditional otherwise.
 
-### Helpers
-The following helpers take care of indexing and defusing type constraints in one step. On top of reducing boilerplate, this prevents mistakenly asserting a type constraint for the wrong parameter.
-
-#### `Lossy<i, this>`
-`Lossy` behave like `At` but additionally performs an intersection with the relevant type constraint:
-
-```typescript
-interface $Foo extends Type<[string]> {
-    type: `Foo_${Lossy<0, this>}`
-}
-
-// is equivalent to:
-interface $Foo extends Type<[string]> {
-    type: `Foo_${this[0] & string}`
-}
-```
-
-#### `Checked<i, this, F?>`
-`Checked` will instead perform an inline conditional on the arguments:
-
-```typescript
-interface $Foo extends Type<[unknown[]]> {
-    type: [1, ...Checked<0, this>]
-}
-
-// is equivalent to:
-interface $Foo extends Type<[unknown[]]> {
-    type: [1, ...(this[0] extends unknown[] ? this[0] : unknown[])]
-}
-```
-
-#### `(A|B|C|D|E)<this?>`
-
-Alphabetical helpers are shorthands for `Lossy`. They are the go to solution for indexing `this` with arities up to 5 as they don't take more real estate than `this[i]` but offer much more functionality:
-
-```typescript
-interface $Foo extends Type<[string]> {
-    type: `Foo_${A<this>}`
-}
-```
-
-When no argument is provided, they are aliases for `0`, `1`, `2`, `3`, `4`, allowing you to remain consistent when using `At`, `Checked` or a surrounding conditional:
-
-```typescript
-interface $Foo extends Type<[unknown, unknown[]]> {
-    type: [A<this>, ...Checked<B, this>]
-}
-```
-
 ### Wiring constraints
 
 #### Constraints on the input
@@ -381,6 +332,55 @@ Trying to apply `$Foo` with the wrong arguments now yields an error:
 type Foo = apply<$Foo, [1, 2, 3]>
 //                     ---------
 // Type '[1, 2, 3]' does not satisfy the constraint '[number, string, unknown]'
+```
+
+#### Helpers
+The following helpers take care of indexing and defusing type constraints in one step. On top of reducing boilerplate, this prevents mistakenly asserting a type constraint for the wrong parameter.
+
+##### `Lossy<i, this>`
+`Lossy` behave like `At` but additionally performs an intersection with the relevant type constraint:
+
+```typescript
+interface $Foo extends Type<[string]> {
+    type: `Foo_${Lossy<0, this>}`
+}
+
+// is equivalent to:
+interface $Foo extends Type<[string]> {
+    type: `Foo_${this[0] & string}`
+}
+```
+
+##### `Checked<i, this, F?>`
+`Checked` will instead perform an inline conditional on the arguments:
+
+```typescript
+interface $Foo extends Type<[unknown[]]> {
+    type: [1, ...Checked<0, this>]
+}
+
+// is equivalent to:
+interface $Foo extends Type<[unknown[]]> {
+    type: [1, ...(this[0] extends unknown[] ? this[0] : unknown[])]
+}
+```
+
+##### `(A|B|C|D|E)<this?>`
+
+Alphabetical helpers are shorthands for `Lossy`. They are the go to solution for indexing `this` with arities up to 5 as they don't take more real estate than `this[i]` but offer much more functionality:
+
+```typescript
+interface $Foo extends Type<[string]> {
+    type: `Foo_${A<this>}`
+}
+```
+
+When no argument is provided, they are aliases for `0`, `1`, `2`, `3`, `4`, allowing you to remain consistent when using `At`, `Checked` or a surrounding conditional:
+
+```typescript
+interface $Foo extends Type<[unknown, unknown[]]> {
+    type: [A<this>, ...Checked<B, this>]
+}
 ```
 
 #### Constraint on the return type
