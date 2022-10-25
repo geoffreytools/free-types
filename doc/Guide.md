@@ -261,7 +261,9 @@ Let's first enumerate the different ways we can deal with type constraints and d
 Reviving our `$Tuple` example:
 
 ```typescript
+// now with a type constraint
 type Tuple<T, N extends number, R extends unknown[] = []> =
+//            ----------------
     R['length'] extends N ? R : Tuple<T, N, [T, ...R]>;
 
 interface $Tuple extends Type<2> {
