@@ -260,10 +260,20 @@ Let's first enumerate the different ways we can deal with type constraints and d
 
 Reviving our `$Tuple` example:
 
+```typescript
+type Tuple<T, N extends number, R extends unknown[] = []> =
+    R['length'] extends N ? R : Tuple<T, N, [T, ...R]>;
+
+interface $Tuple extends Type<2> {
+    type: Tuple<this[0], this[1]>
+//                       ~~~~~~~
+// Type 'this[1]' does not satisfy the constraint 'number'.
+}
+```
 
 #### Intersection
 ```typescript
-type: Tuple<this[0] & number>
+type: Tuple<this[0], this[1] & number>
 ```
 Intersection has some quirks, such as the one we mentioned about tuples, but is perfectly suitable for most types.
 
@@ -273,23 +283,24 @@ Finally, the situations in which intersecting the input can help prevent infinit
 
 #### Inline conditional
 ```typescript
-type: Tuple<this[0] extends number ? this[0] : never>
+type: Tuple<this[0], this[1] extends number ? this[1] : never>
 ```
 This pattern does not have the disadvantages of intersection and can make it a little easier to work with recursion because it is pretty easy to handle a `never` case explicitly in `Tuple` and return early:
 
 ```typescript
-type Tuple<N extends number, R extends unknown[] = []> =
-    [N] extends [never] ? TupleType // <-- this is all we need to add
-    : N extends R['length'] ? R : Tuple<N, [0, ...R]>;
-
-// for lack of a better solution
-type TupleType = unknown[] & { length: 0|1|2|3|4|5... }
+type Tuple<T, N extends number, R extends unknown[] = []> =
+    [N] extends [never] ? T[] // <-- this is all we need to add
+    : N extends R['length'] ? R : Tuple<T, N, [T, ...R]>;
 ```
-It also allows us to care a little more about the implicit return type of `$Tuple`: `TupleType` is better than `never` or `[]`.
+It also allows us to care a little more about the implicit return type.
 
 #### Surrounding conditional
 ```typescript
-type: this[0] extends number ? Tuple<this[0]> : TupleType
+interface $Tuple extends Type<2> {
+    type: this[1] extends number
+        ? Tuple<this[0], this[1]>
+        : this[0][]
+}
 ```
 This approach helps separating concerns, as it does not require modifying `Tuple` directly, but it has the downside of rapidly becoming noisy when more than one constraint need to be dealt with.
 
