@@ -454,25 +454,30 @@ type MapOver<T extends $T['constraints'][0][], $T extends Type<1>> = {
     [K in keyof T]: K extends keyof [] ? T[K] : apply<$T, [T[K]]>
 }
 
-type Woops = MapOver<['a', 'b', 'c'], $Next> // with $Next: Type<[number]>
-//                   ---------------
+type ShouldFail = MapOver<['a', 'b', 'c'], $Next> // with $Next: Type<[number]>
+//                        ~~~~~~~~~~~~~~~
 // Type '["a", "b", "c"]' does not satisfy the constraint 'number[]'
 ```
 
-A problem with our design is that this edge case compiles without warning:
+This is not bad, but a problem with this design is that the following edge case compiles without warning:
 
 ```typescript
 type Foo<$T extends Type<1>> = MapOver<['a', 'b', 'c'], $T>;
-type Bar = Foo<$Next>;
+type ShouldFail = Foo<$Next>;
 ```
-Free types arguments being accidentally covariant, type safety is kind of "opt-in":
+Free types arguments being accidentally covariant, type safety is kind of "opt-in" and, when you do opt in, it is too restrictive:
 
 ```typescript
 type Foo<$T extends Type<[string]>> = MapOver<['a', 'b', 'c'], $T>;
 //                  --------------
-type Bar = Foo<$Next>;
-//             -----
+type ShouldFail = Foo<$Next>;
+//                    ~~~~~
 // Type '$Next' does not satisfy the constraint 'Type<[string]>'
+
+
+type UnfairlyRejected = Foo<free.Array> // with free.Array: Type<[unknown]>
+//                          ~~~~~~~~~~
+// Type '$Array' does not satisfy the constraint 'Type<[string]>'
 ```
 
 We could constrain `$T` based on the input, but then the constraint would be too narrow:
@@ -480,23 +485,57 @@ We could constrain `$T` based on the input, but then the constraint would be too
 ```typescript
 type MapOver<T extends unknown[], $T extends Type<[T[number]]>> = ...
 
-type Foo = MapOver<[1, 2, 3], $Next>
-//                        -----
+type ShouldWork = MapOver<[1, 2, 3], $Next>
+//                                   ~~~~~
 // Type '$Next' does not satisfy the constraint 'Type<[1 | 2 | 3]>'.
 ```
-Our [`Widen`](./Documentation.md/#wident-ts-i) could be of some help:
+Our [`Widen`](./Documentation.md/#wident-ts-i) helper would work around that problem, but would still be too restrictive:
 
-```typescript
-type MapOver<T extends unknown[], $T extends Type<[Widen<T[number]>]>> =...
+```typescript 
+type MapOver<T extends unknown[], $T extends Type<[Widen<T[number]>]>> =
+    T extends $T['constraints'][0][] ? {
+        [K in keyof T]: K extends keyof [] ? T[K]
+        : apply<$T, [T[K]]>
+    } : never
 
-type Foo<$T extends Type<1>> = MapOver<['a', 'b', 'c'], $T>;
-//                                                  --
-// Type '$T' does not satisfy the constraint 'Type<[string]>
+type ShouldWork = MapOver<[1, 2, 3], $Next>;
+type UnfairlyRejected = MapOver<[1,2,3], free.Array>
+//                               ~~~~~
+// Type '$Array' does not satisfy the constraint 'Type<[number]>'
 ```
 
-> I did not use `Widen` in the actual implementation of `Map` but I imagine it can be an option for types which are not as general purpose.
+That's where [`Contra`](./Documentation.md/#contrat-u) comes in. It simply checks that one type extends the other, but in the opposite order than usual:
 
-#### Limitations
+```typescript
+type MapOver<T extends unknown[], $T extends Type & Contra<$T, Type<[T[number]]>>> = {
+    [K in keyof T]: K extends keyof [] ? T[K] : apply<$T, [T[K]]>
+}
+
+type ShouldWork = MapOver<[1,2,3], free.Array>
+type ShouldWork = MapOver<[1,2,3], $Next>
+type ShouldFail = MapOver<['a', 'b', 'c'], $Next>
+//                                         ~~~~~
+// Type '$Next' does not satisfy the constraint 'Type<unknown[], unknown> & { 'Contravariance issue': { 'the input': ["a" | "b" | "c"]; 'is not assignable to': [number]; }; }'.
+```
+The error message is not beautiful but gets the job done.
+
+To covers our edge case we need the caller type to also use `Contra` with the exact same arguments: 
+
+```typescript
+type Foo<$T extends Type & Contra<$T, Type<['a'|'b'|'c']>>> =
+    MapOver<['a', 'b', 'c'], $T>;
+
+type ShouldFail = Foo<$Next>;
+//                    ~~~~~
+// Type '$Next' does not satisfy the constraint 'Type<unknown[], unknown> & { 'Contravariance issue': { 'the input': ["a" | "b" | "c"]; 'is not assignable to': [number]; }; }'.
+
+type ShouldWork = Foo<free.Array>;
+type ShouldWork = Foo<$UpperCase>; // with $UpperCase: Type<[string]>
+```
+
+> I did not use either of those helpers in the actual implementation of `MapOver` but I hope this use case made the issue more concrete.
+
+#### Other limitations
 Interdependent constraints are impossible to express: 
 
 ```typescript
