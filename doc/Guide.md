@@ -928,7 +928,7 @@ This enables exposing a familiar API to the user while using the power of free t
 
 The need for `partial` can be tempered by the use of [`$Optional`](./Documentation.md/#optionalt-args)
 
-It is also possible to create free types types which can be fully applied in the traditional way:
+It is also possible to create free types which can be fully applied in the traditional way with [`$Alter`](./Documentation.md/#altert-args):
 
 ```typescript
 type Direct = SumValues<Input>;
@@ -937,8 +937,7 @@ type Indirect = Foo<SumValues>;
 type Foo<$T extends Type> = apply<$T, [Input]>;
 
 type SumValues<T extends $SumValues['constraints'][0] = never> =
-    $Optional<$SumValues [T], true>
-//                            ----
+    $Alter<$SumValues [T]>
 ```
 
 Another option for removing boilerplate would be to contribute to the introduction of free type constructors into the language natively :grin:
