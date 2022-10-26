@@ -90,7 +90,7 @@ We would observe a different behaviour if we wrapped it in a free type:
 ```typescript
 // Type instantiation is excessively deep and possibly infinite
 interface $Tuple extends Type {
-//        ------
+//        ~~~~~~
     type: Tuple<this[0], this[1]>
 }
 ```
@@ -187,7 +187,7 @@ interface $FailSilently extends Type<1> { type: Foo<this[1]> }
 // silent off-by-1 error            ---             -------
 
 interface $CompileError extends Type<1> { type: Foo<At<1, this>> }
-// Type 'this' does not satisfy the constraint 'Type<2>'  ----
+// Type 'this' does not satisfy the constraint 'Type<2>'  ~~~~
 ```
 
 ### Variadic arity
@@ -201,7 +201,7 @@ type ExpectUnary<$T extends Type<1>> = apply<$T, ['foo']>;
 interface $Foo extends Type { type: ... }
 
 type Woops = ExpectUnary<$Foo>;
-//                       -----
+//                       ~~~~
 // Type '$Foo' does not satisfy the constraint 'Type<1, unknown>'
 ```
 
@@ -244,7 +244,7 @@ Some types have constraints which need to be dealt with:
 ```typescript
 interface $Foo extends Type<1> {
     type: `foo ${this[0]}!`
-    //           -------
+    //           ~~~~~~~
     // Type 'this[0]' does not satisfy the constraint 'string | number | bigint | boolean...'
     //   Type 'unknown' is not assignable to type 'string | number | bigint | boolean...'
 }
@@ -332,7 +332,7 @@ interface $Foo extends Type {
 Trying to apply `$Foo` with the wrong arguments now yields an error:
 ```typescript
 type Foo = apply<$Foo, [1, 2, 3]>
-//                     ---------
+//                     ~~~~~~~~
 // Type '[1, 2, 3]' does not satisfy the constraint '[number, string, unknown]'
 ```
 
@@ -413,7 +413,7 @@ Our constraint also informs the call site about the return type:
 ```typescript
 type PrefixedKeys<T extends Obj, $T extends Type<[Obj]>> =
     `prefix-${apply<$T, [T]>}`
-    //        --------------
+    //        ~~~~~~~~~~~~~~
     // not assignable to type 'string | number | ...'
 ```
 ```typescript
@@ -688,7 +688,7 @@ type Baz = Foo<$H1>;
 
 type Foo<$T extends Remaining<$Vec3, 2>> =
     Bar<partial<$T, [2]>>
-//      -------------=- nonsensical errors
+//      ~~~~~~~~~~~~~≈~ nonsensical errors
 
 type Bar<$T extends Remaining<$Vec3, 1>> =
     apply<$T, [3]>
@@ -717,7 +717,7 @@ type Intricate = apply<$Reduce<$Add>, [apply<$MapOver<$Prop<'value'>>, [Input]>]
 
 ```typescript
 type NotOK<T extends number> = Pipe<[T], [$Next]>;
-//         ^                         ^   -------
+//         ^                         ^   ~~~~~~~
 //                                    cryptic error
 ```
 I don't know how to deal with this problem yet. In the meantime I suggest you use `PipeUnsafe` in such situations.
@@ -742,7 +742,7 @@ As you can tell, we didn't use the same types as with `Pipe`. This is because `F
 
 ```typescript
 type Rejected = Flow<[$MapOver<$Prop<'value'>>, $Reduce<$Add>]>
-//                   -------------------------------------
+//                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 // Type '[$MapOver<$Prop<"value", unknown>>, $Reduce<$Add>]' does not satisfy the constraint 'Composition & [Type<[Mappable<Record<"value", unknown>>], NonEmptyMappable<number>>, $Reduce<$Add>]'.
 //   Type '[$MapOver<$Prop<"value", unknown>>, $Reduce<$Add>]' is not assignable to type '[Type<[Mappable<Record<"value", unknown>>], NonEmptyMappable<number>>, $Reduce<$Add>]'.
 //     Type at position 0 in source is not compatible with type at position 0 in target.
@@ -849,7 +849,7 @@ Only the return types need to match:
 type Bar<$T extends Type<[number], string>> = ...
 type Accepted = Bar<Const<'foo'>>
 type Rejected = Bar<Const<boolean>>
-// we expected a string --------
+// we expected a string  ~~~~~~~~
 ```
 
 #### `From`
@@ -859,7 +859,7 @@ A limitation of our design is that producing object literals is tedious:
 ```typescript
 interface $Foo extends Type<[number, string]> {
     type: { foo: A<this>, bar: B<this> }
-    //             ----          ----
+    //             ~~~~          ~~~~
     // 'this' is available only in a non-static
     // member of a class or interface
 }
@@ -896,7 +896,7 @@ The template's original values are used for type checking
 
 ```typescript
 type Rejected = apply<$Foo, [1, 42]>
-//                          -------
+//                          ~~~~~~~
 // Type '[1, 42]' does not satisfy the constraint '[number, string]'
 ```
 
