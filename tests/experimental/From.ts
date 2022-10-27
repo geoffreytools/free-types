@@ -1,4 +1,4 @@
-import { test } from 'ts-test'
+import { test } from 'ts-spec'
 import { apply } from 'free-types-core'
 import { From } from '../../experimental/From'
 

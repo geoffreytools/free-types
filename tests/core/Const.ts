@@ -1,4 +1,4 @@
-import { test } from 'ts-test'
+import { test } from 'ts-spec'
 import { apply, Type, Const, $Const } from 'free-types-core';
 import { Ap } from '../../essential/mappables/Ap';
 import { MapOver } from '../../essential/mappables/MapOver';

@@ -1,4 +1,4 @@
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 import { Show } from '../../experimental/Show';
 
 test('Show base types' as const, t => [

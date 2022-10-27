@@ -1,4 +1,4 @@
-import { test } from 'ts-test'
+import { test } from 'ts-spec'
 import { A, apply, B, C, partial, Type, $Const } from '../../core'
 import { Flow } from '../../essential/composition/Flow'
 import { Pipe, PipeUnsafe } from '../../essential/composition/Pipe'

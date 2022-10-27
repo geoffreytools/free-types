@@ -1,5 +1,5 @@
 import { apply } from 'free-types-core'
-import { test } from 'ts-test'
+import { test } from 'ts-spec'
 import { $Length } from '../../../utility-types/strings/$Length'
 
 test('Get the length of the supplied string' as const, t => [

@@ -1,5 +1,5 @@
 import { Type, Generic } from 'free-types-core';
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 
 interface $Foo extends Type<[number, string]> {
     type: [this[0], this[1]]

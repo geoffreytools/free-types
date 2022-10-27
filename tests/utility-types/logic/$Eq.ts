@@ -1,5 +1,5 @@
 import { apply } from 'free-types-core';
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 import { $Eq } from '../../../utility-types/logic/';
 
 type $Is1 = $Eq<1>;

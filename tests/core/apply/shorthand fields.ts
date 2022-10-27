@@ -1,5 +1,5 @@
 import { Type, apply } from 'free-types-core';
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 
 interface $NumFields extends Type<[number, string, boolean, number[]]> {
     type: [this[0], this[1], this[2], this[3]]

@@ -1,5 +1,5 @@
 import { apply } from 'free-types-core';
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 import { $Intersect } from '../../../utility-types/logic/';
 
 test('$Intersect' as const, t =>

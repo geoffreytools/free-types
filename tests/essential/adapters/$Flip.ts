@@ -1,4 +1,4 @@
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 import { Type, apply } from 'free-types-core';
 import { $Flip } from '../../../essential/adapters/$Flip';
 

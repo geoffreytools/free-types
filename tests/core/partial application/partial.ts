@@ -1,4 +1,4 @@
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 import { Type, apply, partial, A, B, C } from 'free-types-core'
 
 interface $Cuboid extends Type<[number, number, number]> {

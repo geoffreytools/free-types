@@ -1,4 +1,4 @@
-import { test, _ } from 'ts-test';
+import { test, _ } from 'ts-spec';
 import { Type, apply, HKT, A } from '../../../'
 import { Maybe, Just, Nothing, Either, $Either, Left, Right, either, CustomError } from './implementations';
 

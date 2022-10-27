@@ -1,5 +1,5 @@
 import { apply } from 'free-types-core';
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 
 import { $And } from '../../../utility-types/logic/';
 

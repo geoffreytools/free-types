@@ -1,5 +1,5 @@
 import { apply } from 'free-types-core/apply';
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 import { $Stitch } from '../../../utility-types/strings/$Stitch';
 import { Showable } from '../../../utility-types/strings/common';
 

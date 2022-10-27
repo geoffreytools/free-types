@@ -1,4 +1,4 @@
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 import { apply, partialRight, free, partial } from "../../..";
 import { $Rest } from '../../../essential/adapters/$Rest';
 import { Flow } from '../../../essential/composition/Flow';

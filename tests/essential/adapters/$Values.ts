@@ -1,5 +1,5 @@
 import { Type, apply, A, B } from 'free-types-core';
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 import { $Values } from '../../../essential/adapters/$Values';
 import { Mappable } from '../../../essential/mappables/common';
 import { $Add } from '../../../utility-types/arithmetic/$Add';

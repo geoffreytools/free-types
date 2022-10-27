@@ -1,4 +1,4 @@
-import { _, test } from 'ts-test';
+import { _, test } from 'ts-spec';
 
 import {
     fmap,

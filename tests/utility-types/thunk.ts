@@ -1,4 +1,4 @@
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 import { free } from 'free-types-core';
 import { thunk, eval } from '../../utility-types/thunk'
 import { $Next } from '../../utility-types/arithmetic/$Next'

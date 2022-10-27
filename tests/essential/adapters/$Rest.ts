@@ -1,5 +1,5 @@
 import { Type, apply, A, B } from 'free-types-core';
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 import { $Rest } from '../../../essential/adapters/$Rest';
 
 interface $Wrapped extends Type<[[string, number]]> {

@@ -1,4 +1,4 @@
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 import { Foo } from 'foo/Foo-interface'
 
 test('control' as const, t => [

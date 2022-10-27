@@ -1,4 +1,4 @@
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 
 import { Type, A, B, free, apply, $Not } from '../..'
 import { $IsEmpty } from '../../essential/mappables/IsEmpty';

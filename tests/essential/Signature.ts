@@ -1,4 +1,4 @@
-import { test } from 'ts-test'
+import { test } from 'ts-spec'
 import { Signature } from '../../essential/Signature'
 import { $Add, $Subtract } from '../../utility-types/arithmetic/'
 

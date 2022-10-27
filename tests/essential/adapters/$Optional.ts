@@ -1,5 +1,5 @@
 import { Type, A, B, C, apply, partial } from 'free-types-core';
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 import { $Optional, $Alter } from '../../../essential/adapters/$Optional';
 
 

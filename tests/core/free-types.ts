@@ -1,4 +1,4 @@
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 import { free, partialRight } from '../../core'
 import { Lift, MapOver } from '../../essential/mappables'
 

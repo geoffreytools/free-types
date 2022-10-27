@@ -1,4 +1,4 @@
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 import { Type, apply, A, B, C } from 'free-types-core'
 import { _$Optional } from '../../essential/adapters/$Optional';
 import { _partial, _ } from '../../essential/_partial';

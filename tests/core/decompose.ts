@@ -1,6 +1,6 @@
 import { free } from 'free-types-core';
 import { Type, A, unwrap, Unwrapped, Replace } from 'free-types-core';
-import { test, _ } from 'ts-test'
+import { test, _ } from 'ts-spec'
 
 test('unwrap known type' as const, t =>
     t.equal<unwrap<Map<'a', 1>>, Unwrapped<'Map', free.Map, ['a', 1]>>()

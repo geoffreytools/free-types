@@ -1,5 +1,5 @@
 import { Type, apply, A, B } from 'free-types-core';
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 import { $Spread } from '../../../essential/adapters/$Spread';
 
 interface $StrNumPair extends Type<[string, number]> {

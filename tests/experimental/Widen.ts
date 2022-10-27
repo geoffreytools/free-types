@@ -1,5 +1,5 @@
 import { Type } from '../..';
-import { test, _ } from 'ts-test'
+import { test, _ } from 'ts-spec'
 import { Widen } from '../../experimental/Widen';
 
 test('basic types' as const, t => [

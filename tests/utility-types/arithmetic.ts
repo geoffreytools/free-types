@@ -1,4 +1,4 @@
-import { test } from 'ts-test';
+import { test } from 'ts-spec';
 import { apply } from 'free-types-core';
 import { $Abs, $Next, $Prev, $Add, $Subtract, $Multiply, $Divide, $Max, $Min, $Lt, $Lte, $Gt, $Gte } from '../../utility-types/arithmetic';
 
