@@ -11,11 +11,17 @@
         ".": {
             "import": "./index.ts"
         },
+        "./core": {
+            "import": "./core/index.ts"
+        },
+        "./essential": {
+            "import": "./essential/index.ts"
+        },
         "./utility-types": {
             "import": "./utility-types/index.ts"
         },
-        "./core": {
-            "import": "./core/index.ts"
+        "./experimental": {
+            "import": "./experimental/index.ts"
         }
     },
     "types": "./src/index.ts",

@@ -11,7 +11,7 @@ The goal of this library is to be more general purpose than existing implementat
 ## How to install
 
 ```
-npm install github:geoffreytools/free-types
+npm install free-types
 ```
 
 ## How to use
@@ -154,12 +154,12 @@ Querying a subset also has an impact on the initial type instantiation duration,
     everything you need to create, apply and unwrap free types\
     takes 125-210ms to instantiate with tsc --generateTrace
 
-- `free-types/essentials`\
+- `free-types/essential`\
     composed of `core` + everything you need to compose, adapt and lift free types\
     takes 450-500ms to instantiate with tsc --generateTrace
     
 - `free-types`\
-    composed of `essentials` + `utility-types`\
+    composed of `essential` + `utility-types`\
     takes 660-725ms to instantiate with tsc --generateTrace
 
 - `utility-types`\
