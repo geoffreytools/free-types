@@ -1,0 +1,5 @@
+node_modules
+ts-trace
+tests
+.vscode
+doc
