@@ -37,6 +37,6 @@
         "trace": "bash ./node_modules/ts-trace/ts-trace.sh"
     },
     "dependencies": {
-        "free-types-core": "github:geoffreytools/free-types-core"
+        "free-types-core": "^0.2.0"
     }
 }
