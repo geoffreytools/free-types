@@ -26,7 +26,7 @@ We can create a free type constructor:
 import { Type, A } from 'free-types'
 
 interface $Foo extends Type<[number]> {
-    type: Foo<A<this>> // or Foo<this[0]>
+    type: Foo<A<this>>
 }
 ```
 Which can then be passed as an argument to another type responsible for applying it.
