@@ -24,7 +24,7 @@
             "import": "./experimental/index.ts"
         }
     },
-    "types": "./src/index.ts",
+    "types": "./index.ts",
     "author": "Geoffrey Gourdet",
     "repository": {
         "type": "git",
