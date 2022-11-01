@@ -11,7 +11,7 @@ type _ = typeof placeholder;
  * Accept a placeholder `_` for skipping arguments */
 type _partial <$T extends Type, Args extends PartialSparse<$T['constraints']>> =
     Args extends unknown[]
-    ? SparsePartialType<$T, NormalizeArgs<Args, $T['constraints']['length']>>
+    ? SparsePartialType<$T, NormalizeArgs<Args, Required<$T['constraints']>['length']>>
     : never
 
 type PartialSparse<T extends unknown[]> = Partial<{
@@ -35,9 +35,18 @@ type _Remaining<
     Applied extends unknown[],
     I extends number = 0,
     R extends unknown[] = [],
-    V extends unknown[] = Applied[I] extends _ ? [Constraints[I]] : []
+    V extends unknown[] = Applied[I] extends _
+        ? IsOptional<Constraints, I> extends true
+            ? [Constraints[I]?] : [Constraints[I]]
+        : []
 > = I extends Applied['length'] ? R
-    : _Remaining<Constraints, Applied, Next<I>, [...R, ...V]>
+    : _Remaining<Constraints, Applied, Next<I>, [...R, ...V]>;
+
+
+type IsOptional<T extends unknown[], I extends number> = [{
+        [K in T['length'] as K]: K extends I ? never : unknown
+    }[I]] extends [never] ? true : false;
+    
 
 type FillMissingArgs<Applied extends unknown[], Args extends unknown[]> =
     unknown[] extends Args ? unknown[] : _FillMissingArgs<Applied, Args>;
