@@ -43,6 +43,6 @@
         "trace": "bash ./node_modules/ts-trace/ts-trace.sh"
     },
     "dependencies": {
-        "free-types-core": "^0.2.0"
+        "free-types-core": "^0.3.0"
     }
 }
