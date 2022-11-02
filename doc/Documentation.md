@@ -607,7 +607,7 @@ type Commands = MapOver<URLs, partialRight<free.UnaryFunction, [void]>>
 
 ### Composition [↸](#documentation)
 
-You should read the [part of the guide](#pipe) dedicated to composition
+You should read the [part of the guide](./Guide.md#composition) dedicated to composition
 
 <table>
 <tr><th>type</th><th>description</th></tr>
