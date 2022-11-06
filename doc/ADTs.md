@@ -186,7 +186,7 @@ const either = <E extends Error>() => <A>(x: A) =>
 
 <br>
 
-> As mentioned before, we only need one interface for each arity of `Functor` and `Apply`. This is made possible by the fact that our implementation relies on tuples.
+> As mentioned before, we only need one interface for every arity of `Functor` and `Apply`. This is made possible by the fact that our implementation relies on tuples.
 
 ```typescript
 interface Functor<$F extends Type> extends HKT {
@@ -225,7 +225,7 @@ const liftA2 = <$F extends $Apply>() =>
             (fb: apply<$F, [B, E]>) =>
                 fb.ap(fa.map(f)) as apply<$F, [C, E]>
 ```
-The parameter `E` is what is inferred when the arity of our type is 2. We limited ourselves to arities of 1 and 2 for clarity, but we could ad more.
+The parameter `E` is what is inferred when the arity of our type is 2. We limited ourselves to arities of 1 and 2 for clarity, but we could add more.
 
 
 ### Defining $Functor and $Apply
