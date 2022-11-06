@@ -237,7 +237,7 @@ interface $Foo extends Type<[unknown, unknown[]]> {
 
 </td></tr><tr><td valign='top'><h6><code>Checked<&#8288;I, this, F?></code></td><td>
 
-Similar [`At`](#ati-this), but also defuses type constraints with an **inline conditional**:
+Similar to [`At`](#ati-this), but also defuses type constraints with an **inline conditional**:
 
 ```typescript
 interface $Foo extends Type<[string]> {
