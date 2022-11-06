@@ -51,9 +51,12 @@ interface $Foo extends Type<1> { ... }
 // Setting the arity + a specific constraint:
 interface $Foo extends Type<[number, number]> { ... }
 
+// optional parameters:
+interface $Foo extends Type<[number, number?]> { ... }
+  
 // equivalent to the former:
-interface $Foo extends Type<2> {
-    constraints: [number, number]
+interface $Foo extends Type {
+    constraints: [number, number?]
     ...
 }
 ```
