@@ -253,6 +253,23 @@ interface $Foo extends Type<[string]> {
 
 `F` allows you to specify a fallback value, which by default is `this['constraints'][N]`.
 
+</td></tr><tr><td valign='top'><h6><code>Optional<&#8288;I, this, F?></code></td><td>
+
+Similar to [`Checked`](#checkedi-this-f), but also deals with the possibility that the argument may not be set:
+
+```typescript
+interface $Foo extends Type<[string, string?]> {
+   type: `${A<this>}${Optional<1, this, ''>}`
+}
+```
+Is equivalent to:
+```typescript
+interface $Foo extends Type<[string, string?]> {
+   type: `${this[0] & string}${this[1] extends undefined ? '' : this[1]}`
+}
+```
+`F` allows you to specify a fallback value, which by default is `this['constraints'][N]`.
+
 </td></tr><tr><td valign='top'><h6><code>Lossy<&#8288;I, this></code></td><td>
 
 A more general version of [`A|B|C|D|E`](#abcdethis), working for any arity:

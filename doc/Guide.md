@@ -224,6 +224,42 @@ type ExpectAtLeastUnary<$T extends Type & Contra<$T, Type<1>>> = apply<$T, ['foo
 type Ok = ExpectAtLeastUnary<$Foo>;
 ```
 
+### Optional arguments
+
+In-between finite and unspecified arity lie optional arguments. You can create such types by using the optional tuple symtax, for example `Type<[unknown, unknown?]>` has an arity of 1 or 2.
+
+They behave as described in the preceiding chapter, however, there is a subtlety in the way they are defined.
+
+Generally, when you want to test whether an argument was passed, you need to use a heuristic and suppose for example that if an argument is exactly `unknown`, then it was probably not provided. This is the strategy you would use with the open tuple syntax:
+
+```typescript
+interface $RecordAB extends Type<[unknown, ...unknown[]]> {
+    type: Record<'a', this[0]> & (
+        unknown extends this[1] ? unknown
+    //  -------
+        : Record<'b', this[1]>
+    )
+}
+
+type Foo = apply<$RecordAB, [1]> // { a: 1 }
+type Bar = apply<$RecordAB, [1, 2]> // { a: 1, b: 2 }
+```
+This would not work with the optional tuple syntax, as unset values are `undefined`:
+
+```typescript
+interface $RecordAB extends Type<[unknown, unknown?]> {
+    type: Record<'a', this[0]> & (
+        this[1] extends undefined ? unknown
+    //                  ---------
+        : Record<'b', this[1]>
+    )
+}
+
+type Foo = apply<$RecordAB, [1]> // { a: 1 }
+type Bar = apply<$RecordAB, [1, 2]> // { a: 1, b: 2 }
+```
+Although this behaviour is inconsistent, it is too convenient for me to be bothered to change it. I am open to dicussion though.
+
 ### Wildcard arity
 
 Free types with wildcard arity can only be produced with [`Const`](./Documentation.md/#constt).
@@ -371,6 +407,20 @@ interface $Foo extends Type<[unknown[]]> {
 // is equivalent to:
 interface $Foo extends Type<[unknown[]]> {
     type: [1, ...(this[0] extends unknown[] ? this[0] : unknown[])]
+}
+```
+
+##### `Optional<i, this, F?>`
+`Optional` behaves like `Checked` but deals with the possibility that the argument may not be set:
+
+```typescript
+interface $Foo extends Type<[unknown, unknown[]?]> {
+    type: [this[0], ...Optional<1, this>]
+}
+
+// is equivalent to:
+interface $Foo extends Type<[unknown[]]> {
+    type: [this[0], ...(this[1] extends undefined ? unknown[] : this[1])]
 }
 ```
 
