@@ -217,6 +217,13 @@ Another is to use the adapter [`$Arity`](./Documentation.md/#arityn-t):
 type Ok = ExpectUnary<$Arity<1, $Foo>>;
 ```
 
+Finally, you can use [`Contra`](./Documentation.md/#contrat-u) to make the arguments contravariant, and by this mean accept the wider type:
+
+```typescript
+type ExpectAtLeastUnary<$T extends Type & Contra<$T, Type<1>>> = apply<$T, ['foo']>;
+type Ok = ExpectAtLeastUnary<$Foo>;
+```
+
 ### Wildcard arity
 
 Free types with wildcard arity can only be produced with [`Const`](./Documentation.md/#constt).
