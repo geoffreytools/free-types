@@ -371,8 +371,8 @@ Extract all but the last element of the non-empty tuple <code>T</code>.
 Apply a free type `$T` with all its arguments `Args` and evaluate the type.
 
 ```typescript
-interface $Map extends Type<2> { type: MapOver<A<this>, B<this>> };
-type Foo = apply<$Map, [string, number]> // MapOver<string, number>
+interface $Map extends Type<2> { type: Map<A<this>, B<this>> };
+type Foo = apply<$Map, [string, number]> // Map<string, number>
 ```
 
 </td></tr><tr><td valign='top'><h6><code>Generic<&#8288;$T></code></td><td>
@@ -528,7 +528,7 @@ type B = unwrap<Foo<number>, [$Foo, $Bar]>;
 Deeply decompose `T` the same way as `unwrap`.
 
 ```typescript
-type Tree = unwrapDeep< MapOver<1, MapOver<2, MapOver<3, 'value'>> >;
+type Tree = unwrapDeep< Map<1, Map<2, Map<3, 'value'>> >;
 
 // Tree: Unwrapped<free.Map, [
 //     1, Unwrapped<free.Map, [
@@ -979,7 +979,7 @@ type Args<T> = Match<T, [
 class Foo<T> { constructor(private value: T) {}}
 interface $Foo extends Type<1> { type: Foo<T> }
 
-type MapArgs = Args<MapOver<string, number>> // [string, number]
+type MapArgs = Args<Map<string, number>> // [string, number]
 type FooArgs = Args<Foo<string>> // string
 ```
 
