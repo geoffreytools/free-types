@@ -10,7 +10,7 @@ export { MapOver, $MapOver }
 type Tuple = [] | [unknown, ...unknown[]]
 type IsOpenTuple<T extends Tuple> = number extends T['length'] ? true : false
 
-type MapOver<T extends Mappable<$T['constraints'][0]>, $T extends Type<1|2>> =
+type MapOver<T extends Partial<Mappable<$T['constraints'][0]>>, $T extends Type<1|2>> =
     T extends unknown[] ? MapArray<T, $T>
     : T extends Obj ? IterativeObjMap<T, $T>
     : T
