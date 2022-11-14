@@ -692,7 +692,7 @@ Turn a `Type<[A, B]>` into a `Type<[B, A]>` and apply arguments accordingly.
 
 </td></tr><tr><td valign='top'><h6><code>$Rest<&#8288;$T, N?></code></td><td>
 
-Turn a `Type<1>` expecting a Tuple of `N` elements into a `Type<N>`. `N` is usually inferred and needs not be provided.
+Turn a `Type<1>` expecting a Tuple of `N` elements into a `Type<N>`.
 
 ```typescript
 type With = apply<$Rest<$Foo>, [1, 2, 3]>;
