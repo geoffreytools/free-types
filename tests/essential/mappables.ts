@@ -12,19 +12,19 @@ import { Add } from '../../essential/utils'
 import { $Add, $Next } from '../../utility-types/arithmetic'
 import { $Stitch } from '../../utility-types/strings/$Stitch'
 
-test('Map works on tuples' as const, t => 
+test('MapOver works on tuples' as const, t => 
     t.equal<MapOver<[1,2,3], $Next>, [2,3,4]>()
 )
 
-test('Map works on arrays' as const, t => 
+test('MapOver works on arrays' as const, t => 
     t.equal<MapOver<(1|2|3)[], $Next>, (2|3|4)[]>()
 )
 
-test('Map preserves tupleness' as const, t => 
+test('MapOver preserves tupleness' as const, t => 
     t.equal<[...MapOver<[1,2,3], $Next>], [2,3,4]>()
 )
 
-test('Map works on objects' as const, t => 
+test('MapOver works on objects' as const, t => 
     t.equal<MapOver<{a: 1, b: 2}, $Next>, {a: 2, b: 3}>()
 )
 
