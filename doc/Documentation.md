@@ -796,7 +796,7 @@ type Baz = MapOver<{ a: 1, b: 2 }, $Next> // { a: 2, b: 3 }
 
 </td></tr><tr><td valign='top'><h6><code>$MapOver<<&#8288;$T, L?></code></td><td>
 
-A free version of `Map`. The optional argument `L` constrains it to work with tuples of that length (or arrays if `L` is exactly `number`).
+A free version of `MapOver`. The optional argument `L` constrains it to work with tuples of that length (or arrays if `L` is exactly `number`).
 
 </td></tr><tr><td valign='top'><h6><code>Lift<&#8288;$T, Ts></code></td><td>
 
@@ -854,7 +854,7 @@ type Bar = Reduce<{ a: 1, b: 2, c: 3, d: 4 }, $Add>; // 10
 
 A free version of `Reduce`.
 
-> Since it accepts both tuples and objects, it can follow [`$Map`](#mapt) in a composition.
+> Since it accepts both tuples and objects, it can follow [`$MapOver`](#mapovert-l) in a composition.
 
 > I was not able to enforce that object type inputs must contain at least one element.
 
@@ -872,7 +872,7 @@ Identical to `Reduce` but requires an initialiser `I`, allowing `T` to be empty.
 
 A free version of `Fold`.
 
-> Since it accepts both tuples and objects, it can follow [`$Map`](#mapt) in a composition.
+> Since it accepts both tuples and objects, it can follow [`$MapOver`](#mapt-l) in a composition.
 
 </td></tr><tr><td valign='top'><h6><code>Match<&#8288;T, [P, R, K?][], M?></code></td><td>
 
