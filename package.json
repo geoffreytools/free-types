@@ -25,6 +25,7 @@
         }
     },
     "types": "./index.ts",
+    "main": "./index.ts",
     "author": "Geoffrey Gourdet",
     "repository": {
         "type": "git",
