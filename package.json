@@ -1,6 +1,6 @@
 {
     "name": "free-types",
-    "version": "0.2.1",
+    "version": "0.2.2",
     "description": "A type-level library enabling the creation and the manipulation of type constructors which are detached from their type parameters.",
     "keywords:": [
         "higher kinded type",
@@ -26,7 +26,9 @@
     },
     "types": "./dist/index.d.ts",
     "main": "./dist/index.js",
-    "files": ["dist/*"],
+    "files": [
+        "dist/*"
+    ],
     "author": "Geoffrey Gourdet",
     "repository": {
         "type": "git",
