@@ -1,4 +1,4 @@
-import { Eq, Prev } from 'free-types-core/utils';
+import { Eq, Prev } from 'free-types-core/dist/utils';
 import { And, Extends, IsNatural, Or } from '../../essential/utils';
 
 export type Compare<A, B, Equal extends boolean> =

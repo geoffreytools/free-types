@@ -1,5 +1,5 @@
 import { apply, Checked, A, Type, unwrap, free, partialRight } from "free-types-core";
-import { IsAny } from "free-types-core/utils";
+import { IsAny } from "free-types-core/dist/utils";
 import { $Arity } from "../essential/adapters/$Arity";
 import { $Flip } from "../essential/adapters/$Flip";
 import { $Before } from "../essential/composition/$Before";

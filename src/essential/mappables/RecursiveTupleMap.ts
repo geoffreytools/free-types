@@ -1,5 +1,5 @@
 import { apply, Type } from "free-types-core"
-import { IsOptional, Next } from "free-types-core/utils"
+import { IsOptional, Next } from "free-types-core/dist/utils"
 
 export type RecursiveTupleMap<T extends unknown[], $T extends Type, I extends number = 0, R extends unknown[] = [], L extends number = Required<T>['length']> =
     I extends L ? R

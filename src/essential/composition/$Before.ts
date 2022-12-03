@@ -1,6 +1,6 @@
 import { RecursiveTupleMap } from '../mappables/RecursiveTupleMap';
 import { apply, Const, Type } from "free-types-core";
-import { Next, Tuple } from "free-types-core/utils";
+import { Next, Tuple } from "free-types-core/dist/utils";
 
 export type $Before<$T extends Type, $P extends Type<1>, I extends number = never> =
     _$Before<$T, $P, I>[[I] extends [never] ? 'BeforeN' : 'BeforeI']

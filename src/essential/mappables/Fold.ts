@@ -1,5 +1,5 @@
-import { Type, apply, A, At } from 'free-types-core/';
-import { Next } from 'free-types-core/utils';
+import { Type, apply, A, At } from 'free-types-core/dist/';
+import { Next } from 'free-types-core/dist/utils';
 import { Mappable } from './common';
 import { Object2Tuple } from './Object2Tuple';
 

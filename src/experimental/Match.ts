@@ -1,5 +1,5 @@
 import { Type, apply, A, inferArgs, Generic } from 'free-types-core';
-import {Extends, Next } from 'free-types-core/utils'
+import {Extends, Next } from 'free-types-core/dist/utils'
 import { Union2Tuple} from '../essential/utils'
 import { $Before } from '../essential/composition/$Before';
 import { $Exclude } from '../utility-types/logic';

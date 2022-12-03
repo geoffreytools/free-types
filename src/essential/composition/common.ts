@@ -1,5 +1,5 @@
 import { apply, Type } from "free-types-core";
-import { Next } from "free-types-core/utils";
+import { Next } from "free-types-core/dist/utils";
 
 export type Composition = [Type, ...Type<1>[]];
 

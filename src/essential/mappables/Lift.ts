@@ -1,5 +1,5 @@
-import { Type, $partial, $apply, ToTuple } from 'free-types-core/';
-import { Next, ArrayKeys,} from 'free-types-core/utils';
+import { Type, $partial, $apply, ToTuple } from 'free-types-core/dist/';
+import { Next, ArrayKeys,} from 'free-types-core/dist/utils';
 import { LastUnionMember } from '../utils';
 import { _Ap } from './Ap';
 import { IterativeTupleMap } from './IterativeMap';

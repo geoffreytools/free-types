@@ -1,5 +1,5 @@
 import { Type } from 'free-types-core'
-import { Next, Prev, Last } from 'free-types-core/utils'
+import { Next, Prev, Last } from 'free-types-core/dist/utils'
 import { _Pipe, Composition } from './common';
 
 export interface Flow<

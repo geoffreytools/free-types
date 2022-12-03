@@ -29,7 +29,7 @@ interface $Foo extends Type<1> {
     type:  Foo<A<this>>
 }
 
-declare module 'free-types-core/TypesMap' {
+declare module 'free-types-core/dist/TypesMap' {
     interface TypesMap {
       Foo: $Foo
     }

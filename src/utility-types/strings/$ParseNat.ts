@@ -1,5 +1,5 @@
 import { A, Type } from "free-types-core";
-import { ArrayKeys, Natural } from "free-types-core/utils";
+import { ArrayKeys, Natural } from "free-types-core/dist/utils";
 
 export { ParseNat, $ParseNat };
 

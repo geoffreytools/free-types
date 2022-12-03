@@ -1,7 +1,7 @@
 import { Type, apply, Unwrapped, unwrap } from 'free-types-core';
 import { Compute } from '../essential/utils';
 
-import { TypesMap } from 'free-types-core/TypesMap'
+import { TypesMap } from 'free-types-core/dist/TypesMap'
 
 export { Widen };
 

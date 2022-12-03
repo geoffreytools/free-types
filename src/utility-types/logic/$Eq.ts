@@ -1,5 +1,5 @@
 import { Type } from "free-types-core";
-import { Eq } from "free-types-core/utils";
+import { Eq } from "free-types-core/dist/utils";
 import { $OptionalFlip } from "../../essential/adapters/$Optional";
 
 export { Eq, $Eq };

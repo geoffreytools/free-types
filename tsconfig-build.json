@@ -4,7 +4,8 @@
         "noEmit": false,
         "declaration": true,
         "outDir": "./dist",
-        "declarationDir": "./dist"
+        "declarationDir": "./dist",
+        "removeComments": false
     },
     "include": ["src/**/*.ts"],
 }

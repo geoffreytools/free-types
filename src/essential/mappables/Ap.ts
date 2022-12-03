@@ -1,6 +1,6 @@
 import { Mappable } from './common';
-import { Type, apply, partial } from 'free-types-core/';
-import { Next } from 'free-types-core/utils';
+import { Type, apply, partial } from 'free-types-core/dist/';
+import { Next } from 'free-types-core/dist/utils';
 
 export type Ap<$Ts extends Mappable<Type>, Ts extends Mappable<unknown>> = _Ap<$Ts, Ts>
 

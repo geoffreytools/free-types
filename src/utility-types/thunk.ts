@@ -1,5 +1,5 @@
 import { Type, apply } from 'free-types-core';
-import { Prev, Next } from 'free-types-core/utils';
+import { Prev, Next } from 'free-types-core/dist/utils';
 
 export { thunk, Thunk, eval, getTypes, getArgs }
 

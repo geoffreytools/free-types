@@ -1,5 +1,5 @@
 import { Type } from 'free-types-core';
-import { ArrayKeys } from 'free-types-core/utils';
+import { ArrayKeys } from 'free-types-core/dist/utils';
 import { Mappable } from './common';
 
 export { IsEmpty, $IsEmpty }

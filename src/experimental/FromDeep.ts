@@ -1,5 +1,5 @@
-import {  Type, Tail } from 'free-types-core/';
-import { ArrayKeys, Next} from 'free-types-core/utils';
+import {  Type, Tail } from 'free-types-core/dist/';
+import { ArrayKeys, Next} from 'free-types-core/dist/utils';
 import { Assert } from '../essential/utils';
 import { Mappable } from '../essential/mappables/common';
 import { IndexOf, NormalizeArgs, SelectValue } from './creation';

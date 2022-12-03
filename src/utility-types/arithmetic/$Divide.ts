@@ -1,5 +1,5 @@
 import { Type, A, B } from 'free-types-core';
-import { Next, Subtract } from 'free-types-core/utils';
+import { Next, Subtract } from 'free-types-core/dist/utils';
 import { $OptionalFlip } from '../../essential/adapters/$Optional';
 import { And, IsNatural } from '../../essential/utils';
 import { Compare } from './Compare';

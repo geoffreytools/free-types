@@ -1,5 +1,5 @@
 import { Type } from 'free-types-core';
-import { ArrayKeys, Slice } from 'free-types-core/utils';
+import { ArrayKeys, Slice } from 'free-types-core/dist/utils';
 import { Union2Tuple } from '../essential/utils';
 import { _Object2Tuple } from '../essential/mappables/Object2Tuple';
 import { Mappable } from '../essential/mappables/common';

@@ -1,5 +1,5 @@
 import { apply, partial, partialRight, PartialRight, Type } from "free-types-core"
-import { Next } from "free-types-core/utils"
+import { Next } from "free-types-core/dist/utils"
 import { PartialSparse, _partial } from "../_partial"
 
 export type $OptionalFlip<

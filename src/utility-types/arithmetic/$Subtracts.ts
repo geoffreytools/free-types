@@ -1,5 +1,5 @@
 import { Type, A, B } from 'free-types-core';
-import { Subtract } from 'free-types-core/utils';
+import { Subtract } from 'free-types-core/dist/utils';
 import { $OptionalFlip } from '../../essential/adapters/$Optional';
 
 export { Subtract, $Subtract }

@@ -1,5 +1,5 @@
-import { Type, A, B, C, Checked } from 'free-types-core/';
-import { Next } from 'free-types-core/utils';
+import { Type, A, B, C, Checked } from 'free-types-core/dist/';
+import { Next } from 'free-types-core/dist/utils';
 import { $Optional } from '../adapters/$Optional';
 import { Key, Obj } from './common'
 

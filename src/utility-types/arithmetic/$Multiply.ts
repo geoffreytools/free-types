@@ -1,5 +1,5 @@
 import { Type, A, B } from 'free-types-core';
-import { Prev } from 'free-types-core/utils';
+import { Prev } from 'free-types-core/dist/utils';
 import { $Optional } from '../../essential/adapters/$Optional';
 import { Add, And, IsNatural } from '../../essential/utils';
 

@@ -1,4 +1,4 @@
-import { Natural, Prev, Next } from 'free-types-core/utils'
+import { Natural, Prev, Next } from 'free-types-core/dist/utils'
 
 export { IsNatural, Add }
 
@@ -7,7 +7,7 @@ export { Compute };
 export { Assert };
 
 export { And, Or, Not };
-export { IsAny, ArrayKeys, Next, Extends, Eq, Tuple } from 'free-types-core/utils';
+export { IsAny, ArrayKeys, Next, Extends, Eq, Tuple } from 'free-types-core/dist/utils';
 
 export { IsUnion, LastUnionMember, Union2Tuple };
 

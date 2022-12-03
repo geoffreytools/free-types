@@ -1,5 +1,5 @@
 import { Type, A, B, apply } from 'free-types-core';
-import { Tuple } from 'free-types-core/utils'
+import { Tuple } from 'free-types-core/dist/utils'
 import { test } from 'ts-spec';
 import { $Constrain } from '../../../dist/essential/adapters/$Constrain';
 import { Flow } from '../../../dist/essential/composition/Flow';

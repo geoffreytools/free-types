@@ -1,5 +1,5 @@
-import { Type, apply } from 'free-types-core/';
-import { Tuple as CreateTuple } from 'free-types-core/utils';
+import { Type, apply } from 'free-types-core/dist/';
+import { Tuple as CreateTuple } from 'free-types-core/dist/utils';
 import { $Constrain } from '../adapters/$Constrain';
 import { Mappable, Obj } from './common';
 import { IterativeObjMap, IterativeTupleMap } from './IterativeMap';

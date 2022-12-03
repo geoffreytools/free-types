@@ -1,4 +1,4 @@
-import { ArrayKeys, Next } from "free-types-core/utils";
+import { ArrayKeys, Next } from "free-types-core/dist/utils";
 
 export { IndexOf, SelectValue, NormalizeArgs }
 

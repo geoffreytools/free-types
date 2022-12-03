@@ -1,5 +1,5 @@
-import { Type, apply, Checked } from 'free-types-core/';
-import { Next } from 'free-types-core/utils';
+import { Type, apply, Checked } from 'free-types-core/dist/';
+import { Next } from 'free-types-core/dist/utils';
 import { NonEmptyMappable } from './common';
 import { IsEmpty } from './IsEmpty';
 import { Object2Tuple } from './Object2Tuple';
