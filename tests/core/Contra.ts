@@ -1,5 +1,5 @@
-import { Contra, Type } from '../../core'
-import { $Add } from '../../utility-types'
+import { Contra, Type } from '../../dist/core'
+import { $Add } from '../../dist/utility-types'
 
 type ContraNarrower<$T extends Type & Contra<$T, Type<[1, 2]>>> = null
 

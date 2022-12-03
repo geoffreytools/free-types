@@ -20,17 +20,15 @@ type Case = [unknown, unknown, Reordering?];
 interface $Match<
     Cases extends Case[] & CheckCases<Model, Cases>,
     Model extends CheckFallThrough<Model, Cases> = never,
-    // @ts-ignore: prevent users from messing with it
-    //        vvvvvvvvvvvvv
-    Otherwise extends never = GetOtherwise<Cases>
 > extends Type<1> {
     type: _Match<this[A], Cases>
     constraints: [
-        [Otherwise] extends [never] ? unknown
-        : Otherwise extends _never ? unknown
-        : Otherwise extends Type ? Otherwise['constraints']
+        [this['__Otherwise']] extends [never] ? unknown
+        : this['__Otherwise'] extends _never ? unknown
+        : this['__Otherwise'] extends Type ? this['__Otherwise']['constraints']
         : unknown
     ]
+    __Otherwise: GetOtherwise<Cases>
 }
 
 type GetOtherwise<Cases extends Case[]> = {

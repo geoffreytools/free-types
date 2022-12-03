@@ -1,6 +1,6 @@
 import { test } from 'ts-spec'
 import { apply } from 'free-types-core'
-import { FromDeep } from '../../experimental/FromDeep'
+import { FromDeep } from '../../dist/experimental/FromDeep'
 
 test('nested tuples' as const, t => {
     type Template = [

@@ -1,6 +1,6 @@
 import { Type, A, B, C, apply, partial, Optional } from 'free-types-core';
 import { test } from 'ts-spec';
-import { $Optional, _$Optional, $Alter, _ } from '../../../essential';
+import { $Optional, _$Optional, $Alter, _ } from '../../../dist/essential';
 
 
 interface $Box3 extends Type<[number, number, number]> {

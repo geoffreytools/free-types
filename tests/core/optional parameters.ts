@@ -1,7 +1,7 @@
 import { Type, A, B, C, D, apply, Optional, partial } from 'free-types-core';
 
 import { test } from 'ts-spec';
-import { _partial, _ } from '../../essential';
+import { _partial, _ } from '../../dist/essential';
 
 test('1 optional parameter' as const, t => {
     interface $OptionalBox3 extends Type<[number, number, number?]> {

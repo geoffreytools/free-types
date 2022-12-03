@@ -1,6 +1,6 @@
 import { test } from 'ts-spec';
 import { apply } from 'free-types-core';
-import { $Split } from '../../../utility-types/strings/$Split';
+import { $Split } from '../../../dist/utility-types/strings/$Split';
 
 test('Divide a string based on separator' as const, t => [
     t.equal<apply<$Split<'-'>, ['foo-bar']>, ['foo','bar']>(),

@@ -1,15 +1,7 @@
 {
-    "compilerOptions": {
-        "rootDir": "./",
-        "noEmit": true,
-        "noErrorTruncation": true,
-        "moduleResolution": "node",
-        "target": "ES2020",
-        "lib": ["ES2020"],
-        "strict": true
-    },
+    "extends": "./tsconfig-base.json",
     "include": [
-        "./**/*.ts"
+        "src/**/*.ts", "tests/**/*.ts", "dist/**/*.ts"
     ],
     "exclude": [
         "./**/__*/**/*.ts",

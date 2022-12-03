@@ -1,7 +1,7 @@
 import { apply } from 'free-types-core';
 import { test } from 'ts-spec';
 
-import { $And } from '../../../utility-types/logic/';
+import { $And } from '../../../dist/utility-types/logic/';
 
 test('$And' as const, t => [
     t.equal<apply<$And, [1, 2]>, 2>(),

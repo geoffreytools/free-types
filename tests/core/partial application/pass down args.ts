@@ -1,6 +1,6 @@
 import { test, } from 'ts-spec';
 import { Type, apply, partial, Remaining, A, B, C, D, partialRight } from 'free-types-core'
-import { _partial } from '../../../essential/_partial';
+import { _partial } from '../../../dist/essential/_partial';
 
 type Qux<
     A extends string,

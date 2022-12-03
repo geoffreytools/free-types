@@ -1,6 +1,6 @@
 import { test } from 'ts-spec';
 import { apply } from 'free-types-core';
-import { $Join } from '../../../utility-types/strings/$Join';
+import { $Join } from '../../../dist/utility-types/strings/$Join';
 
 test('Intersperse a tuple of showables with the supplied separator and merge the result into one string' as const, t => [
     t.equal<apply<$Join<'-'>, [['A', 'B']]>, 'A-B'>(),

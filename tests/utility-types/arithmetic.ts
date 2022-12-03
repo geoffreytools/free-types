@@ -1,6 +1,6 @@
 import { test } from 'ts-spec';
 import { apply } from 'free-types-core';
-import { $Abs, $Next, $Prev, $Add, $Subtract, $Multiply, $Divide, $Max, $Min, $Lt, $Lte, $Gt, $Gte } from '../../utility-types/arithmetic';
+import { $Abs, $Next, $Prev, $Add, $Subtract, $Multiply, $Divide, $Max, $Min, $Lt, $Lte, $Gt, $Gte } from '../../dist/utility-types/arithmetic';
 
 test('$Abs' as const, t => [
     t.equal<apply<$Abs, [-5]>, 5>(),

@@ -1,7 +1,7 @@
 import { test } from 'ts-spec';
 import { free } from 'free-types-core';
-import { thunk, eval } from '../../utility-types/thunk'
-import { $Next } from '../../utility-types/arithmetic/$Next'
+import { thunk, eval } from '../../dist/utility-types/thunk'
+import { $Next } from '../../dist/utility-types/arithmetic/$Next'
 
 {
     // @ts-expect-error: eval checks that args match constraints

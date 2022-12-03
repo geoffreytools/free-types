@@ -1,6 +1,6 @@
 import { test } from 'ts-spec';
 import { apply } from 'free-types-core';
-import { $StrReplace } from '../../../utility-types/strings/$StrReplace';
+import { $StrReplace } from '../../../dist/utility-types/strings/$StrReplace';
 
 
 test('Replace a Showable with another in a string' as const, t => [

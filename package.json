@@ -9,23 +9,24 @@
     ],
     "exports": {
         ".": {
-            "import": "./index.ts"
+            "import": "./dist/index.js"
         },
         "./core": {
-            "import": "./core/index.ts"
+            "import": "./dist/core/index.js"
         },
         "./essential": {
-            "import": "./essential/index.ts"
+            "import": "./dist/essential/index.js"
         },
         "./utility-types": {
-            "import": "./utility-types/index.ts"
+            "import": "./dist/utility-types/index.js"
         },
         "./experimental": {
-            "import": "./experimental/index.ts"
+            "import": "./dist/experimental/index.js"
         }
     },
-    "types": "./index.ts",
-    "main": "./index.ts",
+    "types": "./dist/index.d.ts",
+    "main": "./dist/index.js",
+    "files": ["dist/*"],
     "author": "Geoffrey Gourdet",
     "repository": {
         "type": "git",
@@ -41,6 +42,7 @@
     "scripts": {
         "test": "tsc",
         "test: watch": "tsc --watch",
+        "build": "tsc -p ./tsconfig-build.json",
         "trace": "bash ./node_modules/ts-trace/ts-trace.sh"
     },
     "dependencies": {

@@ -1,7 +1,7 @@
 import { apply } from 'free-types-core';
 import { test } from 'ts-spec';
 
-import { $Or } from '../../../utility-types/logic/';
+import { $Or } from '../../../dist/utility-types/logic/';
 
 test('$Or' as const, t => [
     t.equal<apply<$Or, [1, 2]>, 1>(),
