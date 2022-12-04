@@ -1,6 +1,6 @@
 import { test } from 'ts-spec';
 import { Type, apply } from 'free-types-core';
-import { $Flip } from '../../../dist/essential/adapters/$Flip';
+import { $Flip } from '../../../essential/adapters/$Flip';
 
 interface $StrNumPair extends Type<[string, number]> {
     type: [this[0], this[1]]

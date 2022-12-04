@@ -1,6 +1,6 @@
 import { test } from 'ts-spec';
 import { apply} from 'free-types-core';
-import { $Head, $Tail, $Last, $Init, $Concat } from '../../dist/utility-types/tuples';
+import { $Head, $Tail, $Last, $Init, $Concat } from '../../utility-types/tuples';
 
 test('$Head' as const, t =>
     t.equal<apply<$Head, [[1,2,3]]>, 1>()

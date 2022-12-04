@@ -1,8 +1,8 @@
 import { test } from 'ts-spec';
 import { apply, partialRight, free, partial } from "../../..";
-import { $Rest } from '../../../dist/essential/adapters/$Rest';
-import { Flow } from '../../../dist/essential/composition/Flow';
-import { Pipe } from '../../../dist/essential/composition/Pipe';
+import { $Rest } from '../../../essential/adapters/$Rest';
+import { Flow } from '../../../essential/composition/Flow';
+import { Pipe } from '../../../essential/composition/Pipe';
 
 type Control = [free.Promise, free.Array, free.Set];
 

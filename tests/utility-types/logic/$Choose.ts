@@ -1,7 +1,7 @@
 import { apply } from 'free-types-core';
 import { test } from 'ts-spec';
-import { $Choose } from '../../../dist/utility-types/logic/';
-import { $Gte } from '../../../dist/utility-types/arithmetic/';
+import { $Choose } from '../../../utility-types/logic/';
+import { $Gte } from '../../../utility-types/arithmetic/';
 
 type $Max = $Choose<$Gte>;
 

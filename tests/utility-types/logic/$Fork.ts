@@ -1,7 +1,7 @@
-import { $Fork, $Stitch, Showable } from './../../../dist/utility-types';
+import { $Fork, $Stitch, Showable } from './../../../utility-types';
 import { apply, Const, partial } from 'free-types-core';
 import { test } from 'ts-spec';
-import { $Reduce, $IsEmpty, Mappable, NonEmptyMappable } from '../../../dist/essential/mappables';
+import { $Reduce, $IsEmpty, Mappable, NonEmptyMappable } from '../../../essential/mappables';
 
 type _$Join<S extends Showable> = $Reduce<partial<$Stitch, [S]>>
 

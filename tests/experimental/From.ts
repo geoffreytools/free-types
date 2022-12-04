@@ -1,6 +1,6 @@
 import { test } from 'ts-spec'
 import { apply } from 'free-types-core'
-import { From } from '../../dist/experimental/From'
+import { From } from '../../experimental/From'
 
 
 test('tuples' as const, t => [

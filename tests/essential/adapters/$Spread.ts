@@ -1,6 +1,6 @@
 import { Type, apply, A, B } from 'free-types-core';
 import { test } from 'ts-spec';
-import { $Spread } from '../../../dist/essential/adapters/$Spread';
+import { $Spread } from '../../../essential/adapters/$Spread';
 
 interface $StrNumPair extends Type<[string, number]> {
     type: [A<this>, B<this>]

@@ -1,6 +1,6 @@
 import { apply } from 'free-types-core'
 import { test } from 'ts-spec'
-import { $Length } from '../../../dist/utility-types/strings/$Length'
+import { $Length } from '../../../utility-types/strings/$Length'
 
 test('Get the length of the supplied string' as const, t => [
     t.equal<apply<$Length, ['abc']>, 3>(),

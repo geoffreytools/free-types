@@ -1,6 +1,6 @@
 import { test } from 'ts-spec'
 import { Signature } from '../../'
-import { $Add, $Subtract } from '../../dist/utility-types/arithmetic/'
+import { $Add, $Subtract } from '../../utility-types/arithmetic/'
 
 test('Inspect the signature of a single type' as const, t => [
     t.equal<Signature<$Add>, {

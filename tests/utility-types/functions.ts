@@ -1,6 +1,6 @@
 import { test } from 'ts-spec';
 import { apply} from 'free-types-core';
-import { $ReturnType, $Parameters, $Parameter } from '../../dist/utility-types/functions';
+import { $ReturnType, $Parameters, $Parameter } from '../../utility-types/functions';
 
 type Fn = (...args: any[]) => unknown
 

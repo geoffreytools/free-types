@@ -1,8 +1,8 @@
 import { Type, apply, A, B } from 'free-types-core';
 import { test } from 'ts-spec';
-import { $Values } from '../../../dist/essential/adapters/$Values';
-import { Mappable } from '../../../dist/essential/mappables/common';
-import { $Add } from '../../../dist/utility-types/arithmetic/$Add';
+import { $Values } from '../../../essential/adapters/$Values';
+import { Mappable } from '../../../essential/mappables/common';
+import { $Add } from '../../../utility-types/arithmetic/$Add';
 
 interface $StrNumPair extends Type<[string, number]> {
     type: [A<this>, B<this>]

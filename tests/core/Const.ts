@@ -1,7 +1,7 @@
 import { test } from 'ts-spec'
 import { apply, Type, Const, $Const } from 'free-types-core';
-import { Ap } from '../../dist/essential/mappables/Ap';
-import { MapOver } from '../../dist/essential/mappables/MapOver';
+import { Ap } from '../../essential/mappables/Ap';
+import { MapOver } from '../../essential/mappables/MapOver';
 
 test('Const turns a concrete type into a free type' as const, t =>
     t.equal<apply<Const<5>>, 5>()

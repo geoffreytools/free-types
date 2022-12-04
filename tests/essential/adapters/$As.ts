@@ -1,10 +1,10 @@
 import { Type, A, B, apply } from 'free-types-core';
 import { Tuple } from 'free-types-core/dist/utils'
 import { test } from 'ts-spec';
-import { $As } from '../../../dist/essential/adapters/$As';
-import { $Constrain } from '../../../dist/essential/adapters/$Constrain';
-import { Flow } from '../../../dist/essential/composition/Flow';
-import { $Split } from '../../../dist/utility-types/strings/$Split';
+import { $As } from '../../../essential/adapters/$As';
+import { $Constrain } from '../../../essential/adapters/$Constrain';
+import { Flow } from '../../../essential/composition/Flow';
+import { $Split } from '../../../utility-types/strings/$Split';
 
 interface $Tuple extends Type<[unknown, number]> {
     type: Tuple<B<this>, A<this>>

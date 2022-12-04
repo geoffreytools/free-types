@@ -1,6 +1,6 @@
 import { test } from 'ts-spec';
 import { Type, apply } from 'free-types-core';
-import { $Arity } from '../../../dist/essential/adapters/$Arity';
+import { $Arity } from '../../../essential/adapters/$Arity';
 
 interface $FirstArg extends Type { type: this['arguments'][0] }
 interface $OptionalArg extends Type<[unknown, unknown?]> { type: this['arguments'][1] }

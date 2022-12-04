@@ -1,7 +1,7 @@
 import { test } from 'ts-spec';
 import { Type, A, apply, partial, Checked, $Next, $Add } from '../..';
-import { Flow } from '../../dist/essential/composition/Flow';
-import { Pipe, PipeUnsafe } from '../../dist/essential/composition/Pipe';
+import { Flow } from '../../essential/composition/Flow';
+import { Pipe, PipeUnsafe } from '../../essential/composition/Pipe';
 
 interface $Exclaim extends Type<[number | string]> {
     type: `${A<this>}!`

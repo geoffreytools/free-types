@@ -1,6 +1,6 @@
 import { test } from 'ts-spec';
 import { apply } from 'free-types-core';
-import { $ParseNat } from '../../../dist/utility-types/strings/$ParseNat';
+import { $ParseNat } from '../../../utility-types/strings/$ParseNat';
 
 test('Parse numbers in the range [0, 64]' as const, t => [
     t.equal<apply<$ParseNat, ['0']>, 0>(),

@@ -1,6 +1,6 @@
 import { apply } from 'free-types-core';
 import { test } from 'ts-spec';
-import { $Extends } from '../../../dist/utility-types/logic/';
+import { $Extends } from '../../../utility-types/logic/';
 
 test('$Extends' as const, t => [
     t.true<apply<$Extends<string>, ['foo']>>(),

@@ -1,6 +1,6 @@
 import { apply } from 'free-types-core';
 import { test } from 'ts-spec';
-import { $Exclude } from '../../../dist/utility-types/logic/';
+import { $Exclude } from '../../../utility-types/logic/';
 
 
 test('$Exclude' as const, t => 

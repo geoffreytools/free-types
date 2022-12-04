@@ -9,25 +9,32 @@
     ],
     "exports": {
         ".": {
-            "import": "./dist/index.js"
+            "import": "./index.js"
         },
         "./core": {
-            "import": "./dist/core/index.js"
+            "import": "./core/index.js"
         },
         "./essential": {
-            "import": "./dist/essential/index.js"
+            "import": "./essential/index.js"
         },
         "./utility-types": {
-            "import": "./dist/utility-types/index.js"
+            "import": "./utility-types/index.js"
         },
         "./experimental": {
-            "import": "./dist/experimental/index.js"
+            "import": "./experimental/index.js"
         }
     },
-    "types": "./dist/index.d.ts",
-    "main": "./dist/index.js",
+    "types": "./index.d.ts",
+    "main": "./index.js",
     "files": [
-        "dist/*"
+        "./core/*",
+        "./essential/*",
+        "./experimental/*",
+        "./utility-types/*",
+        "./index.js",
+        "./index.d.ts",
+        "./TypesMap.js",
+        "./TypesMap.d.ts"
     ],
     "author": "Geoffrey Gourdet",
     "repository": {
