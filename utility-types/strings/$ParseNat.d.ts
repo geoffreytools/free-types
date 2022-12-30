@@ -1,7 +1,0 @@
-import { A, Type } from "free-types-core";
-import { ArrayKeys, Natural } from "free-types-core/dist/utils";
-export { ParseNat, $ParseNat };
-interface $ParseNat extends Type<[string]> {
-    type: ParseNat<this[A]>;
-}
-declare type ParseNat<T> = T extends keyof Omit<Natural, ArrayKeys> ? Natural[T] : number;
