@@ -7,23 +7,6 @@
         "type constructor",
         "typescript"
     ],
-    "exports": {
-        ".": {
-            "import": "./index.js"
-        },
-        "./core": {
-            "import": "./core/index.js"
-        },
-        "./essential": {
-            "import": "./essential/index.js"
-        },
-        "./utility-types": {
-            "import": "./utility-types/index.js"
-        },
-        "./experimental": {
-            "import": "./experimental/index.js"
-        }
-    },
     "types": "./index.d.ts",
     "main": "./index.js",
     "files": [
