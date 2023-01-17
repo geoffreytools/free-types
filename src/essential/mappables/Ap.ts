@@ -5,8 +5,7 @@ import { Next } from 'free-types-core/dist/utils';
 export type Ap<$Ts extends Mappable<Type>, Ts extends Mappable<unknown>> = _Ap<$Ts, Ts>
 
 export type _Ap<$Ts, Ts> =
-    [$Ts, Ts] extends unknown[][] ?
-    TupleAp<[$Ts, Ts]>
+    $Ts extends unknown[] ? Ts extends unknown[] ? TupleAp<[$Ts, Ts]> : never
     : ObjAp<$Ts, Ts>
 
 type ObjAp<$Ts, Ts> = { [K in keyof $Ts & keyof Ts]: Exec<$Ts[K], Ts[K]> }
