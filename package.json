@@ -27,9 +27,9 @@
     "license": "ICS",
     "devDependencies": {
         "foo": "github:geoffreytools/foo",
-        "ts-spec": "^1.0.2",
+        "ts-spec": "^1.2.4",
         "ts-trace": "github:geoffreytools/ts-trace",
-        "typescript": "^4.8.4"
+        "typescript": "^4.9.4"
     },
     "scripts": {
         "test": "tsc",
