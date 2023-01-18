@@ -96,6 +96,8 @@ type RealityShowQuotes = MapOver<Facts, $Amazed>;
 ```
 Arguments can be routed from lists or objects:
 ```typescript
+import { Lift } from 'free-types';
+
 type FirstNames = { a: 'Alan', b: 'Grace' };
 type LastNames = { a: 'Turing', b: 'Hopper' };
 
