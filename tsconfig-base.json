@@ -5,8 +5,6 @@
         "noErrorTruncation": true,
         "moduleResolution": "node",
         "module": "ES2020",
-        "lib": ["ES2020"],
-        "target": "ESNext",
         "strictFunctionTypes": true,
         "noImplicitAny": true,
         "strict": true

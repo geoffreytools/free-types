@@ -76,8 +76,8 @@ test('Replace' as const, t => [
 
 {   // Replace as type constraint
 
-    function foo<T extends C, C = Replace<T, [number]>>(_: T) {};
-    function bar<T extends C, C = Replace<T, [object, number]>>(_: T) {};
+    const foo = <T extends C, C = Replace<T, [number]>>(_: T) => {};
+    const bar = <T extends C, C = Replace<T, [object, number]>>(_: T) => {};
 
     // OK arity 1
     foo(new Set([1]));
