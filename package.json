@@ -1,6 +1,6 @@
 {
     "name": "free-types",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "description": "A type-level library enabling the creation and the manipulation of type constructors which are detached from their type parameters.",
     "keywords:": [
         "higher kinded type",
