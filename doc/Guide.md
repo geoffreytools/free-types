@@ -94,19 +94,14 @@ interface $Tuple extends Type {
     type: Tuple<this[0], this[1]>
 }
 ```
-This happens because `this[1]` always has a set value: `unknown`, so the compiler can expand the type.
 
-In this very example the trouble is that `unknown` never extends `R['length']` in our implementation of `Tuple`, so we recur indefinitely.
+This happens because the `type` field is eagerly evaluated and the parameter `this[1]` is still holding the value `unknown`. The trouble is that, in our implementation of `Tuple`, `unknown` never extends `R['length']`, so we recur indefinitely.
 
-> As I am proofreading this months later it appears that with the current design the error is only picked up by the compiler when you try to apply the type:
-> ```typescript
-> type Fail = apply<$Tuple, ['foo', 5]>
-> //         ~~~~~~~~~~~~~~~~~~~~~~~~~~
-> // Type instantiation is excessively deep and possibly infinite.
-> ```
-> This is suboptimal but the recommendations for dealing with it still apply.
+>The return type of a free type can be checked in a number of scenarios, for example when trying to compose it with other free types, or when passing it as an argument to a type constraining the return type of its input. Then, the compiler will need to evaluate the `type` field even though no argument has been passed by a user.
+>
+>Instead of burdening the user with finding the cause of a mystical type instantiation error in these scenarios, I purposely forced this evaluation at the definition site as well, so that the implementer is made aware that their free type is not composable.
 
-There is no solution to this problem, but there are workarounds:
+Now, how can we fix our free type?
 
 1) We can tune the type, for example by inverting the predicate:
 
