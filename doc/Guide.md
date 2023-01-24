@@ -25,7 +25,7 @@ Extending it with an interface enables overriding the `type` field and referenci
 ```typescript
 interface $Foo extends Type { type: Foo<this['arguments'][0]> }
 
-// For convenience, the first 10 arguments can also be referenced like so:
+// For convenience, arguments can also be referenced like so:
 interface $Foo extends Type { type: Foo<this[0]> }
 ```
 ## Application&nbsp;[↸](#guide)
