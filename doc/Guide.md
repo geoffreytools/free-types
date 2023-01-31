@@ -917,7 +917,7 @@ interface $Foo extends Type<[number, string]> {
 }
 ```
 
-We are forced to use a helper type
+We are forced to use a helper type (we may need to repeat type constraints):
 
 ```typescript
 type Foo<A extends number, B extends string> = { foo: A, bar: B }
@@ -926,7 +926,16 @@ interface $Foo extends Type<[number, string]> {
     type: Foo<A<this>, B<this>>
 }
 ```
-or `Record`:
+or a mapped type with additional fields (could be worse, but is a bit messy):
+```typescript
+interface $Foo extends Type<[number, string]> {
+    type: { [K in 'foo'|'bar']: this[K] }
+    foo: A<this>
+    bar: B<this>
+}
+```
+
+or `Record` (the return type will be an intersection and it's ugly):
 ```typescript
 interface $Foo extends Type<[number, string]> {
     type: Record<'foo', A<this>>
@@ -934,9 +943,7 @@ interface $Foo extends Type<[number, string]> {
 }
 ```
 
-
-
-`From` can be used to parameterise an object literal:
+`From` can be used to parameterise simple object literals:
 
 ```typescript
 type $Foo = From<{ a: number, b: string }, ['a', 'b']>;
