@@ -215,7 +215,7 @@ type Ok = ExpectUnary<$Arity<1, $Foo>>;
 Finally, you can use [`Contra`](./Documentation.md/#contrat-u) to make the arguments contravariant, and by this mean accept the wider type:
 
 ```typescript
-type ExpectAtLeastUnary<$T extends Type & Contra<$T, Type<1>>> = apply<$T, ['foo']>;
+type ExpectAtLeastUnary<$T extends Contra<$T, Type<1>>> = apply<$T, ['foo']>;
 type Ok = ExpectAtLeastUnary<$Foo>;
 ```
 
@@ -559,7 +559,7 @@ type UnfairlyRejected = MapOver<[1,2,3], free.Array>
 That's where [`Contra`](./Documentation.md/#contrat-u) comes in. It simply checks that one type extends the other, but in the opposite order than usual:
 
 ```typescript
-type MapOver<T extends unknown[], $T extends Type & Contra<$T, Type<[T[number]]>>> = {
+type MapOver<T extends unknown[], $T extends Contra<$T, Type<[T[number]]>>> = {
     [K in keyof T]: K extends keyof [] ? T[K] : apply<$T, [T[K]]>
 }
 
@@ -574,7 +574,7 @@ The error message is not beautiful but gets the job done.
 To covers our edge case we need the caller type to also use `Contra` with the exact same arguments: 
 
 ```typescript
-type Foo<$T extends Type & Contra<$T, Type<['a'|'b'|'c']>>> =
+type Foo<$T extends Contra<$T, Type<['a'|'b'|'c']>>> =
     MapOver<['a', 'b', 'c'], $T>;
 
 type ShouldFail = Foo<$Next>;

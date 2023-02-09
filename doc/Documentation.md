@@ -177,7 +177,7 @@ Helpers you may use to reduce boilerplate or assist with type checking.
 Expect a free type with contravariant arguments.
 
 ```typescript
-type Foo<$T extends Type & Contra<$T, Type<2>>> =
+type Foo<$T extends Contra<$T, Type<2>>> =
     apply<$T, ['foo', true]>
 
 type Bar = Foo<$Add>
