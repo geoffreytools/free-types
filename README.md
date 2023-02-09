@@ -8,6 +8,8 @@ Such "free" type constructors can be passed around, composed and partially appli
 
 The goal of this library is to be more general purpose than existing implementations focussing on algebraic data types. A dinstinctive feature is that it supports type constraints (with [limitations](#limitations-and-pain-points)). It is also simpler to use than implementations relying on module augmentation.
 
+Related projects: [free-types-transform](https://github.com/geoffreytools/free-types-transform), [type-lenses](https://github.com/geoffreytools/type-lenses), [ts-spec](https://github.com/geoffreytools/ts-spec)
+
 ## How to install
 
 ```
