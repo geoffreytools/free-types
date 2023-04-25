@@ -38,6 +38,6 @@
         "trace": "bash ./node_modules/ts-trace/ts-trace.sh -i ./tsconfig-trace"
     },
     "dependencies": {
-        "free-types-core": "^0.7.1"
+        "free-types-core": "^0.8.1"
     }
 }
