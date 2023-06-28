@@ -16,17 +16,26 @@ test('MapOver works on tuples' as const, t =>
     t.equal<MapOver<[1,2,3], $Next>, [2,3,4]>()
 )
 
+test('MapOver works on readonly tuples' as const, t => 
+    t.equal<MapOver<readonly [1,2,3], $Next>, readonly [2,3,4]>()
+)
+
 test('MapOver works on arrays' as const, t => 
     t.equal<MapOver<(1|2|3)[], $Next>, (2|3|4)[]>()
+)
+
+test('MapOver works on readonly arrays' as const, t => 
+    t.equal<MapOver<readonly (1|2|3)[], $Next>, readonly (2|3|4)[]>()
 )
 
 test('MapOver preserves tupleness' as const, t => 
     t.equal<[...MapOver<[1,2,3], $Next>], [2,3,4]>()
 )
 
-test('MapOver preserves optional array elements' as const, t => 
-    t.equal<[...MapOver<[1,2?,3?], $Next>], [2,3?,4?]>()
-)
+test('MapOver preserves optional array elements' as const, t => [
+    t.equal<[...MapOver<[1,2?,3?], $Next>], [2,3?,4?]>(),
+    t.equal<[...MapOver<readonly [1,2?,3?], $Next>], [2,3?,4?]>()
+])
 
 test('MapOver works on objects' as const, t => 
     t.equal<MapOver<{a: 1, b: 2}, $Next>, {a: 2, b: 3}>()
