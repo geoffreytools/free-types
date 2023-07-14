@@ -4,6 +4,9 @@
 
 ## Algebraic data types
 
+> **Warning**
+> This content is outdated. I may update it with newer patterns or remove it entierely as algerbraic data types are not the focus of this library. Notably, fp-ts has gone through radical transformations since it was written (which is long before it was even published). Their HKT implementation no longer relies on a URI and uses positional arguments to deal with arity and variance.
+
 One can't reasonably implement higher kinded types without mentioning ADTs.
 
 The state of the art on the matter is I believe [fp-ts](https://github.com/gcanti/fp-ts), and actually you could simply copy and paste the way they implement static land with free types: you would only need to get rid of the `URI` / module augmentation shcheme which is no longer necessary.
