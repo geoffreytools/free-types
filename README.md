@@ -4,9 +4,9 @@
 
 A type-level library enabling the creation and the manipulation of type constructors which can be detached from their type parameters.
 
-Such "free" type constructors can be passed around, composed and partially applied, making known programming patterns also available at the type level.
+Such "free" type constructors can be passed around and composed, making known programming patterns also available at the type level.
 
-The goal of this library is to be more general purpose than existing implementations focussing on algebraic data types. A dinstinctive feature is that it supports type constraints (with [limitations](#limitations-and-pain-points)). It is also simpler to use than implementations relying on module augmentation.
+The goal of this library is to support type-level programming and dependency inversion. Dinstinctive features are support for: type constraints, partial application, composition with built-in adapters and higher order types, type constructor inference, all sorts of arities (static, dynamic, variadic, optional arguments) and a few experimental features.
 
 Related projects: [free-types-transform](https://github.com/geoffreytools/free-types-transform), [type-lenses](https://github.com/geoffreytools/type-lenses), [ts-spec](https://github.com/geoffreytools/ts-spec)
 
