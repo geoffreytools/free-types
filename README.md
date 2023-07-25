@@ -77,7 +77,7 @@ export declare const magicFunctionFromAction:
 ```
 Now how do we type this? `TheirActionType` is precisely what we don't know.
 
-This is where free type constructors come into play: we can require a free Action type constructor accepting an argument (the payload's type). We encode this requirement in the following contract:
+This is where free type constructors come into play: we can require a free Action type constructor accepting an argument (the payload's type) and returning an Action type. We encode this requirement in the following contract:
 ```typescript
 import { Type } from 'free-types';
 
