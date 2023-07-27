@@ -1053,7 +1053,7 @@ The exact opposite of Filter.
 FilterOut<[1, 'a', 2, true], number> // ['a', true]
 FilterOut<{ a: 1, b: 'a', c: 2, d: true }, number> // { b: 'a', d: true }
 ```
-When using a predicate, it is equivalent to calling `Filter` with `$Not<F>`, however I advise against stacking combinators when you have other options.
+When using a predicate, it is equivalent to calling `Filter` with `$Not<F>`.
 ```typescript
 FilterOut<[1, 'a', 2, true], $IsNumber> // ['a', true]
 FilterOut<{ a: 1, b: 'a', c: 2, d: true }, $IsNumber> // { b: 'a', d: true }

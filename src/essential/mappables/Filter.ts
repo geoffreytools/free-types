@@ -1,4 +1,5 @@
-import { Type, At, A, Next, apply } from "free-types-core"
+import { Type, At, Next, apply } from "free-types-core"
+import { $Not } from "../../utility-types/logic/$Not";
 import { Mappable } from "./common"
 
 export { Filter, FilterOut, $Filter, $FilterOut };
@@ -30,7 +31,7 @@ interface $Filter<F> extends Type<[Mappable]> {
 }
 
 type FilterOut<T extends Mappable, F> =
-    Filter<T, F extends Type ? F : $NotExtends<F>>
+    Filter<T, F extends Type<1> ? $Not<F> : $NotExtends<F>>
 
 interface $FilterOut<F> extends Type<[Mappable]> {
     type: At<0, this> extends this['constraints'][0]

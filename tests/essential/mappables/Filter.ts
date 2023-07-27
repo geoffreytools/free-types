@@ -16,6 +16,7 @@ test('Filter tuple', t => [
 
 test('Filter predicate', t => [
     t.equal<apply<$Filter<$IsNumber>, [MixedTuple]>, [1, 2, 3]>(),
+    t.equal<apply<$FilterOut<$IsNumber>, [MixedTuple]>, ['a', true, symbol]>(),
 ])
 
 test('FilterOut tuple', t => [
