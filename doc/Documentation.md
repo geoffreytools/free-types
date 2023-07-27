@@ -1023,6 +1023,46 @@ A free version of `Match`.
 
 > Some checks like exhaustiveness become opt-in by supplying `M`
 
+</td></tr><tr><td valign='top'><h6><code>Filter<&#8288;T, F></code></td><td>
+
+Filter the mappable `T` by the value `F`.
+
+```typescript
+Filter<[1, 'a', 2, true], number> // [1, 2]
+Filter<{ a: 1, b: 'a', c: 2, d: true }, number> // { a: 1, c: 2 }
+```
+`F` can also be a predicate returning either `true` or `false`
+```typescript
+Filter<[1, 'a', 2, true], $IsNumber> // [1, 2]
+Filter<{ a: 1, b: 'a', c: 2, d: true }, $IsNumber> // { a: 1, c: 2 }
+
+interface $IsNumber extends Type<1> {
+    type: this[0] extends number ? true : false
+}
+```
+
+</td></tr><tr><td valign='top'><h6><code>$Filter<&#8288;F></code></td><td>
+
+A free version of `Filter`.
+
+</td></tr><tr><td valign='top'><h6><code>FilterOut<&#8288;T, F></code></td><td>
+
+The exact opposite of Filter.
+
+```typescript
+FilterOut<[1, 'a', 2, true], number> // ['a', true]
+FilterOut<{ a: 1, b: 'a', c: 2, d: true }, number> // { b: 'a', d: true }
+```
+When using a predicate, it is equivalent to calling `Filter` with `$Not<F>`, however I advise against stacking combinators when you have other options.
+```typescript
+FilterOut<[1, 'a', 2, true], $IsNumber> // ['a', true]
+FilterOut<{ a: 1, b: 'a', c: 2, d: true }, $IsNumber> // { b: 'a', d: true }
+```
+
+</td></tr><tr><td valign='top'><h6><code>$FilterOut<&#8288;F></code></td><td>
+
+A free version of `FilterOut`.
+
 </td></tr>
 </table>
 
