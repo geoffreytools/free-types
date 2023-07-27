@@ -1,7 +1,7 @@
 import { test } from 'ts-spec'
 import { A, apply, B, C, partial, Type, $Const } from '../../core'
 import { Flow } from '../../essential/composition/Flow'
-import { Pipe, PipeUnsafe } from '../../essential/composition/Pipe'
+import { Pipe } from '../../essential/composition/Pipe'
 import { $Index, $Prop, $SetIndex, $SetProp } from '../../essential/mappables/accessors'
 import { Ap } from '../../essential/mappables/Ap'
 import { $Fold, Fold } from '../../essential/mappables/Fold'
@@ -175,21 +175,19 @@ interface $Exclaim extends Type<[number]> {
     type: `${A<this>}!`
 }
 // @ts-expect-error: wrong composition is rejected
-type Rejected = Pipe<[TupleInput], [$MapOver<$Prop<'value'>>, $MapOver<$Exclaim>, $Reduce<$Add>]>;
+type Rejected = Pipe<[TupleInput], $MapOver<$Prop<'value'>>, $MapOver<$Exclaim>, $Reduce<$Add>>;
 
-type Ok = Pipe<[[{ value: 1 }, { value: 2 }]], [$MapOver<$Prop<'value'>>, $Reduce<$Add>, $Exclaim]>;
+type Ok = Pipe<[[{ value: 1 }, { value: 2 }]], $MapOver<$Prop<'value'>>, $Reduce<$Add>, $Exclaim>;
+
 
 test('Pipe higher order types composition' as const, t => [
-    t.equal<Pipe<[TupleInput], [$MapOver<$Prop<'value'>>, $Reduce<$Add>]>, 3>(),
-    t.equal<Pipe<[ObjInput], [$MapOver<$Prop<'value'>>, $Reduce<$Add>]>, 3>(),
-    t.equal<Pipe<[TupleInput], [$MapOver<$Prop<'value'>>, $Reduce<$Add>]>, 3>(),
-    t.equal<Pipe<[ObjInput], [$MapOver<$Prop<'value'>>, $Reduce<$Add>]>, 3>(),
-    
-    t.equal<PipeUnsafe<[TupleInput], [$MapOver<$Prop<'value'>>, $Reduce<$Add>]>, 3>(),
-    t.equal<PipeUnsafe<[ObjInput], [$MapOver<$Prop<'value'>>, $Reduce<$Add>]>, 3>(),
-    t.equal<PipeUnsafe<[TupleInput], [$MapOver<$Prop<'value'>>, $Reduce<$Add>]>, 3>(),
-    t.equal<PipeUnsafe<[ObjInput], [$MapOver<$Prop<'value'>>, $Reduce<$Add>]>, 3>(),
+    t.equal<Pipe<[TupleInput], $MapOver<$Prop<'value'>>, $Reduce<$Add>>, 3>(),
+    t.equal<Pipe<[ObjInput], $MapOver<$Prop<'value'>>, $Reduce<$Add>>, 3>(),
+    t.equal<Pipe<[TupleInput], $MapOver<$Prop<'value'>>, $Reduce<$Add>>, 3>(),
+    t.equal<Pipe<[ObjInput], $MapOver<$Prop<'value'>>, $Reduce<$Add>>, 3>(),
 ])
+
+type ff = Pipe<[ObjInput], $MapOver<$Prop<'value'>>, $Reduce<$Add>>
 
 type $Composition1 = Flow<[$MapOver<$Prop<'value', number>>, $Fold<$Add, 0>]>
 type $Composition2 = Flow<[$MapOver<$Prop<'value', number>>, $Fold<$Add, 0>]>

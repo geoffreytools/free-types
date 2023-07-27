@@ -643,26 +643,33 @@ type Foo = apply<$AbsAdd, [1, -2]> // same as apply<$Add, [1, 2]>
 
 Optionally take and index `I` to selectively transform the argument at this position.
 
-</td></tr><tr><td valign='top' width='210'><h6><code>$Arg<&#8288;I></code></td><td>
+</td></tr><tr><td valign='top' width='210'><h6><code>Pipe<&#8288;Args, ...$T[]></code></td><td>
 
-Get the argument at index `I`
-
-</td></tr><tr><td valign='top' width='210'><h6><code>Pipe<&#8288;Args, $T[]></code></td><td>
-
-Apply the composition from left to right of the free types listed in `$T[]` with the arguments list `Args` .
+Pipe the arguments list `Args` through the free types listed in `...$T[]`, from left to right. The composition is limited to 10 free types.
 
 ```typescript
-type Foo = Pipe<[1, 2], [$Add, $Next, $Exclaim]> // 4!
+type Foo = Pipe<[1, 2], $Add, $Next, $Exclaim> // 4!
 ```
 
-</td></tr><tr><td valign='top' width='210'><h6><code>PipeUnsafe<&#8288;Args, $T[]></code></td><td>
-
-The same as `Pipe`, only unsafe. Contrary to the former it can be used with generics:
-
+When the types don't line up, the compiler tells you precisely what went wrong, using the inferred value as a hint:
 ```typescript
-type Works<T extends number> = PipeUsafe<[T], [$Next]>;
-//                                       ---
+type Foo = Pipe<[1, 2], $Add, $Exclaim, $Next,>
+//                                      ~~~~~
+// Type '$Next' does not satisfy the constraint 'Type<["3!"], number>'.
+//   Types of property 'constraints' are incompatible.
+//     Type '[number]' is not assignable to type '["3!"]'.
+//       Type 'number' is not assignable to type '"3!"'.
 ```
+
+When `Args` contains generics, it does its best:
+```typescript
+type Error<T extends number> = Pipe<[T], $Exclaim, $Next>;
+//                                                 ~~~~~
+// Type '$Next' does not satisfy the constraint
+// '_<$Next, "should be", Type<[`${T & string}!` | `${T & number}!`], number>>'
+```
+
+Be careful when using Pipe with a generic: Typescript will eagerly try to expand the type, which can work fine when nesting types for example, but can potentially fail if resolving the generic is required to work out the validity of the composition. Another possibility is that you end up with a huge thunk of nested conditional types waiting to receive a value.
 
 </td></tr><tr><td valign='top'><h6><code>Flow<&#8288;$T[]></code></td><td>
 
@@ -672,6 +679,10 @@ Return the composition from left to right of the free types listed in`$T[]`.
 type $AddNextExclaim = Flow<[$Add, $Next, $Exclaim]>
 type Foo = apply<[1, 2], $AddNextExclaim> // 4!
 ```
+
+</td></tr><tr><td valign='top' width='210'><h6><code>$Arg<&#8288;I></code></td><td>
+
+Get the argument at index `I`
 
 </td></tr>
 </table>

@@ -751,34 +751,22 @@ I don't think this can be fixed on my end, and since the return value is fine, y
 
 #### `Pipe`
 
-The type `Pipe` applies a value to a pipeline of free types.
+`Pipe` threads a value through a pipeline of free types.
 
 Reviving our previous example with `$Sum` and `$GetValues`:
 
 ```typescript
 type Input = [{value: 1}, {value: 2}, {value: 3}];
 
-type Sum = Pipe<[Input], [$MapOver<$Prop<'value'>>, $Reduce<$Add>]>; // 6
+type Sum = Pipe<[Input], $MapOver<$Prop<'value'>>, $Reduce<$Add>>; // 6
 ```
 We avoided nested calls to `apply`:
 ```typescript
 type Intricate = apply<$Reduce<$Add>, [apply<$MapOver<$Prop<'value'>>, [Input]>]> // 6
 ```
 
-`Pipe` has a little problem though: it won't type check if the input is a generic
+There exists compositions over generics that `Pipe` cannot express, because `Pipe` is eager (see [documentation](./Documentation.md/#pipeargs-t)).
 
-```typescript
-type NotOK<T extends number> = Pipe<[T], [$Next]>;
-//         ^                         ^   ~~~~~~~
-//                                    cryptic error
-```
-I don't know how to deal with this problem yet. In the meantime I suggest you use `PipeUnsafe` in such situations.
-
-```typescript
-type OK<T extends number> = PipeUsafe<[T], [$Next]>;
-```
-
-If you are not satisfied with this state of affairs, you can use `Flow` instead which does work with generics.
 #### `Flow`
 
 `Flow` takes a list of free types and returns their composition:
@@ -790,7 +778,10 @@ type $SumValues = Flow<[$MapOver<$Prop<'value', number>>, $Fold<$Add, 0>]>
 type Input = [{value: 1}, {value: 2}, {value: 3}, {value: 4}];
 type Result = apply<$SumValues, [Input]> // 10
 ```
-As you can tell, we didn't use the same types as with `Pipe`. This is because `Flow` doesn't know which input is going to flow in and would reject our composition as it was:
+
+It enables you to express those compositions `Pipe` struggles with.
+
+`Flow` also removes the need to repeat type constraints since it is point free, although as you can tell, it requires more annotations than `Pipe`. This is because `Flow` doesn't know which input is going to flow in. It would reject our previous composition:
 
 ```typescript
 type Rejected = Flow<[$MapOver<$Prop<'value'>>, $Reduce<$Add>]>
@@ -807,7 +798,7 @@ type Rejected = Flow<[$MapOver<$Prop<'value'>>, $Reduce<$Add>]>
 //                   Source provides no match for required element at position 0 in target
 ```
 
-For your confort I suggest you inspect the signature of your types with `Signature` when you want to debug a composition:
+For your comfort I suggest you inspect the signature of your types with `Signature` when you want to debug a composition:
 
 ```typescript
 type Signatures = Signature<[$MapOver<$Prop<'value'>>, $Reduce<$Add>]>

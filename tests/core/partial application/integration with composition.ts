@@ -4,48 +4,51 @@ import { $Rest } from '../../../essential/adapters/$Rest';
 import { Flow } from '../../../essential/composition/Flow';
 import { Pipe } from '../../../essential/composition/Pipe';
 
-type Control = [free.Promise, free.Array, free.Set];
+/** Control without partial application */
+type C = [free.Promise, free.Array, free.Set];
+type $C = Flow<C>;
 
-type SimpleComp = [
+/** Simple composition */
+type S = [
     free.Promise,
     partialRight<free.Map, ['foo']>,
     free.Set
 ];
+type $S = Flow<S>;
 
-type IntermediaryComp = [
+/** Intermediary composition */
+type I = [
     free.Promise,
     partial<free.Function, [['foo']]>,
     free.Set
 ];
+type $I = Flow<I>;
 
-type ComplexComp = [
+/** complex composition */
+type H = [
     free.Promise,
     $Rest<partialRight<free.Function, ['foo']>, 1>,
     free.Set
 ];
-
-type $Control = Flow<Control>;
-type $SimpleComp = Flow<SimpleComp>;
-type $IntermediaryComp = Flow<IntermediaryComp>;
-type $ComplexComp = Flow<ComplexComp>;
+type $H = Flow<H>;
 
 test('Flow compiles' as const, t => [
-    t.not.never<Flow<Control>>(),
-    t.not.never<Flow<SimpleComp>>(),
-    t.not.never<Flow<IntermediaryComp>>(),
-    t.not.never<Flow<ComplexComp>>()
+    t.not.never<Flow<C>>(),
+    t.not.never<Flow<S>>(),
+    t.not.never<Flow<I>>(),
+    t.not.never<Flow<H>>()
 ])
 
 test('partial with Pipe' as const, t => [
-    t.equal<Pipe<[1], Control>, Set<Promise<1>[]>>(),
-    t.equal<Pipe<[1], SimpleComp>, Set<Map<Promise<1>, "foo">>>(),
-    t.equal<Pipe<[1], IntermediaryComp>, Set<(a: 'foo') => Promise<1>>>(),
-    t.equal<Pipe<[1], ComplexComp>, Set<(a: Promise<1>) => "foo">>(),
+    t.equal<Pipe<[1], C[0], C[1], C[2]>, Set<Promise<1>[]>>(),
+    t.equal<Pipe<[1], S[0], S[1], S[2]>, Set<Map<Promise<1>, "foo">>>(),
+    t.equal<Pipe<[1], I[0], I[1], I[2]>, Set<(a: 'foo') => Promise<1>>>(),
+    t.equal<Pipe<[1], H[0], H[1], H[2]>, Set<(a: Promise<1>) => "foo">>(),
 ])
 
 test('partial with Flow' as const, t => [
-    t.equal<apply<$Control, [1]>, Set<Promise<1>[]>>(),
-    t.equal<apply<$SimpleComp, [1]>, Set<Map<Promise<1>, "foo">>>(),
-    t.equal<apply<$IntermediaryComp, [1]>, Set<(a: 'foo') => Promise<1>>>(),
-    t.equal<apply<$ComplexComp, [1]>, Set<(a: Promise<1>) => "foo">>(),
+    t.equal<apply<$C, [1]>, Set<Promise<1>[]>>(),
+    t.equal<apply<$S, [1]>, Set<Map<Promise<1>, "foo">>>(),
+    t.equal<apply<$I, [1]>, Set<(a: 'foo') => Promise<1>>>(),
+    t.equal<apply<$H, [1]>, Set<(a: Promise<1>) => "foo">>(),
 ])

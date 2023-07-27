@@ -1,5 +1,5 @@
 import { apply, partial, partialRight, PartialRight, Type } from "free-types-core"
-import { Next } from "free-types-core/dist/utils"
+import { TrimArgs } from "../utils"
 import { PartialSparse, _partial } from "../_partial"
 
 export type $OptionalFlip<
@@ -36,13 +36,3 @@ interface Branch<
     apply: apply<$T, Args>
     partial: partial<$T, Args>
 }
-
-type TrimArgs<
-    T extends unknown[],
-    I extends number = 0,
-    R extends unknown[] = []
-> = unknown[] extends T ? unknown[]
-    : I extends T['length'] ? R
-    : [T[I]] extends [never] ? R
-    : TrimArgs<T, Next<I>, [T[I]] extends [never] ? R : [...R, T[I]]>
-
