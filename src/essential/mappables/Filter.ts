@@ -13,8 +13,8 @@ interface $NotExtends<F> extends Type<1> {
 }
 
 type Filter<T extends Mappable, F> = T extends any[]
-    ? FilterTuple<T, F extends Type ? F : $Extends<F>>
-    : FilterObj<T, F extends Type ? F : $Extends<F>>
+    ? FilterTuple<T, [F] extends [Type] ? F : $Extends<F>>
+    : FilterObj<T, [F] extends [Type] ? F : $Extends<F>>
 
 type FilterTuple<T extends any[], $F extends Type, I extends number = 0, R extends any[] = []> =
     I extends T['length'] ? R

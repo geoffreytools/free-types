@@ -33,3 +33,8 @@ test('FilterOut object', t => [
     t.equal<apply<$FilterOut<number>, [MixedObj]>,{ b: 'a', d: true, f: symbol }>(),
     t.equal<FilterOut<MixedObj, number>,{ b: 'a', d: true, f: symbol }>()
 ])
+
+test('Filter unions', t => [
+    t.equal<Filter<MixedTuple, 1 | 2>, [1, 2]>(),
+    t.equal<Filter<MixedObj, 'a' | true>, { b: 'a', d: true }>()
+])
