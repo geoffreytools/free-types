@@ -63,3 +63,14 @@ type TrimArgs<
     : [T[I]] extends [never] ? R
     : TrimArgs<T, Next<I>, [T[I]] extends [never] ? R : [...R, T[I]]>
 
+// Structs
+
+export { StructFromUnion, StructFromTuple }
+
+type StructFromUnion<T extends readonly [PropertyKey, unknown] = [string, unknown]> = unknown & {
+    [K in T[0]]: T[1]
+}
+
+type StructFromTuple<T extends readonly (readonly [PropertyKey, unknown])[]> = {
+    [K in keyof T & `${number}` as T[K][0]]: T[K][1]
+}

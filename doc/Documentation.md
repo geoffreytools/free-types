@@ -1063,6 +1063,34 @@ FilterOut<{ a: 1, b: 'a', c: 2, d: true }, $IsNumber> // { b: 'a', d: true }
 
 A free version of `FilterOut`.
 
+</td></tr><tr><td valign='top'><h6><code>GroupBy<&#8288;T, $F></code></td><td>
+
+Partition the tuple `T` into sub-tuples and store the result in a Struct where the keys and the groups are decided by calling the predicate `$P` of type `Type<1, PropertyKey>` on each element of `T`
+
+```typescript
+type NumericList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+type Numbers = NumericList[number];
+
+interface $Sizes extends Type<[Numbers], string> {
+    type: this[0] extends 0 ? 'null'
+        : this[0] extends 1|2|3 ? 'small'
+        : this[0] extends 4|5|6 ? 'medium'
+        : 'big'
+}
+
+type GroupedBySize = GroupBy<NumericList, $Sizes>;
+// {
+//     null: [0],
+//     small: [1, 2, 3],
+//     medium: [4, 5, 6],
+//     big: [7, 8, 9]
+// }
+```
+
+</td></tr><tr><td valign='top'><h6><code>$GroupBy<&#8288;$P></code></td><td>
+
+A free version of `GroupBy`
+
 </td></tr>
 </table>
 
