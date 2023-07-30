@@ -1,6 +1,6 @@
 import { Type, apply } from "free-types-core";
 import { test } from 'ts-spec';
-import { GroupBy, $GroupBy } from "../../../essential/mappables/GroupBy";
+import { GroupBy, $GroupBy, GroupUnionBy, $GroupUnionBy, MapOver, $Index } from "../../../essential/mappables";
 
 type OddNumbers = 1 | 3 | 5 | 7 | 9
 type EvenNumbers = 0 | 2 | 4 | 6 | 8
@@ -40,3 +40,21 @@ test('arbitrary number of groups', t => [
     t.equal<GroupBy<NumericList, $Sizes>, SizesGroups>(),
     t.equal<apply<$GroupBy<$Sizes>, [NumericList]>, SizesGroups>()
 ])
+
+type ParityGroupsU =  MapOver<ParityGroups, $Index<number>>;
+
+test('unions: 2 groups', t => [
+    t.equal<GroupUnionBy<Numbers, $Parity>, ParityGroupsU>(),
+    t.equal<apply<$GroupUnionBy<$Parity>, [Numbers]>, ParityGroupsU>()
+])
+
+
+type SizesGroupsU= MapOver<SizesGroups, $Index<number>>;
+
+test('unions: arbitrary number of groups', t => [
+    t.equal<GroupUnionBy<Numbers, $Sizes>, SizesGroupsU>(),
+    t.equal<apply<$GroupUnionBy<$Sizes>, [Numbers]>, SizesGroupsU>(),
+])
+
+
+type a = $GroupUnionBy<$Sizes>['type'];

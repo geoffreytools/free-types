@@ -1091,6 +1091,26 @@ type GroupedBySize = GroupBy<NumericList, $Sizes>;
 
 A free version of `GroupBy`
 
+</td></tr><tr><td valign='top'><h6><code>GroupUnionBy<&#8288;T, $P></code></td><td>
+
+Identical to `GroupBy`, but for unions
+
+```typescript
+type Numbers = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
+
+type GroupedBySize = GroupBy<Numbers, $Sizes>;
+// {
+//     null: 0,
+//     small: 1 | 2 | 3,
+//     medium: 4 | 5 | 6,
+//     big: 7 | 8 | 9
+// }
+```
+
+</td></tr><tr><td valign='top'><h6><code>$GroupUnionBy<&#8288;$P></code></td><td>
+
+A free version of `GroupByUnion`
+
 </td></tr>
 </table>
 

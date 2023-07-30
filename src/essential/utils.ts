@@ -65,11 +65,18 @@ type TrimArgs<
 
 // Structs
 
-export { StructFromUnion, StructFromTuple }
+export { StructFromUnion, StructFromTuple, PickEntryFromUnion }
 
-type StructFromUnion<T extends readonly [PropertyKey, unknown] = [string, unknown]> = unknown & {
-    [K in T[0]]: T[1]
+type Entry = readonly [PropertyKey, unknown];
+
+type StructFromUnion<T extends Entry = [string, unknown]> = unknown & {
+    [K in T[0]]: PickEntryFromUnion<T, K>[1];
 }
+
+type PickEntryFromUnion<T extends Entry, Key extends PropertyKey> =
+    T extends any ? T[0] extends Key ? T : never : never;
+
+type A = StructFromUnion<["foo", 0] | ["bar", 1]>
 
 type StructFromTuple<T extends readonly (readonly [PropertyKey, unknown])[]> = {
     [K in keyof T & `${number}` as T[K][0]]: T[K][1]
