@@ -42,7 +42,15 @@ test('Show known class' as const, t => [
 ])
 
 test('Show union' as const, t => [
-    t.equal<Show<1 | 2 | 3>, '(1 | 2 | 3)'>(),
+    t.extends<
+        Show<1 | 2 | 3>,
+        | '(1 | 2 | 3)'
+        | '(1 | 3 | 2)'
+        | '(2 | 3 | 1)' 
+        | '(2 | 1 | 3)'
+        | '(3 | 1 | 2)'
+        | '(3 | 2 | 1)'
+    >(),
 ])
 
 test('Show deeply nested type' as const, t =>
