@@ -1,6 +1,7 @@
-import { Type, apply } from "free-types-core";
+import { Type, apply, A, B } from "free-types-core";
 import { test } from 'ts-spec';
 import { GroupBy, $GroupBy, GroupUnionBy, $GroupUnionBy, MapOver, $Index } from "../../../essential/mappables";
+import { Add } from "../../../utility-types";
 
 type OddNumbers = 1 | 3 | 5 | 7 | 9
 type EvenNumbers = 0 | 2 | 4 | 6 | 8
@@ -56,5 +57,18 @@ test('unions: arbitrary number of groups', t => [
     t.equal<apply<$GroupUnionBy<$Sizes>, [Numbers]>, SizesGroupsU>(),
 ])
 
+type SizesGroupsL= {
+    null: 1;
+    small: 5 | 4 | 6;
+    medium: 7 | 9 | 8;
+    big: 10 | 11 | 12;
+};
 
-type a = $GroupUnionBy<$Sizes>['type'];
+test('unions: Transforms', t => [
+    t.equal<GroupUnionBy<Numbers, $Sizes, $AddLen>, SizesGroupsL>(),
+    t.equal<apply<$GroupUnionBy<$Sizes, $AddLen>, [Numbers]>, SizesGroupsL>(),
+])
+
+interface $AddLen extends Type<[number, number]> {
+    type: Add<A<this>, B<this>>
+}

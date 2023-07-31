@@ -1065,7 +1065,7 @@ A free version of `FilterOut`.
 
 </td></tr><tr><td valign='top'><h6><code>GroupBy<&#8288;T, $F></code></td><td>
 
-Partition the tuple `T` into sub-tuples and store the result in a Struct where the keys and the groups are decided by calling the predicate `$P` of type `Type<1, PropertyKey>` on each element of `T`
+Partition the tuple `T` into sub-tuples and store the result in a Struct. The name and composition of the groups is decided by calling the predicate `$P` of type `Type<[member: unknown], PropertyKey>` on each element of `T`.
 
 ```typescript
 type NumericList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
@@ -1091,14 +1091,22 @@ type GroupedBySize = GroupBy<NumericList, $Sizes>;
 
 A free version of `GroupBy`
 
-</td></tr><tr><td valign='top'><h6><code>GroupUnionBy<&#8288;T, $P></code></td><td>
+</td></tr><tr><td valign='top'><h6><code>GroupUnionBy<&#8288;T, $P, $T></code></td><td>
 
-Identical to `GroupBy`, but for unions
+
+Partition the union `U` into sub-unions and store the result in a Struct. The name and composition of the groups is decided by calling the predicate `$P` of type `Type<[member: unknown], PropertyKey>` on each member of `U`.
 
 ```typescript
 type Numbers = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 
-type GroupedBySize = GroupBy<Numbers, $Sizes>;
+interface $Sizes extends Type<[Numbers], string> {
+    type: this[0] extends 0 ? 'null'
+        : this[0] extends 1|2|3 ? 'small'
+        : this[0] extends 4|5|6 ? 'medium'
+        : 'big'
+}
+
+type GroupedBySize = GroupByUnion<Numbers, $Sizes>;
 // {
 //     null: 0,
 //     small: 1 | 2 | 3,
@@ -1107,9 +1115,25 @@ type GroupedBySize = GroupBy<Numbers, $Sizes>;
 // }
 ```
 
-</td></tr><tr><td valign='top'><h6><code>$GroupUnionBy<&#8288;$P></code></td><td>
+Optionally take a transfrom `$T` of type `Type<[union: unknown, length?: number]>` to map over the sub-unions as they are inserted. `$T` exposes the length of the sub-union as a second optional parameter.
 
-A free version of `GroupByUnion`
+```typescript
+type GroupedBySize = GroupBy<Numbers, $Sizes, $Addlen>;
+// {
+//     null: 1,
+//     small: 4 | 5 | 6,
+//     medium: 7 | 8 | 9,
+//     big: 10 | 11 | 12
+// }
+
+interface $AddLen extends $Transform {
+    type: Add<this[0], this[1]>
+}
+```
+
+</td></tr><tr><td valign='top'><h6><code>$GroupUnionBy<&#8288;$P, $T></code></td><td>
+
+A free version of `GroupUnionBy`
 
 </td></tr>
 </table>

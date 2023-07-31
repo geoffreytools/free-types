@@ -76,8 +76,6 @@ type StructFromUnion<T extends Entry = [string, unknown]> = unknown & {
 type PickEntryFromUnion<T extends Entry, Key extends PropertyKey> =
     T extends any ? T[0] extends Key ? T : never : never;
 
-type A = StructFromUnion<["foo", 0] | ["bar", 1]>
-
 type StructFromTuple<T extends readonly (readonly [PropertyKey, unknown])[]> = {
     [K in keyof T & `${number}` as T[K][0]]: T[K][1]
 }
