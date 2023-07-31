@@ -1,6 +1,6 @@
 # free-types
 
-[free-types](../README.md) | [Documentation](./Documentation.md) | **[Guide](./Guide.md)** | [Algebraic data types](./ADTs.md)
+[free-types](../README.md) | [Use Cases](./UseCases.md) | [Documentation](./Documentation.md) | **[Guide](./Guide.md)** | [Algebraic data types](./ADTs.md)
 
 # Guide
 
