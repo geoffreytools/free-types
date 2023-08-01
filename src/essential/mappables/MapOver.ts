@@ -2,25 +2,22 @@ import { Type, apply } from 'free-types-core/dist/';
 import { Tuple as CreateTuple } from 'free-types-core/dist/utils';
 import { $Constrain } from '../adapters/$Constrain';
 import { Mappable, Obj } from './common';
-import { IterativeObjMap, IterativeTupleMap } from './IterativeMap';
-import { RecursiveTupleMap } from './RecursiveTupleMap';
+import { MapOver as MapOverTuple } from '../Tuple/MapOver'
+import { PreserveReadonly } from '../Tuple/common'
 
 export { MapOver, $MapOver }
 
 type Tuple = readonly [] | readonly [unknown, ...(readonly unknown[])]
-type IsOpenTuple<T extends Tuple> = number extends T['length'] ? true : false
 
 type MapOver<T extends Mappable<$T['constraints'][0]>, $T extends Type<1|2>> =
-    T extends readonly unknown[] ? MapArray<T, $T>
-    : T extends Obj ? IterativeObjMap<T, $T>
+    T extends readonly unknown[]
+    ? T extends Tuple
+        ? MapOverTuple<T, $T>
+        : PreserveReadonly<T, apply<$T, [T[0]]>[]>
+    : T extends Obj ? {
+        [K in keyof T]: apply<$T, [T[K], K]>
+    }
     : T
-
-type MapArray<T extends readonly unknown[], $T extends Type> =
-    T extends Tuple
-    ? IsOpenTuple<T> extends true
-        ? IterativeTupleMap<T, $T>
-        : RecursiveTupleMap<T, $T>
-    : apply<$T, [T[0]]>[] extends infer R ? T extends unknown[] ? R : Readonly<R> : never
 
 interface _$MapOver<$T extends Type<1|2>> extends Type {
     type: this[0] extends this['constraints'][0]

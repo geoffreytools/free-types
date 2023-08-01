@@ -1,19 +1,15 @@
-import { Type, apply, A, At } from 'free-types-core/dist/';
-import { Next } from 'free-types-core/dist/utils';
+import { Type, A, At } from 'free-types-core/dist/';
 import { Mappable } from './common';
 import { Object2Tuple } from './Object2Tuple';
+import { _Fold as FoldTuple } from '../Tuple/Fold'
 
 export type Fold<
     T extends Mappable<$T['constraints'][1]>,
     Init extends $T['constraints'][0] & $T['type'],
-    $T extends Type<2>,
-    Acc extends unknown = Init,
-    I extends number = 0
-> = T extends unknown[] ? (
-        I extends T['length'] ? Acc
-        : Fold<T, Init, $T, apply<$T, [Acc, T[I]]>, Next<I>>
-    )
-    : Fold<Object2Tuple<T>, Init, $T>;
+    $T extends Type<2>
+> = T extends readonly unknown[] ?
+        FoldTuple<T, Init, $T>
+        : Fold<Object2Tuple<T>, Init, $T>;
 
 export interface $Fold<$T extends Type<2>, Init extends $T['constraints'][0]>
     extends Type<1> {

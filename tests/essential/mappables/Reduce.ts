@@ -36,7 +36,8 @@ test('Reduce works on objects' as const, t => [
     t.equal<Reduce<{a: 1}, $Add>, 1>(),
     t.equal<Reduce<{a: 1, b: 2}, $Add>, 3>(),
     t.equal<Reduce<{a: 1, b: 2, c: 3}, $Add>, 6>(),
-    t.equal<Reduce<{a: 1, b: 2, c: 3, d: 4}, $Add>, 10>()
+    t.equal<Reduce<{a: 1, b: 2, c: 3, d: 4}, $Add>, 10>(),
+    t.equal<Reduce<{a: 1, b: 2, c: 3, d: 4, e: 4}, $Add>, 14>()
 ])
 
 {
