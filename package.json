@@ -33,6 +33,7 @@
     },
     "scripts": {
         "test": "npm run build && tsc",
+        "test watch": "tsc --watch",
         "build": "tsc -p ./tsconfig-build.json",
         "build watch": "tsc -p ./tsconfig-build.json --watch",
         "trace": "bash ./node_modules/ts-trace/ts-trace.sh -i ./tsconfig-trace"
