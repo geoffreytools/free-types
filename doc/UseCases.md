@@ -134,7 +134,7 @@ type GetPaths<T, Needle, Limit extends number, Acc extends unknown[][] = []> =
 
     : NOT_FOUND;
 ```
-You can tell that I invoke some kind of constructors for each special case, taking `T` as an argument. Here is what their definitions look like:
+You can tell that I invoke some kind of constructor for each special case, taking `T` as an argument. Here is what their definitions look like:
 
 ```typescript
 interface $Array<T extends readonly unknown[]> extends $Iterator {
@@ -180,7 +180,7 @@ type $Iterator = {
 
 type $Accessor<R = unknown> = Type<[number], R>;
 ```
-As you can tell, work is performed in the "constructor" via a second parameter. I could also have used an additional field.
+Work is sometimes performed in the "constructor" via a second parameter. I could also have used an additional field.
 
 Each of the classes implement their own `$GetValue`, `$GetPath` and `$Done` methods (with occasional sharing).
 
