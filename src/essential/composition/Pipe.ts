@@ -33,7 +33,7 @@ export type Pipe<
     RH = apply<H, [RG]>,
     RI = apply<I, [RH]>,
     RJ = apply<J, [RI]>
-> = Result<[RA, RB, RC, RD, RE, RF, RG, RH, RI, RJ]>;
+> = A extends A ? Result<[RA, RB, RC, RD, RE, RF, RG, RH, RI, RJ]> : never;
 
 type Result<Results extends unknown[]> = Last<TrimArgs<Results>>;
 
