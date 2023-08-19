@@ -1,37 +1,46 @@
 import { Type, Next, apply } from "free-types-core"
-import { PreserveReadonly, Tuple } from "./common";
+import { IsTruthy } from "../../utility-types/logic/Refinement";
+import { GetOrElse } from "../utils";
+import { Input, Output, Fallback } from "./common";
 export { Filter, $Filter, FilterOut, $FilterOut }
 
-interface $Filter<F> extends Type<[Tuple]> {
-    type: this[0] extends this['constraints'][0]
-        ? Filter<this[0], F>
-        : this['constraints'][0]
+type Refined<F> = [F] extends [Type] ? F['type'] : F ;
+
+interface $Filter<F extends Model, Model = F> extends Type<[Input]> {
+    type: this[0] extends Input
+        ? Filter<this[0], F, Model>
+        : Output<Refined<Model>>
 }
 
-type Filter<T extends readonly unknown[], F> =
-    [F] extends [Type] ? FilterPredicate<T, F> : FilterValue<T, F>
+type Filter<T extends readonly unknown[], F, Model = F> = (
+    [F] extends [Type]
+    ? FilterRefinement<T, F>
+    : FilterValue<T, F>
+) extends infer R extends Fallback<T, Refined<Model>> ? R : never
 
-type FilterPredicate<
+type FilterRefinement<
     T extends readonly unknown[],
     $F extends Type,
+    Readonly = T extends unknown[] ? false : true,
     I extends number = 0,
-    R extends unknown[] = [],
+    R extends readonly unknown[] = [],
     P = apply<$F, [T[I]]>
 > = I extends T['length'] ? R
-    : FilterPredicate<T, $F, Next<I>, P extends true ? [...R, T[I]] : R>
+    : FilterRefinement<T, $F, Readonly, Next<I>, IsTruthy<P> extends true ? Readonly extends true ? readonly [...R, T[I]] : [...R, T[I]] : R>
 
 type FilterValue<
     T extends readonly unknown[],
-    F,
+    $F,
+    Readonly = T extends unknown[] ? false : true,
     I extends number = 0,
-    R extends unknown[] = [],
-> = I extends T['length'] ? PreserveReadonly<T, R>
-    : FilterValue<T, F, Next<I>, [T[I]] extends [F] ? [...R, T[I]] : R>
+    R extends readonly unknown[] = [],
+> = I extends T['length'] ? R
+    : FilterValue<T, $F, Readonly, Next<I>, [T[I]] extends [$F] ? Readonly extends true ? readonly [...R, T[I]] : [...R, T[I]] : R>
 
-interface $FilterOut<F> extends Type<[Tuple]> {
-    type: this[0] extends this['constraints'][0]
-        ? FilterOut<this[0], F>
-        : this['constraints'][0]
+interface $FilterOut<F, Remaining = unknown> extends Type<[Input]> {
+    type: this[0] extends Input
+        ? GetOrElse<FilterOut<this[0], F>, Output<Remaining>>
+        : Output<Remaining>
 }
 
 type FilterOut<T extends readonly unknown[], F> =
@@ -44,12 +53,12 @@ type FilterOutPredicate<
     R extends unknown[] = [],
     P = apply<$F, [T[I]]>
 > = I extends T['length'] ? R
-    : FilterOutPredicate<T, $F, Next<I>, P extends false ? [...R, T[I]] : R>
+    : FilterOutPredicate<T, $F, Next<I>, IsTruthy<P> extends false ? [...R, T[I]] : R>
 
 type FilterOutValue<
     T extends readonly unknown[],
     F,
     I extends number = 0,
     R extends unknown[] = [],
-> = I extends T['length'] ? PreserveReadonly<T, R>
+> = I extends T['length'] ? R
     : FilterOutValue<T, F, Next<I>, [T[I]] extends [F] ? R : [...R, T[I]]>

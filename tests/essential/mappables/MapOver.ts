@@ -1,7 +1,26 @@
 import { test } from 'ts-spec'
-import { apply } from 'free-types-core';
-import { $MapOver, MapOver } from '../../../essential/mappables/MapOver'
-import { $Next } from '../../../utility-types/arithmetic'
+import { apply, Type, Checked, A } from 'free-types-core';
+import { $MapOver, MapOver } from '../../../src/essential/mappables/MapOver'
+import { $Next } from '../../../src/utility-types/arithmetic'
+
+type ExpectNumericArr<T extends readonly number[]> = T;
+
+// Accept generic return type
+{type Gen<T extends number[]> = ExpectNumericArr<MapOver<T, Type<[number], number>>>}
+
+// @ts-expect-error: type check generic return type
+{type Gen<T extends number[]> = ExpectNumericArr<MapOver<T, Type<[number], string>>>}
+
+interface $AcceptImplicit extends Type<[number[]], number[]> {
+    // Accept implicit return type
+    type: MapOver<Checked<A, this>, $Next>
+}
+
+//@ts-expect-error: type check implicit return type
+interface $RejectImplicit extends Type<[number[]], string[]> {
+    type: MapOver<Checked<A, this>, $Next>
+}
+
 
 test('work on tuples' as const, t => [
     t.equal<MapOver<[1,2,3], $Next>, [2,3,4]>(),

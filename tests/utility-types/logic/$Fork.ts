@@ -19,7 +19,7 @@ test('$Join right branch' as const, t =>
 test('Default constraints are the union of the constraints of $P, $A and $B' as const, t =>
     t.equal<
         $Join<''>['constraints'],
-        [Mappable<unknown> | NonEmptyMappable<Showable>]
+        unknown[] & ([Mappable<unknown>] | [NonEmptyMappable<Showable>])
     >()
 )
 

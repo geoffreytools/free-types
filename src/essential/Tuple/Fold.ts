@@ -1,17 +1,17 @@
 import { Type, apply } from 'free-types-core/dist/';
 import { Next } from 'free-types-core/dist/utils';
-import { Tuple } from './common';
+import { Input } from './common';
 
 export interface $Fold<$T extends Type<2>, Init extends $T['constraints'][0]>
     extends Type<1> {
         type: this[0] extends this['constraints'][0]
             ? _Fold<this[0], Init, $T>
             : $T['type']
-        constraints: [Tuple<$T['constraints'][1]>]
+        constraints: [Input<$T['constraints'][1]>]
     }
 
 export type Fold<
-    T extends Tuple<$T['constraints'][1]>,
+    T extends Input<$T['constraints'][1]>,
     Init extends $T['constraints'][0] & $T['type'],
     $T extends Type<2>,
 > = _Fold<T, Init, $T>

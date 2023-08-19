@@ -25,9 +25,10 @@ type Compute<T> = { [K in keyof T]: T[K] } & unknown
 
 // Logic
 
-export { Assert, And, Or, Not };
+export { Assert, GetOrElse, And, Or, Not,  };
 
 type Assert<T, U> = [T] extends [U] ? T : never;
+type GetOrElse<T, U> = [T] extends [U] ? T : U;
 type And<A, B> = A extends false ? false : B extends false ? false : B;
 type Or<A, B> = A extends false ? B extends false ? false : B : A;
 type Not<T> = [T] extends [false] ? true : false

@@ -1023,29 +1023,58 @@ A free version of `Match`.
 
 > Some checks like exhaustiveness become opt-in by supplying `M`
 
-</td></tr><tr><td valign='top'><h6><code>Filter<&#8288;T, F></code></td><td>
+</td></tr><tr><td valign='top'><h6><code>Filter<&#8288;T, F, Model?></code></td><td>
 
-Filter the mappable `T` by the value `F`.
+Filter the mappable `T` by the refinement `F`.
 
 ```typescript
 Filter<[1, 'a', 2, true], number> // [1, 2]
 Filter<{ a: 1, b: 'a', c: 2, d: true }, number> // { a: 1, c: 2 }
 ```
-`F` can also be a predicate returning either `true` or `false`
+
+`F` can also be a predicate returning either the refined type or `never` if you need to run arbitrary logic:
 ```typescript
 Filter<[1, 'a', 2, true], $IsNumber> // [1, 2]
 Filter<{ a: 1, b: 'a', c: 2, d: true }, $IsNumber> // { a: 1, c: 2 }
 
 interface $IsNumber extends Type<1> {
-    type: this[0] extends number ? true : false
+    type: this[0] extends number ? number : never
 }
-```
 
-</td></tr><tr><td valign='top'><h6><code>$Filter<&#8288;F></code></td><td>
+```
+See `$Filter` for more information about refinements and `Model`.
+
+</td></tr><tr><td valign='top'><h6><code>$Filter<&#8288;F, Model?></code></td><td>
 
 A free version of `Filter`.
 
-</td></tr><tr><td valign='top'><h6><code>FilterOut<&#8288;T, F></code></td><td>
+Refinements narrow the advertised return type, which is useful when composing transformations:
+
+```typescript
+type Narrowed = Flow<
+    $Filter<number>,
+    $MapOver<$Next>, // we know we have a `number`
+>
+
+type Narrowed<T extends (number | string)[]> = Pipe<
+    [T],
+    $Filter<number>,
+    $MapOver<$Next>,
+>
+```
+
+If the refinement is generic and you have trouble composing `$Filter`, you can annotate it with a `Model`:
+
+```typescript
+type Narrowed<T extends number[]> = Pipe<
+    [T],
+    $Filter<Last<T> | 10, number>,
+    //                    ------
+    $MapOver<$Next>
+>
+```
+
+</td></tr><tr><td valign='top'><h6><code>FilterOut<&#8288;T, F, Model?></code></td><td>
 
 The exact opposite of Filter.
 
@@ -1059,7 +1088,7 @@ FilterOut<[1, 'a', 2, true], $IsNumber> // ['a', true]
 FilterOut<{ a: 1, b: 'a', c: 2, d: true }, $IsNumber> // { b: 'a', d: true }
 ```
 
-</td></tr><tr><td valign='top'><h6><code>$FilterOut<&#8288;F></code></td><td>
+</td></tr><tr><td valign='top'><h6><code>$FilterOut<&#8288;F, Model?></code></td><td>
 
 A free version of `FilterOut`.
 
