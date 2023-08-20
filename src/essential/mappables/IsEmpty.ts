@@ -1,10 +1,11 @@
 import { Type } from 'free-types-core';
-import { ArrayKeys } from 'free-types-core/dist/utils';
 import { Mappable } from './common';
 
 export { IsEmpty, $IsEmpty }
 
-type IsEmpty<T> = Exclude<keyof T, ArrayKeys> extends never ? true : false
+type IsEmpty<T> = T extends readonly unknown[]
+    ? T extends [] ? true : false
+    : [keyof T] extends [never] ? true : false;
 
 interface $IsEmpty extends Type<[Mappable]> {
     type : IsEmpty<this[0]>

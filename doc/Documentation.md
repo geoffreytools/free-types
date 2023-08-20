@@ -848,7 +848,7 @@ type Bar = Ap<{a: $Next, b: $Prev}, {a: 2, b: 2}> // {a: 3, b: 1}
 
 When the keys mismatch, supernumerary elements in `$Ts` are dropped and supernumerary elements in `Ts` are left unchanged.
 
-</td></tr><tr><td valign='top'><h6><code>Reduce<&#8288;T, $T></code></td><td>
+</td></tr><tr><td valign='top'><h6><code>Reduce<&#8288;T, $T, Check?></code></td><td>
 
 Consume the mappable `T` by recursively applying the binary free type `$T` with elements of `T`. The return value of each iteration becomes the first argument (accumulator) of the next iteration.
 
@@ -860,6 +860,13 @@ type Bar = Reduce<{ a: 1, b: 2, c: 3, d: 4 }, $Add>; // 10
 - `T` must be of type ` [A, ...A[]] | { [k: string|number|symbol]: A }`.
 
 > When `T` is an object type, `$T` **has to be** associative and commutative, because the ordering of values is not guaranteed. For example, `Reduce<T, $Add>` can safely be used with objects and tuples, but `Reduce<T, $Subtract>` can only be used with tuples.
+
+When `T` is a generic object, TS will fail to check whether it's empty or not and reject even valid inputs. You can satisfy the type checker by passing the constraint as a third parameter, or turn it off by passing `any` or `unknown`:
+
+```typescript
+type EdgeCase<T extends { foo: number }> = Reduce<T, $Add, { foo: number }>
+//                                                          -------------
+```
 
 </td></tr><tr><td valign='top'><h6><code>$Reduce<&#8288;$T></code></td><td>
 

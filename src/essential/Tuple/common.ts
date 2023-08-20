@@ -4,6 +4,7 @@ export type Input<T = unknown> = readonly (T | undefined)[]
 export type Output<T = unknown> = (T | undefined)[]
 
 export type NonEmptyTuple<T = unknown> = readonly [T, ...(readonly T[])];
+export type NonEmptyInput<T = unknown> = readonly [T, ...(readonly(T | undefined)[])]
 
 export type PreserveReadonly<T, R extends readonly unknown[]> = T extends unknown[] ? R : readonly [...R];
 
