@@ -1,9 +1,9 @@
 import { test } from 'ts-spec'
-import { apply, partial } from '../../../core'
-import { Flow } from '../../../essential/composition/Flow'
-import { $Index, $SetIndex, $SetProp } from '../../../essential/mappables/accessors'
-import { $MapOver } from '../../../essential/mappables/MapOver'
-import { $Next } from '../../../utility-types/arithmetic'
+import { apply, partial } from 'free-types-core'
+import { Flow } from '../../../src/essential/composition/Flow'
+import { $Index, $SetIndex, $SetProp } from '../../../src/essential/mappables/accessors'
+import { $MapOver } from '../../../src/essential/mappables/MapOver'
+import { $Next } from '../../../src/utility-types/arithmetic'
 
 test('$Index' as const, t => [
     t.equal<apply<$Index<0>, [[string, number]]>, string>(),

@@ -1,49 +1,37 @@
 import { Type, apply } from 'free-types-core';
-import { IsOptional, Tuple, Next } from 'free-types-core/dist/utils';
-import { Input, Output, Fallback } from './common';
+import * as Tuple from './common';
+import { Reduce, $Reducer, WrapOptional } from './common';
 
 export { MapOver, $MapOver, MapOverArray, MapOverTuple };
 
-type MapOver<T extends Input<$T['constraints'][0]>, $T extends Type> =
+type MapOver<T extends Tuple.Input<$T['constraints'][0]>, $T extends Type> =
     any[] extends T
     ? MapOverArray<T, $T>
-    : MapOverTuple<T, $T> extends infer R extends Fallback<T, $T['type']> ? R : never
+    : MapOverTuple<T, $T> extends infer R
+        extends Tuple.Fallback<T, $T['type']>
+        ? R : never
 
-type MapOverArray<T extends Input, $T extends Type> =
-    apply<$T, [T[0]]> extends infer R extends $T['type']
-    ? T extends unknown[] ? R[] : readonly R[]
-    : never
+type MapOverArray<T extends Tuple.Input, $T extends Type> =
+    apply<$T, [T[0]]> extends infer R extends $T['type'] ? Tuple.Of<R, T> : never
 
-type MapOverTuple<T extends Input, $T extends Type> =
+type MapOverTuple<T extends Tuple.Input, $T extends Type> =
     number extends T['length'] ? {
         [I in keyof T]: I extends keyof [] ? T[I] : apply<$T, [T[I], I]>
     }
-    : undefined extends T[number] 
-    ? RecursiveOptional<T, $T>
-    : Recursive<T, $T>
+    : Reduce<T, undefined extends T[number] ? $Optional<$T> : $Standard<$T>>
 
-type RecursiveOptional<
-    T extends readonly unknown[],
-    $T extends Type,
-    I extends number = 0,
-    R extends readonly unknown[] = [],
-    L extends number = Required<T>['length']
-> = I extends L ? R
-    : RecursiveOptional<T, $T, Next<I>, (IsOptional<T, I> extends true ? [apply<$T, [Exclude<T[I], undefined>, I]>?] : [apply<$T, [T[I], I]>]) extends infer Current extends readonly unknown[] ? T extends unknown[] ? [...R, ...Current] : readonly [...R, ...Current] : never, L>
+interface $Standard<$T extends Type> extends $Reducer {
+    type: Tuple.Append<this['Acc'], apply<$T, [this['T[I]']]>>
 
-type Recursive<
-    T extends readonly unknown[],
-    $T extends Type,
-    I extends number = 0,
-    R extends readonly unknown[] = [],
-    L extends number = T['length']
-> = I extends L ? R
-    : Recursive<T, $T, Next<I>, apply<$T, [T[I], I]> extends infer Current ? T extends unknown[] ? [...R, Current] : readonly [...R, Current] : never, L>
+}
+interface $Optional<$T extends Type> extends $Reducer {
+    type: Tuple.Concat<this['Acc'], WrapOptional<this['T'], this['I'], apply<$T, [Exclude<this['T[I]'], undefined>]>>>
+}
 
 interface $MapOver<$T extends Type<1|2>, L extends number = never> extends Type<
-    [[L] extends [never] ? Input<$T['constraints'][0]> : Tuple<L>]
+    [[L] extends [never] ? Tuple.Input<$T['constraints'][0]> : Tuple.From<L>]
 > {
     type: this[0] extends this['constraints'][0]
         ? MapOver<this[0], $T>
-        : Output<$T['type']>
+        : Tuple.Output<$T['type']>
 }

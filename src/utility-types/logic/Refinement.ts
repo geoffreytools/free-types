@@ -21,7 +21,7 @@ interface $Flip<$T extends Type<1>, Remaining = unknown>
 
     }
 
-interface $Extends<Refinement = never> extends Type<2> {
+interface $Extends<Refinement = never> extends Type<1> {
     type: unknown extends this[0] ? Refinement
         : [this[0]] extends [Refinement] ? Refinement : never
 }

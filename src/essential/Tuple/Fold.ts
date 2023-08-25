@@ -5,7 +5,7 @@ import { Input } from './common';
 export interface $Fold<$T extends Type<2>, Init extends $T['constraints'][0]>
     extends Type<1> {
         type: this[0] extends this['constraints'][0]
-            ? _Fold<this[0], Init, $T>
+            ? Fold<this[0], Init, $T>
             : $T['type']
         constraints: [Input<$T['constraints'][1]>]
     }
@@ -14,7 +14,9 @@ export type Fold<
     T extends Input<$T['constraints'][1]>,
     Init extends $T['constraints'][0] & $T['type'],
     $T extends Type<2>,
-> = _Fold<T, Init, $T>
+> = number extends T['length'] ? $T['type']
+    : _Fold<T, Init, $T> extends infer R extends $T['type']
+        ? R : never
 
 export type _Fold<
     T extends readonly unknown[],

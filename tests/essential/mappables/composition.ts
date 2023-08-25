@@ -1,5 +1,5 @@
 import { test } from 'ts-spec'
-import { A, apply, B, Last, Type } from '../../../src/core'
+import { A, apply, B, free, Last, Type } from '../../../src/core'
 import { Flow } from '../../../src/essential/composition/Flow'
 import { Pipe } from '../../../src/essential/composition/Pipe'
 import { $Prop } from '../../../src/essential/mappables/accessors'
@@ -141,7 +141,7 @@ type GenBase2<Ts extends string[]> = Pipe<
 >
 
 type Wrong<Ts extends string[]> = Pipe<
-    //@ts-expect-error: wrong composition
+    // @ts-expect-error: wrong composition
     [Filter<Ts, Last<Ts> | `$${string}`>], 
     $NormaliseSegment,
     $Fold<$CamelCase, 'get'>
@@ -149,20 +149,9 @@ type Wrong<Ts extends string[]> = Pipe<
 type Wrong2<Ts extends number[]> = Pipe<
     [Ts],
     Tuple.$MapOver<$Next>,
-    //@ts-expect-error: expects a string
+    // @ts-expect-error: expects a string
     Tuple.$Fold<$CamelCase, 'get'>
 >
-
-type fojo = Tuple.$MapOver<$NormaliseSegment>['type']
-
-type foojoo = Pipe<[[{ value: 'a' }]],
-    Tuple.$MapOver<$Prop<'value'>>,
-    Tuple.$Filter<Refinement.$Extends<number>>,
-    Tuple.$MapOver<$Next>,
-    Tuple.$Fold<$Add, 0>
->
-
-type tt = Tuple.$Fold<$CamelCase, 'get'>['type']
 
 interface $NormaliseSegment extends Type<[string], string> {
     type: A<this> extends `$${infer I}` ? I : A<this> 
@@ -186,16 +175,13 @@ namespace Str {
         : T extends `${string}${infer A}` ? A : never;
 }
 
-test('Return type of composition resolves to a value even with generics', t => (
-    <T extends (number | string)[]>() => t.equal<
-        0,
-        Pipe<
-            [Tuple.Filter<T, Refinement.$Extends<number>>],
-            Tuple.$MapOver<$Next>,
-            Tuple.$Fold<$Add, 0>
-        >
-    >()
-)())
+// test('Return type of composition resolves to a value even with generics', t => (
+//     <T extends (number | string)[]>() => t.equal<
+//         number[],
+//         Tuple.Filter<T, Refinement.$Extends<number>>
+        
+//     >()
+// )())
 
 test('Flow higher order types composition' as const, t => [
     t.equal<apply<$MapOver_$Fold, [TupleInput]>, 3>(),

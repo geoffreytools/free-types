@@ -16,11 +16,17 @@ interface $AcceptImplicit extends Type<[number[]], number[]> {
     type: Tuple.MapOver<Checked<A, this>, $Next>
 }
 
-//@ts-expect-error: type check implicit return type
+// @ts-expect-error: type check implicit return type
 interface $RejectImplicit extends Type<[number[]], string[]> {
     type: Tuple.MapOver<Checked<A, this>, $Next>
 }
 
+test('Return type of composition resolves to a value even with generics', t => (
+    <T extends number[]>() => t.equal<
+        number[],
+        apply<Tuple.$MapOver<$Next>, [T]>
+    >()
+)())
 
 test('work on tuples' as const, t => [
     t.equal<Tuple.MapOver<[1,2,3], $Next>, [2,3,4]>(),
@@ -30,6 +36,11 @@ test('work on tuples' as const, t => [
 test('work on readonly tuples' as const, t => [
     t.equal<Tuple.MapOver<readonly [1,2,3], $Next>, readonly [2,3,4]>(),
     t.equal<apply<Tuple.$MapOver<$Next>, [readonly [1,2,3]]>, readonly [2,3,4]>()
+])
+
+test('resilient to intersection with array or tuple' as const, t => [
+    t.equal<Tuple.MapOver<[1, 2] & unknown[], $Next>, [2, 3]>(),
+    t.equal<Tuple.MapOver<[1, 2] & [unknown, unknown], $Next>, [2, 3]>()
 ])
 
 test('work on arrays' as const, t => [
