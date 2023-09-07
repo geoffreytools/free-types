@@ -11,7 +11,8 @@ export type $OptionalFlip<
 export type $Optional<
     $T extends Type,
     Args extends Partial<$T['constraints']>,
-> = Args extends unknown[] ? partial<$T, TrimArgs<Args>> : never
+> = Args extends never[] ? $T
+    : partial<$T, TrimArgs<Extract<Args, unknown[]>>>
 
 export type _$Optional<
     $T extends Type,
