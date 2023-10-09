@@ -3,137 +3,370 @@
 [free-types](../README.md) | [Use Cases](./UseCases.md) | **[Documentation](./Documentation.md)** | [Guide](./Guide.md) | [Algebraic data types](./ADTs.md)
 
 # Documentation
-
-  [Creation](#creation)
-| [Helpers](#helpers-)
+ [Creation](#creation)
+| [Variance](#variance)
 | [Application](#application)
-| [Decomposition](#decomposition)
+| [Helpers](#helpers-)
 | [Composition](#composition-)
+| [Decomposition](#decomposition)
 | [Adapters](#adapters)
 | [Higher order types](#higher-order-types)
 | [Operators](#operators-and-other-utils)
 
-#### Foreword
+<br>
 
-In this documentation the types `Mappable` and `NonEmptyMappable` appear often. I use them to mean array and object literal types. The conflation of arrays and objects in one type is useful because no type definition can reject empty objects and thus expecting a `NonEmptyMappable` will force you to check that the input is not empty regardless of it being an array or an object.
+> :microscope: Experimental types have been tested, but not optimised. Their API may be inconsistent or dated;
+>
+> :arrow_forward: Links to interactive playgrounds can be found in this documentation;
+>
+> `Mappable` means the conflation of arrays, tuples and and object literal types.
 
-### Creation
-<table>
-<tr><th>type</th><th>description</th></tr>
-</td></tr><tr><td valign='top' width='210'><h6><code>Type<&#8288;Input?, Output?></code></td><td width='600'>
+<br>
 
+## Creation
 
-Extend `Type` with an interface to define a free type.
+### `Type<In?, Out?>`
+
+#### Defining a free type [:arrow_forward:](https://www.typescriptlang.org/play?jsx=0&ts=4.9.5#code/JYWwDg9gTgLgBAbzgFQJ5gKYBo4EMxgA2qcAvnAGZQQhwDkVGGAtDOhgM50BQ3wAdjAxQKuAMYY4AEmRwMADyH8AJhxTtE3ONrhtMALl0ALYBwDaABgC63Utz2TZAXjwFiAHhk4zDCBDpWAHzcAPQhOgB6APzcQA)
+
+Extend `Type` with an interface to define a free type. The `type` field is your return value.
 
 ```typescript
-interface $Foo extends Type {
-    type: 'foo'
+interface $T extends Type { 
+    type: unknown
 }
 ```
-Access arguments with `this`:
+
+Such type can later be [applied](#application-), [adapted](#adapters-), [composed](#composition-) or [inferred](#decomposition-).
+
+#### Defining parameters and their constraints [:arrow_forward:](https://www.typescriptlang.org/play?jsx=0&ts=4.9.5#code/JYWwDg9gTgLgBAbzgFQJ5gKZwL5wGZQQhwDkBGGAtDOhgM4kBQjNmcAgnALxx0xTAAdgHMA3C1pwAQtziCAriABGGKMySssAVUEBjCIL5QAhkIwATWWjbZGGyTv2H+pwRau0APAuWqAfDh2cJpwjgZGru481hie8oIA1oIQAO6CANoAugG2QSEAChB0wDDABsYANh6YnunsADTS2YH2bIXFpeUVAPJgnYKV1bF1jVIA-M22rVjtJWUDPX3zg9FeI3AAdFtSWZPqwZIAcsYgUSheSMgAXHDpAAyN7Jk4OXlHJxa9-SvnNZc390emUaWjGAIAjKNnthXowAPRw3gAC2gMCRxkE5jo+xC7AENCGngATK9phx8agvssqqsauC4AAfOAkwJvNgAMWAFQqAGUwMYoHQsLTYkg7jcfCooI0iTcjEJhC8WgcOVyKgAZDAiNGEpDgm5KCAQCoYDGNE3apE3ADMStyZOOp3MyGMuhKupQNweoRu9JhypCjosLrdMCpXQ91zg3tBvrtQA)
+
+It can be done in 2 ways indifferently:
+
+<table>
+<tr><th width='500'>
+Information packed in the `Type` constructor
+</td><th width='500'>
+Information scattered in different fields
+</td></tr>
+<tr><td>
+
 ```typescript
-interface $Foo extends Type {
+interface $Foo extends Type<{ T: 0, U?: 1}> {   
+
+}
+```
+</td><td>
+
+```typescript
+interface $Foo extends Type {   
+    constraints: [unknown, unknown?]
+    names: { T: 0, U: 1 }
+}
+```
+</td></tr>
+</table>
+
+Parameters are always at least positional, but can optionally be bound to names like in the examples above.
+
+The recommended way to expect a free type as a type constraint in a higher order type is the following:
+```typescript
+type $Contract = Type<{ T: 0, U?: 1 }>
+
+type HOT<$T extends $Contract> = apply<$T, { T: 42 }>
+```
+
+#### Syntax
+<table>
+<tr>
+<th width='230'>Unconstrained
+<th width='230'>Constrained
+<th width='230'>Optional parameters
+<th width='230'>Named parameters</tr>
+<td valign='top'>
+
+```typescript
+Type
+
+Type<number>
+
+Type<unknown[]>
+```
+
+</td><td valign='top'>
+
+```typescript
+Type<[A, B]>
+```
+</td><td valign='top'>
+
+```typescript
+Type<[A, B?]>
+
+Type<[A, ...B[]]>
+```
+</td>
+</td><td valign='top'>
+
+```typescript
+Type<{ T: [0, A] }>
+
+Type<{
+    T: [0, A], U?: [1, B]
+}>
+```
+</td>
+</table>
+
+Various shorthand notations are available if you have `unknown` constraints:
+
+<table>
+<tr>
+<th width='500'>Arity with no constraints
+<th width='500'>Names with no constraints
+</tr><tr>
+<td>
+
+```typescript
+Type<2>
+
+// is equivalent to
+Type<[unknown, unknown]>
+```
+
+<td>
+
+```typescript
+Type<{ T: 0, U?: 1 }>
+
+// is equivalent to
+Type<{T: [0, unknown], U?: [1, unknown]}>
+```
+</tr>
+<tr>
+<th width='500'>Sparse pseudo-tuple
+<th width='500'>Auto-fill length
+</tr>
+
+<td>
+
+```typescript
+Type<{ 0: number, 2: string }>
+
+// is equivalent to
+Type<[number, unknown, string]>
+```
+</td><td>
+
+```typescript
+Type<{ 1: boolean, length: 3 }>
+
+// is equivalent to
+Type<[unknown, boolean, unknown]>
+```
+</td>
+</table>
+
+
+#### Accessing arguments [:arrow_forward:](https://www.typescriptlang.org/play?jsx=0&ts=4.9.5#code/JYWwDg9gTgLgBAbzgFQJ5gKYBo4EMxgA2qcAvnAGZQQhwDkVGGAtDOhgM50BQ3C3cQXGAA7GBigVcAYwxwAJMjgYAHuJEATDinYAeANocYUUQHMAugD5EAoXYD09uMZIBXDmecALYB311cKFM6c30ABnM8bVw4IxMRU1s7QTZMAC5vX39A4NCIpLIC1LklAF48AmJdRRx-CggIEMsCxyEAPQB+blJefjtRcUkZOUVlNQxNbTRMXSRkDPCcOLNI0ms+5MFWlzh3TxgfPwCgkP9kOjhoOAiovFjjMwK7YoyDrOPcs5CCnuf2FDg5XwRFQ1WQtQYDSaLScgk63V6BQGEiksgUSlU6i0OhmhgeCSsNk2WycOz2CUyRxyrhAExgXEiuGizlcRAwTyErQ4YCgGFwGk8wHgvIAjq5gLztBwaHIYAB3PkAa0exOc7Feh2yQRpdIZPyK-zKFRBYIh9UaVhh7S6PT4SLEKOG6LGWKmejx8Qs6w5KXVlPC5n1f0wAKBlVBNTgdShlocsLg8NIQA)
+
+<table>
+
+<tr>
+<th>the "arg" field
+<th>the "arguments" field
+<th>numeric keys
+</tr>
+<tr>
+<td width='330'>
+
+```typescript
+interface $T extends Type<[A]> {
+    type: this['arg'][0]
+}
+
+interface $T extends Type<{ T:0 }> {
+    type: this['arg']['T']
+}
+```
+
+</td><td width='330'>
+
+```typescript
+
+
+interface $T extends Type {
+    type: this['arguments']
+}
+```
+</td><td width='330'>
+
+```typescript
+
+
+interface $T extends Type {
     type: this[0]
 }
 ```
 
-Define constraints on the inputs: 
+</td>
+</tr>
+<tr><td valign='top'>
+
+It is the recommended way of accessing named arguments and arguments with type constraints.
+
+You get auto-completion, and arguments are substituted with their constraint at the definition site.
+
+</td><td valign='top'>
+
+Lists every argument as a pseudo-tuple. Can be spread using these strategies:
+- `extends unknown[] & infer I`
+- `ToTuple<this['arguments']>`
+- `Slice<this['arguments'], 0>`
+
+
+</td><td valign='top'>
+
+This way of accessing arguments offers the most control (see the [guide](./Guide.md)).
+
+Pair it with [helpers](#helpers-) and/or the `arg` field to manage boilerplate.
+
+
+</td></tr></table>
+
+#### Variance in higher order types
+
+Contrary to functions, free types arguments are checked covariantly by default, meaning that a free type may be unfairly rejected if it is more capable than required:
 
 ```typescript
-// variadic types with no constraint
-interface $Foo extends Type { ... }
-interface $Foo extends Type<number> { ... }
-interface $Foo extends Type<unknown[]> { ... }
+// $T should at least be defined for the input ["foo"]
+type ApplyFoo<$T extends Type<['foo']>> = apply<$T, ['foo']>;
 
-// Setting the arity:
-interface $Foo extends Type<1> { ... }
+// $Array is defined for any unary input
+interface $Array extends Type<1> { type: Array<this[0]> }
 
-// Setting the arity + a specific constraint:
-interface $Foo extends Type<[number, number]> { ... }
+// but is rejected
+type Error = ApplyFoo<$Array>;
+//                    ~~~~~~ 
+// [unknown] is not assignable to ["foo"]
+```
 
-// optional parameters:
-interface $Foo extends Type<[number, number?]> { ... }
-  
-// equivalent to the former:
-interface $Foo extends Type {
-    constraints: [number, number?]
-    ...
+See [Contra](#contra) to circumvent this limitation.
+
+#### Constraining the return type
+
+Use the second parameter to type check your implementation:
+
+```typescript
+interface $T extends Type<0, string> { type: number }
+//        ~~ Error           ------          ------
+```
+
+or to type check the input of a higher order type:
+```typescript
+type Exclaim<$T extends Type<[string], string>> = `${ apply<$T, ['hello']> }!`
+//                            ------
+
+type Boom = Exclaim<$BadType>
+//                 ~~~~~~~~~ Record<string, 42> is not assignable to string
+
+interface $BadType extends Type<[string]> {
+    type: Record<this['arg'][0], 42>
 }
 ```
 
-Define constraints on the output: 
+<p align=center>⁂</p>
+
+### `TypeDoc<Type>`
+
+Enrich a free type created from scratch with helpful tooltip information.
+
+#### Example [:arrow_forward:](https://www.typescriptlang.org/play?jsx=0&ts=4.9.5#code/JYWwDg9gTgLgBAbzgFQJ5gKYBo4DEA2EA7jmpgCIQDGcAvnAGZQQhwDkTGGAtDOhgGc2AKGEYAHpFhw+mOABIAEhnyE4AXhT9KVADxKVhAJLh8APgDcYydHiyMcAOJQuMYADsA5hryEiugG0DVQgceQBRcSp8AENQAF0zUQ8YDCgGGKoHYONTOAlU9wATAS1MXSQmYAxigC44AIAGHAEYKA9PeLozRGE4fpl+eoADZRCFBBgAC2ABALYYqE82ePmqmqKV2mHhWmT3VPTM7MjouNYCjdKyDEDW9q9E3oHBzBH5SZm5haWVpvjaABCHa0IA)
 
 ```typescript
-interface $Foo extends Type<unknown[], string> {
-    type: string
+export type $Hello = TypeDoc<$HelloImpl>;
+
+// The implementation being an interface, it has no tooltip info
+interface $HelloImpl extends Type<{ friend: [0, string] }> {
+    type: `Hello ${this['arg']['friend']}`
 }
+// tooltip with TypeDoc:
+type $Hello = CreateType<{
+    type: `Hello ${string}`;
+    constraints: [string];
+    names: { friend: 0 };
+}, $HelloImpl>
+```
+Type aliases already come with TypeDoc:
+```typescript
+type $Contract = Type<{ friend: [0, string] }, string>
+
+// tooltip:
+type $Contract = CreateType<{
+    type: string;
+    constraints: [string];
+    names: { friend: 0 };
+}>
 ```
 
-Public fields:
-
-- `this['arguments']`: a copy of the arguments
-- `$T['type']`: the return type
-- `$T['constraints']`: the type constraints
-
-</td></tr><tr><td valign='top'><h6><code>Const<&#8288;T></code></td><td>
-
-Turn a type `T` into a constant `Type<❋, T>`, totally ignoring arity and type constraints on the input.
+As well as most utilities returning a free type:
 
 ```typescript
-type Foo = MapOver<[1, 2, 3], Const<'A'>>; // [A, A, A]
-type Bar = MapOver<[1, 2, 3], $Next>; // [2, 3, 4]
+export type $Greeting = Flow<[$Hello, $Exclaim]>
+
+// tooltip
+type $Greeting = Composition<{
+    type: `${string}!`;
+    constraints: [string];
+    names: { friend: 0 };
+}, [$Hello, $Exclaim]>
 ```
-</td></tr><tr><td valign='top'><h6><code>$Const</code></td><td>
+<p align=center>⁂</p>
 
-A free version of `Const`
+### `From<Template, Keys?>`
+
+Lift a shallow object type into a free type:
+
+#### Example [:arrow_forward:](https://www.typescriptlang.org/play?jsx=0&ts=4.9.5#code/JYWwDg9gTgLgBAbzgMShEcC+cBmaMDkeApsQLQwCeYxAzgQFANU1wAqx4ANgIYzFwAvIlwQIALjgA7AK4gARsSgAaOPJ5RJtGFGBSA5lgDcTFgIAkyMQCENQlPgA8Hbn2KqA2kTEFVBdVAEAPwAugB8RkA)
 
 ```typescript
-type Consts = MapOver<[1,2,3], $Const>
-//   Consts : [Type<❋, 1>, Type<❋, 2>, Type<❋, 3>]
+type Template = { foo: number, bar: string };
+
+type $FooBar = From<Template, ['foo', 'bar'?]>;
+
+// tooltip
+type $FooBar = FromTemplate<{
+    type: { foo: number, bar: string }
+    constraints: [number, string?];
+    names: { bibi: 0; bubu: 1 };
+    keys: ["foo", "bar"];
+}>
 ```
+#### Syntax
 
-</td></tr><tr><td valign='top' width='210'><h6><code>From<&#8288;T, Args?></code></td><td>
+1) `Template`: is the implicit return type of the generated free type, and its values will eventually be used as type constraints.
 
-Create a new `Type` based upon a mappable type `T` using the tuple `Args` to determine which field to turn into a parameter and in what order they must be applied.
+2) `Keys`: specifies which fields to turn into a parameter, in what order they must be applied and whether or not they are optional.
 
-```typescript
-type $Foo = From<{ a: number, b: string, c: boolean }, ['b', 'a']>;
-type Foo = apply<$Foo, ['a', 1]>
-//   Foo : { a: 1, b: "a", c: boolean }
+    Can be omitted if your object has only one element or if it is a tuple.
 
-type $Bar = From<[number, string, boolean], [1, 0]>;
-type Bar = apply<$Bar, ['a', 1]>
-//   Bar : [1, "a", boolean]
-```
-The values of `T` are used as type constraints:
-```typescript
-type Rejected = apply<$Foo, [1, 'a']>
-//                          --------
-type Rejected = apply<$Bar, [1, 'a']>
-//                          --------
-// [1, "a"] doesn't satisfy the constraint [string, number]
-```
-#### Optinal `Args`
-When `Args` is omitted, the resulting free type *should* take as many arguments as there are fields in `T` in the same order as they appear in `T`:
+#### Named parameters
+Named parameters are generated automatically from the keys you supply.
+
+You can rename parameters like so:
 
 ```typescript
-type $Foo = From<{ a: number }>;
-type Foo = apply<$Foo, [1]>
-//   Foo : { a: 1 }
-
-type $Bar = From<[number, string]>;
-type Bar = apply<$Bar, [1, 'foo']>
-//   Bar : [1, "foo"]
+type $FooBar = From<FooBar, [{ foo: 'bibi' }, { bar: 'bubu' }?]>
 ```
 
-The ordering of the arguments is only guarantied for tuples, so do supply `Args` when using `From` on multiple-fields objects.
+### `FromDeep<Template, Paths>` :microscope:
 
-</td></tr><tr><td valign='top' width='210'><h6><code>FromDeep<&#8288;T, Paths></code></td><td>
+A variation of `From` which enables reaching deep properties with `Paths` instead of keys:
 
-A variation of `From` which enables `Args` to be made of paths, in order to reach deep properties:
+#### Example
 
 ```typescript
-type $Foo = From<
+type $Foo = FromDeep<
     { a: { b: [number, string], c: boolean } },
     [['a', 'b', 0], 'c']
 >;
@@ -142,11 +375,45 @@ type Foo = apply<$Foo, [1, true]>
 //   Foo : { a: { b: [1, string], c: true } }
 ```
 
-I keep `From` and `FromDeep` separate for now because I expect the latter to perform worse. I may merge them in the future when my Typescript-foo improves.
+<p align=center>⁂</p>
 
-</td></tr>
+### `Const<T>`
 
-</td></tr><tr><td valign='top'><h6><code>$partial<&#8288;$T></code></td><td>
+Turn a type `T` into a constant `Type<❋, T>`, totally ignoring arity and type constraints on the input.
+
+#### Example
+
+```typescript
+type $42 = Const<42>
+
+// tooltip
+type $42 = ConstantType<{
+    type: 42,
+    constraints: any,
+    names: any
+}>
+
+// can be used as an expression
+type Foo = MapOver<[1, 2, 3], Const<42>>; // [42, 42, 42]
+```
+
+### `$Const`
+
+A free version of `Const`.
+
+#### Example
+
+```typescript
+type Consts = MapOver<[1, 2, 3], $Const>
+//   Consts : [Type<❋, 1>, Type<❋, 2>, Type<❋, 3>]
+```
+
+### Other creation utils
+
+<table>
+<tr><th>type</th><th>description</th></tr>
+
+<tr><td valign='top'><h6><code>$partial<&#8288;$T></code></td><td>
 
 A free version of [`partial`](#partialt-args). Can be useful to mimic currying.
 
@@ -167,9 +434,236 @@ type Result = apply<$Apply2, [$Next]> // 3
 ```
 </table>
 
-### Helpers [↸](#documentation)
+<br>
+
+## Variance
+
+#### When you pass a free type to a higher order type, it is:
+*invariant* on its parameters and *covariant* on its return type.
+
+#### When you want contravariance
+The util [`Expect`](#expecttype) ignores the covariant part of the parameters, making them *contravariant*, as you would expect from parameters.
+
+#### When you need generics
+There are no generics for generics, but you have access to the `constraints` field.
+
+#### Example [:arrow_forward:](https://www.typescriptlang.org/play?ssl=13&ssc=36&pln=1&pc=1#code/JYWwDg9gTgLgBAbzgFQJ5gKYBo4FEAemAxjDgIZhgA2qcAvnAGZQQhwDkzGGAtDOhgDO7AFAj+mOABJkUMgDtBjaCAA8yOAF44C1AD4tKAaoDaANzJUArhgBcKHMHkATDPnvyrIAEYYoAXT0xAHpguAB1DDgiMigosm8IK3gMKgwQDHkYQTgIRhQ4EDIYIgALJwBzOBhSqMZgKEF4IghFGDkneDzpZHEBOABZCgB5Mz91ODcYTOccmRN2FraOrOF-EwAGdf8cGUn8aZccgmIYVRk5RWUoED0DbQQROGe4EwBJOCc4AGsMVG7kP57BRqKhzsgcCZkO8dnA3oERHQxJ0-IwyEQolIABKpKgQfaHWY9S5KFSqJpQSoGJASOxwAAGOKoeOkCBqwEEC1iFXY6y2dHp9DEtLgAHE4hgYJUctohmBRuMFqLgGlhDh2MhSgkFMBebsmXigqFXuwDfjlar2OqzSgtd4dbygA)
+
+Here we define a higher order type which maps over a tuple, using a free type as transform.
+```typescript
+// We don't want to prescribe what the first parameter should be constrained to
+type $Transform<T = any> = Type<[value: T, index: number]>
+//                -----
+
+// But we care about elements of `T` matching that constraint, whatever it is
+type MapOver<T extends $T['constraints'][0][], $T extends Expect<$Transform>> = {
+    //                 --------------------
+    [I in keyof T]: apply<$T, [T[I], I]>
+}
+
+// Here this constraint is `string`
+interface $Hello extends Type<[string]> { type: `Hello ${this['arg'][0]}` }
+//                             ------
+
+// We are all good: `any` extends `string` and `("Giles" | "Thabani")[]` extends `string[]`
+type Greetings = MapOver<['Giles', 'Thabani'], $Hello>
+// ['Hello Giles', 'Hello Thabani']
+```
+
+The following would also be fine if we didn't want to pass an index as second argument:
+
+```typescript
+type MapOver<T extends $T['constraints'][0][], $T extends Type<1>> = {
+    [I in keyof T]: apply<$T, [T[I]]>
+}
+```
+
+Why not passing the index and simply using `Type<2>`? `Expect<$Transform>` is superior because:
+1) `Type<2>` being invariant, it would prescribe the arity of the input `$T` to be `2`, so you would still need to use `Expect` if you wanted to accept `$Hello`, which is unary;
+
+2) `$Transform` can be reused as a contract for users to extend. Then, the type information `number` for the index would be picked up by `this['arg][1]` if the user made use of it. `Type<2>` would
+
+<br>
+
+## Application&nbsp;[↸](#documentation)
+
+> **Warning**
+> No excess property checking is performed on named arguments
+
+### `apply<Type, Arguments>`
+
+Apply a free type with all its arguments and evaluate the type.
+
+#### Example
+
+```typescript
+interface $Map extends Type<{ keys: 0, values: 1 }> {
+    type: Map<this['arg'][0], this['arg'][1]>
+};
+
+type Foo = apply<$Map, [string, number]>
+type Foo = apply<$Map, { keys: string, values: number }>
+
+// output
+type Foo = Map<string, number>
+```
+
+#### Syntax
+
+`Arguments` can be a tuple of positional arguments or an object of named arguments.
+
+> **Warning**
+> At current, for named arguments to be type checked, your `Type` must expect named arguments.
+>
+> ```typescript
+> interface $Foo extends Type<1> { type: this[0] }
+> type FalseNegative = apply<$Foo, { foo: 42 }>
+> //                               -----------
+> // Type<1>'s "names" field is {} so this type checks
+> ```
+> The solution is a little challenging to implement but I will get there eventually.
+
+<table>
+<tr><th>type</th><th>description</th></tr>
+
+</td></tr><tr><td valign='top' width='210'><h6><code>apply<&#8288;$T, Args></code></td><td>
+
+
+</td></tr><tr><td valign='top'><h6><code>Generic<&#8288;$T></code></td><td>
+
+Apply a free type `$T` with its type constraints.
+
+It is mostly equivalent to `$T['type']`, but better handles types which have no sensible default return value:
+
+```typescript
+interface $Foo extends Type<[number]> {
+    type: this[0] extends number ? Foo<this[0]> : never
+    // try not to do this                         -----
+}
+
+type GenericFoo = Generic<$Foo> // Foo<number>
+type ReturnType = $Foo['type']; // never
+```
+I don't think it suites procedural types as much as it does "concrete" types, which is why it is used internally in [`unwrap`](#unwrapt-from), but not in [`Flow`](#flowt).
+</td></tr><tr><td valign='top'><h6><code>partial<&#8288;$T, Args, $Model?></code></td><td>
+
+Return a new `Type` based upon `$T`, with `Args` already applied, expecting the remaining arguments.
+
+```typescript
+interface $Foo extends Type<3> {
+    type: Foo<A<this>, B<this>, C<this>>
+}
+
+type $Foo1 = partial<$Foo, [1]>
+type Foo = apply<$Foo1, [2, 3]> // Foo<1, 2, 3>
+```
+
+Optionally take a `$Model` argument for cases where `$T` is a generic. It should simply repeat the type constraint:
+
+```typescript
+type Foo<$Q extends Type<[number, string]>> =
+    Bar<partial<$Q, [1], Type<[number, string]>>>
+//                       ----------------------
+type Bar<$Q extends Type<[string]>> = apply<$Q, ['bar']>
+```
+
+</td></tr><tr><td valign='top'><h6><code>partialRight</code></td><td>
+
+Behaves the same as `partial`, but `Args` fills the rightmost parameters of your free type:
+```typescript
+type $Foo23 = partialRight<$Foo, [2, 3]>
+type Foo = apply<$Foo23, [1]> // Foo<1, 2, 3>
+```
+
+</td></tr><tr><td valign='top'><h6><code>_partial<&#8288;$T, Args></code></td><td>
+
+An experimental variant of `partial`, which also allows to skip arguments in the arguments list with the placeholder `_`.
+
+```typescript
+interface $Foo extends Type<3> {
+    type: Foo<A<this>, B<this>, C<this>>
+}
+
+type $Foo13 = _partial<$Foo, [1, _, 3]>
+type Foo123 = apply<$Foo13, [2]> // Foo<1, 2, 3>
+```
+
+`_partial` has this bug where applying a free type with generics does not appear to produce the correct type, even though it functions correctly:
+```typescript
+type Foo<A, B> = Bar<_partial<$Foo, [A, B]>>;
+// "not a Type<1>"   ~~~~~~~~~~~~~~~~~~~~~~
+type Bar<$T extends Type<1>> = apply<$T, ['bar']>
+//                  -------
+```
+</td></tr><tr><td valign='top'><h6><code>$Optional<&#8288;$T, Args></code></td><td>
+
+Partially apply `$T` with all the elements of `Args` which are not `never`
+
+This is useful when defining a flexible API:
+```typescript
+interface $Box3 extends Type<[number, number, number]> {
+    type: `${A<this>} x ${B<this>} x ${C<this>}`
+}
+
+type $Box<A extends number = never, B extends number = never> =
+    $Optional<$Box3, [A, B]>
+```
+Free types defined this way can be partially applied with generics as well as with `partial`:
+```typescript
+type Foo = apply<$Box<1>, [2, 3]>; // "1 x 2 x 3"
+type Bar = apply<$Box<1, 2>, [3]>; // "1 x 2 x 3"
+```
+> In some circumstances, when `T` is a generic, I found that a higher order type would reject a `$Box<T>` but would accept a `partial<$Box, [T]>`.
+
+Fully applying `$T` with `$Optional` generates a `Type<0>` without evaluating it.
+
+</td></tr><tr><td valign='top'><h6><code>_$Optional<&#8288;$T, Args></code></td><td>
+
+The same as `$Optional`, but behaves like `_partial` instead of `partial`.
+
+```typescript
+type $Box<
+    A extends number | _ = never,
+    B extends number | _ = never,
+    C extends number | _ = never
+> = _$Optional<$Box3, [A, B, C]>
+
+type Foo = apply<$Box<_, 2>, [1, 3]> // "1 x 2 x 3"
+```
+
+</td></tr><tr><td valign='top'><h6><code>$Alter<&#8288;$T, Args></code></td><td>
+
+The same as `$Optional`, with the difference that fully applying `$T` evaluates the type:
+
+```typescript
+type Box<
+    A extends number = never,
+    B extends number = never,
+    C extends number = never
+> = $Alter<$Box3, [A, B, C]>
+
+type Foo = Box<1, 2, 3> // "1 x 2 x 3"
+type Bar = apply<Box<1, 2>, [3]> // "1 x 2 x 3"
+```
+
+Since free types are not first class, this behaviour may confuse users as it makes the `$` prefix convention pointless. The performance is also expected to be worse than applying whatever classic type `$T` is based of.
+</td></tr>
+</table>
+
+<br>
+
+## Helpers [↸](#documentation)
 
 Helpers you may use to reduce boilerplate or assist with type checking.
+
+### `Expect<Type>`
+In order to work in higher order scenarios, free types need to encode type constraints covariantly. This is due to a limitation in Typescript inference, there is no way around it.
+
+On top of encoding them covariantly, the library also encodes them contravariantly (Future interations should let you set variance independently for each parameter). 
+
+`Expect` removes the former covariant information from your `Type` parameters, so that when it is compared with an input, only the *desired* variance is considered.
+
+
 <table><tr><th>type</th><th>description</th></tr>
 
 </td></tr><tr><td valign='top'><h6><code>Contra<&#8288;$T, $U></code></td><td>
@@ -360,139 +854,65 @@ Extract all but the last element of the non-empty tuple <code>T</code>.
 </td></tr>
 </table>
 
+### Composition [↸](#documentation)
 
-### Application&nbsp;[↸](#documentation)
+You should read the [part of the guide](./Guide.md#composition) dedicated to composition
 
 <table>
 <tr><th>type</th><th>description</th></tr>
 
-</td></tr><tr><td valign='top' width='210'><h6><code>apply<&#8288;$T, Args></code></td><td>
+</td></tr><tr><td valign='top' width='210'><h6><code>$Before<&#8288;$T, $P, I?></code></td><td>
 
-Apply a free type `$T` with all its arguments `Args` and evaluate the type.
-
-```typescript
-interface $Map extends Type<2> { type: Map<A<this>, B<this>> };
-type Foo = apply<$Map, [string, number]> // Map<string, number>
-```
-
-</td></tr><tr><td valign='top'><h6><code>Generic<&#8288;$T></code></td><td>
-
-Apply a free type `$T` with its type constraints.
-
-It is mostly equivalent to `$T['type']`, but better handles types which have no sensible default return value:
+Map over the individual arguments of `$T` with `$P` before they hit `$T`.
 
 ```typescript
-interface $Foo extends Type<[number]> {
-    type: this[0] extends number ? Foo<this[0]> : never
-    // try not to do this                         -----
-}
-
-type GenericFoo = Generic<$Foo> // Foo<number>
-type ReturnType = $Foo['type']; // never
+type $AbsAdd = $Before<$Add, $Abs>;
+type Foo = apply<$AbsAdd, [1, -2]> // same as apply<$Add, [1, 2]>
 ```
-I don't think it suites procedural types as much as it does "concrete" types, which is why it is used internally in [`unwrap`](#unwrapt-from), but not in [`Flow`](#flowt).
-</td></tr><tr><td valign='top'><h6><code>partial<&#8288;$T, Args, $Model?></code></td><td>
 
-Return a new `Type` based upon `$T`, with `Args` already applied, expecting the remaining arguments.
+Optionally take and index `I` to selectively transform the argument at this position.
+
+</td></tr><tr><td valign='top' width='210'><h6><code>Pipe<&#8288;Args, ...$T[]></code></td><td>
+
+Pipe the arguments list `Args` through the free types listed in `...$T[]`, from left to right. The composition is limited to 10 free types.
 
 ```typescript
-interface $Foo extends Type<3> {
-    type: Foo<A<this>, B<this>, C<this>>
-}
-
-type $Foo1 = partial<$Foo, [1]>
-type Foo = apply<$Foo1, [2, 3]> // Foo<1, 2, 3>
+type Foo = Pipe<[1, 2], $Add, $Next, $Exclaim> // 4!
 ```
 
-Optionally take a `$Model` argument for cases where `$T` is a generic. It should simply repeat the type constraint:
+When the types don't line up, the compiler tells you precisely what went wrong, using the inferred value as a hint:
+```typescript
+type Foo = Pipe<[1, 2], $Add, $Exclaim, $Next,>
+//                                      ~~~~~
+// Type '$Next' does not satisfy the constraint 'Type<["3!"], number>'.
+//   Types of property 'constraints' are incompatible.
+//     Type '[number]' is not assignable to type '["3!"]'.
+//       Type 'number' is not assignable to type '"3!"'.
+```
+
+When `Args` contains generics, it does its best:
+```typescript
+type Error<T extends number> = Pipe<[T], $Exclaim, $Next>;
+//                                                 ~~~~~
+// Type '$Next' does not satisfy the constraint
+// '_<$Next, "should be", Type<[`${T & string}!` | `${T & number}!`], number>>'
+```
+
+Be careful when using Pipe with a generic: Typescript will eagerly try to expand the type, which can work fine when nesting types for example, but can potentially fail if resolving the generic is required to work out the validity of the composition. Another possibility is that you end up with a huge thunk of nested conditional types waiting to receive a value.
+
+</td></tr><tr><td valign='top'><h6><code>Flow<&#8288;$T[]></code></td><td>
+
+Return the composition from left to right of the free types listed in`$T[]`.
 
 ```typescript
-type Foo<$Q extends Type<[number, string]>> =
-    Bar<partial<$Q, [1], Type<[number, string]>>>
-//                       ----------------------
-type Bar<$Q extends Type<[string]>> = apply<$Q, ['bar']>
+type $AddNextExclaim = Flow<[$Add, $Next, $Exclaim]>
+type Foo = apply<[1, 2], $AddNextExclaim> // 4!
 ```
 
-</td></tr><tr><td valign='top'><h6><code>partialRight</code></td><td>
+</td></tr><tr><td valign='top' width='210'><h6><code>$Arg<&#8288;I></code></td><td>
 
-Behaves the same as `partial`, but `Args` fills the rightmost parameters of your free type:
-```typescript
-type $Foo23 = partialRight<$Foo, [2, 3]>
-type Foo = apply<$Foo23, [1]> // Foo<1, 2, 3>
-```
+Get the argument at index `I`
 
-</td></tr><tr><td valign='top'><h6><code>_partial<&#8288;$T, Args></code></td><td>
-
-An experimental variant of `partial`, which also allows to skip arguments in the arguments list with the placeholder `_`.
-
-```typescript
-interface $Foo extends Type<3> {
-    type: Foo<A<this>, B<this>, C<this>>
-}
-
-type $Foo13 = _partial<$Foo, [1, _, 3]>
-type Foo123 = apply<$Foo13, [2]> // Foo<1, 2, 3>
-```
-
-`_partial` has this bug where applying a free type with generics does not appear to produce the correct type, even though it functions correctly:
-```typescript
-type Foo<A, B> = Bar<_partial<$Foo, [A, B]>>;
-// "not a Type<1>"   ~~~~~~~~~~~~~~~~~~~~~~
-type Bar<$T extends Type<1>> = apply<$T, ['bar']>
-//                  -------
-```
-</td></tr><tr><td valign='top'><h6><code>$Optional<&#8288;$T, Args></code></td><td>
-
-Partially apply `$T` with all the elements of `Args` which are not `never`
-
-This is useful when defining a flexible API:
-```typescript
-interface $Box3 extends Type<[number, number, number]> {
-    type: `${A<this>} x ${B<this>} x ${C<this>}`
-}
-
-type $Box<A extends number = never, B extends number = never> =
-    $Optional<$Box3, [A, B]>
-```
-Free types defined this way can be partially applied with generics as well as with `partial`:
-```typescript
-type Foo = apply<$Box<1>, [2, 3]>; // "1 x 2 x 3"
-type Bar = apply<$Box<1, 2>, [3]>; // "1 x 2 x 3"
-```
-> In some circumstances, when `T` is a generic, I found that a higher order type would reject a `$Box<T>` but would accept a `partial<$Box, [T]>`.
-
-Fully applying `$T` with `$Optional` generates a `Type<0>` without evaluating it.
-
-</td></tr><tr><td valign='top'><h6><code>_$Optional<&#8288;$T, Args></code></td><td>
-
-The same as `$Optional`, but behaves like `_partial` instead of `partial`.
-
-```typescript
-type $Box<
-    A extends number | _ = never,
-    B extends number | _ = never,
-    C extends number | _ = never
-> = _$Optional<$Box3, [A, B, C]>
-
-type Foo = apply<$Box<_, 2>, [1, 3]> // "1 x 2 x 3"
-```
-
-</td></tr><tr><td valign='top'><h6><code>$Alter<&#8288;$T, Args></code></td><td>
-
-The same as `$Optional`, with the difference that fully applying `$T` evaluates the type:
-
-```typescript
-type Box<
-    A extends number = never,
-    B extends number = never,
-    C extends number = never
-> = $Alter<$Box3, [A, B, C]>
-
-type Foo = Box<1, 2, 3> // "1 x 2 x 3"
-type Bar = apply<Box<1, 2>, [3]> // "1 x 2 x 3"
-```
-
-Since free types are not first class, this behaviour may confuse users as it makes the `$` prefix convention pointless. The performance is also expected to be worse than applying whatever classic type `$T` is based of.
 </td></tr>
 </table>
 
@@ -622,68 +1042,6 @@ type Commands = MapOver<URLs, partialRight<free.UnaryFunction, [void]>>
 //     B: (a: "https://bar") => void;
 // }
 ```
-</td></tr>
-</table>
-
-### Composition [↸](#documentation)
-
-You should read the [part of the guide](./Guide.md#composition) dedicated to composition
-
-<table>
-<tr><th>type</th><th>description</th></tr>
-
-</td></tr><tr><td valign='top' width='210'><h6><code>$Before<&#8288;$T, $P, I?></code></td><td>
-
-Map over the individual arguments of `$T` with `$P` before they hit `$T`.
-
-```typescript
-type $AbsAdd = $Before<$Add, $Abs>;
-type Foo = apply<$AbsAdd, [1, -2]> // same as apply<$Add, [1, 2]>
-```
-
-Optionally take and index `I` to selectively transform the argument at this position.
-
-</td></tr><tr><td valign='top' width='210'><h6><code>Pipe<&#8288;Args, ...$T[]></code></td><td>
-
-Pipe the arguments list `Args` through the free types listed in `...$T[]`, from left to right. The composition is limited to 10 free types.
-
-```typescript
-type Foo = Pipe<[1, 2], $Add, $Next, $Exclaim> // 4!
-```
-
-When the types don't line up, the compiler tells you precisely what went wrong, using the inferred value as a hint:
-```typescript
-type Foo = Pipe<[1, 2], $Add, $Exclaim, $Next,>
-//                                      ~~~~~
-// Type '$Next' does not satisfy the constraint 'Type<["3!"], number>'.
-//   Types of property 'constraints' are incompatible.
-//     Type '[number]' is not assignable to type '["3!"]'.
-//       Type 'number' is not assignable to type '"3!"'.
-```
-
-When `Args` contains generics, it does its best:
-```typescript
-type Error<T extends number> = Pipe<[T], $Exclaim, $Next>;
-//                                                 ~~~~~
-// Type '$Next' does not satisfy the constraint
-// '_<$Next, "should be", Type<[`${T & string}!` | `${T & number}!`], number>>'
-```
-
-Be careful when using Pipe with a generic: Typescript will eagerly try to expand the type, which can work fine when nesting types for example, but can potentially fail if resolving the generic is required to work out the validity of the composition. Another possibility is that you end up with a huge thunk of nested conditional types waiting to receive a value.
-
-</td></tr><tr><td valign='top'><h6><code>Flow<&#8288;$T[]></code></td><td>
-
-Return the composition from left to right of the free types listed in`$T[]`.
-
-```typescript
-type $AddNextExclaim = Flow<[$Add, $Next, $Exclaim]>
-type Foo = apply<[1, 2], $AddNextExclaim> // 4!
-```
-
-</td></tr><tr><td valign='top' width='210'><h6><code>$Arg<&#8288;I></code></td><td>
-
-Get the argument at index `I`
-
 </td></tr>
 </table>
 
