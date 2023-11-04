@@ -1,6 +1,6 @@
 import { test } from 'ts-spec';
-import { free, partialRight } from '../../core'
-import { Lift, MapOver } from '../../essential/mappables'
+import { free, partialRight } from 'src'
+import { Lift, MapOver } from 'src/essential/mappables'
 
 
 type URLs = {

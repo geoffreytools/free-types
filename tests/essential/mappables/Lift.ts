@@ -1,8 +1,8 @@
 import { test } from 'ts-spec'
 import { A, B, C, Type } from '../../../core'
-import { Lift } from '../../../essential/mappables/Lift'
-import { Add } from '../../../essential/utils'
-import { $Add, $Next } from '../../../utility-types/arithmetic'
+import { Lift } from 'src/essential/mappables/Lift'
+import { Add } from 'src/essential/utils'
+import { $Add, $Next } from 'src/utility-types/arithmetic'
 
 interface $Add3 extends Type<[number, number, number]> {
     type: Add<Add<A<this>, B<this>>, C<this>>

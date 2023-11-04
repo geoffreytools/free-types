@@ -1,5 +1,5 @@
 import { test } from 'ts-spec';
-import { Show } from '../../src/experimental/Show';
+import { Show } from 'src/experimental/Show';
 
 test('Show base types' as const, t => [
     t.equal<Show<any>, 'any'>(),

@@ -1,5 +1,11 @@
 {
     "compilerOptions": {
+        "baseUrl": "./",
+        "paths": {
+            "src/*": [
+                "./src/*"
+            ],
+        },
         "noEmit": true,
         "noEmitOnError": true,
         "noErrorTruncation": true,

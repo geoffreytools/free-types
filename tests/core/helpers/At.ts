@@ -1,5 +1,5 @@
 import { test } from 'ts-spec'
-import { Type, At, apply } from '../../..';
+import { Type, At, apply } from 'src';
 
 type AlphaNumPair<A extends string, B extends number> = [A, B];
 

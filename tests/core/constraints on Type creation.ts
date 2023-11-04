@@ -1,4 +1,4 @@
-import { Type, A, B } from '../..';
+import { Type, A, B } from 'src';
 
 // @ts-expect-error: wrong return type
 interface $Foo extends Type<0, number> {

@@ -1,8 +1,7 @@
 import { test } from 'ts-spec';
 import { apply, partialRight, free, partial } from "../../..";
-import { $Rest } from '../../../essential/adapters/$Rest';
-import { Flow } from '../../../essential/composition/Flow';
-import { Pipe } from '../../../essential/composition/Pipe';
+import { $Rest } from 'src/essential/adapters/$Rest';
+import { Pipe, Flow } from 'free-types-core';
 
 /** Control without partial application */
 type C = [free.Promise, free.Array, free.Set];

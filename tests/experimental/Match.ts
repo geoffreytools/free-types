@@ -1,8 +1,8 @@
 import { test } from 'ts-spec';
 
-import { Type, A, B, free, apply, $Not } from '../../src'
-import { $IsEmpty } from '../../src/essential/mappables/IsEmpty';
-import { $Match, Match, otherwise, Protect } from '../../src/experimental/Match';
+import { Type, A, B, free, apply, $Not } from 'src'
+import { $IsEmpty } from 'src/essential/mappables/IsEmpty';
+import { $Match, Match, otherwise, Protect } from 'src/experimental/Match';
 
 interface $R1 extends Type<[1]> { type: '1' }
 interface $R2 extends Type<[2]> { type: '2' }

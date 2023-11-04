@@ -1,17 +1,16 @@
 import { test } from 'ts-spec'
-import { A, apply, B, free, Last, Type } from '../../../src/core'
-import { Flow } from '../../../src/essential/composition/Flow'
-import { Pipe } from '../../../src/essential/composition/Pipe'
-import { $Prop } from '../../../src/essential/mappables/accessors'
-import { $Fold } from '../../../src/essential/mappables/Fold'
-import { $MapOver } from '../../../src/essential/mappables/MapOver'
-import { $Filter } from '../../../src/essential/mappables/Filter'
-import { $Reduce } from '../../../src/essential/mappables/Reduce'
-import { $Add, $Next } from '../../../src/utility-types/arithmetic'
+import { A, apply, B, free, Last, Type } from 'src/core'
+import { Pipe, Flow } from 'free-types-core';
+import { $Prop } from 'src/essential/mappables/accessors'
+import { $Fold } from 'src/essential/mappables/Fold'
+import { $MapOver } from 'src/essential/mappables/MapOver'
+import { $Filter } from 'src/essential/mappables/Filter'
+import { $Reduce } from 'src/essential/mappables/Reduce'
+import { $Add, $Next } from 'src/utility-types/arithmetic'
 
-import * as Tuple from '../../../src/essential/Tuple'
-import { Refinement } from '../../../src'
-import { Filter } from '../../../src/essential/mappables/Filter'
+import * as Tuple from 'src/essential/Tuple'
+import { Refinement } from 'src'
+import { Filter } from 'src/essential/mappables/Filter'
 
 type TupleInput = [{ value: 1 }, { value: 2 }]
 type TupleMixedInput = [{ value: 1 }, {value: 'a'}, { value: 2 }, {value: 'b'}]
