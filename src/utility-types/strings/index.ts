@@ -1,6 +1,6 @@
 export * from './$Join'
 export * from './$Length'
-export * from './$ParseNat'
+export * from './$ParseNum'
 export * from './$StrReplace'
 export * from './$Split'
 export * from './$Stitch'
