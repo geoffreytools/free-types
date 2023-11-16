@@ -19,10 +19,10 @@ test('nested tuples' as const, t => {
     type Tested = apply<$T, ['foo']>
     type Result = [[number, boolean], [number, boolean, "foo"]];
 
-    return [
+    return t.force([
         t.equal<Tested, Result>(),
         t.equal<Constraints, ExpectedConstraints>(),
-    ];
+    ]);
 });
 
 test('nested objects' as const, t => {
@@ -42,10 +42,10 @@ test('nested objects' as const, t => {
     type Tested = apply<$T, ['foo']>
     type Result = { foo: { a: 'foo' }, bar: { a: string } };
 
-    return [
+    return t.force([
         t.equal<Tested, Result>(),
         t.equal<Constraints, ExpectedConstraints>(),
-    ];
+    ]);
 });
 
 test('Mixed objects and tuples' as const, t => {
@@ -66,10 +66,10 @@ test('Mixed objects and tuples' as const, t => {
     type Tested = apply<$T, [1]>;
     type Result = Template<1>
 
-    return [
+    return t.force([
         t.equal<Tested, Result>(),
         t.equal<Constraints, ExpectedConstraints>(),
-    ];
+    ]);
 });
 
 test('nested objects, multiple depths' as const, t => {
@@ -89,10 +89,10 @@ test('nested objects, multiple depths' as const, t => {
     type Tested = apply<$T, [1, 2]>;
     type Result = Template<1, 2>
 
-    return [
+    return t.force([
         t.equal<Tested, Result>(),
         t.equal<Constraints, ExpectedConstraints>(),
-    ];
+    ]);
 })
 
 test('mixed multiple arguments' as const, t => {
@@ -121,8 +121,8 @@ test('mixed multiple arguments' as const, t => {
     type Tested = apply<$T, [1, 'hello']>;
     type Result = Template<1, 'hello'>
 
-    return [
+    return t.force([
         t.equal<Tested, Result>(),
         t.equal<Constraints, ExpectedConstraints>(),
-    ];
+    ]);
 });
