@@ -20,9 +20,8 @@ type _Reduce<
 
 interface $Reduce<$T extends Type<2>> extends Type {
     type: this[0] extends this['constraints'][0]
-        ? _Reduce<this[0], $T> extends infer R  
-            ? R extends $T['type'] ? R : $T['type']
-            : never
+        ? _Reduce<this[0], $T> extends infer R extends
+            $T['type'] ? R : $T['type']
         : $T['type']
     constraints: [NonEmptyTuple<$T['constraints'][0] & $T['constraints'][1]>]
 }

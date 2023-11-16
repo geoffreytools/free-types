@@ -41,22 +41,14 @@ interface $RejectRefinement extends Type<[number[]], string[]> {
 }
 
 test('Resolve to a value when input is generic', t => [
-    (<T extends (number | string)[]>() => t.equal<
-        Tuple.Filter<T, Refinement.$Extends<number>>,
-        number[]
-    >())(),
-    (<T extends (number | string)[]>() => t.equal<
-        Tuple.Filter<T, number>,
-        number[]
-    >())(),
-    (<T extends (number | string)[]>() => t.equal<
-        apply<Tuple.$Filter<Refinement.$Extends<number>>, [T]>,
-        number[]
-    >())(),
-    (<T extends (number | string)[]>() => t.equal<
-        apply<Tuple.$Filter<number>, [T]>,
-        number[]
-    >())()
+    <T extends (number | string)[]>() =>
+        t.equal<Tuple.Filter<T, Refinement.$Extends<number>>, number[]>(),
+    <T extends (number | string)[]>() =>
+        t.equal<Tuple.Filter<T, number>, number[]>(),
+    <T extends (number | string)[]>() =>
+        t.equal<apply<Tuple.$Filter<Refinement.$Extends<number>>, [T]>, number[]>(),
+    <T extends (number | string)[]>() =>
+        t.equal<apply<Tuple.$Filter<number>, [T]>, number[]>()
 ])
 
 test('$Filter return type is narrowed', t => [

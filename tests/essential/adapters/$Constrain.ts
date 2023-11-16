@@ -1,14 +1,16 @@
 import { Type, A, B, apply } from 'free-types-core';
 import { Tuple } from 'free-types-core/dist/utils'
 import { test } from 'ts-spec';
-import { $Constrain } from '../../../essential/adapters/$Constrain';
-import { Flow } from '../../../essential/composition/Flow';
+import { $Constrain } from 'src/essential/adapters/$Constrain';
+import { Flow } from 'free-types-core';
 
 interface $Tuple extends Type<[unknown, number]> {
     type: Tuple<B<this>, A<this>>
 }
 
-type $Str2Or3Tuple = $Constrain<$Tuple, [string, 2|3]>;
+type Constraints = [string, 2 | 3]
+
+type $Str2Or3Tuple = $Constrain<$Tuple, Constraints>;
 
 test('control' as const, t =>[
     t.equal<$Tuple['type'], unknown[]>(),
@@ -17,10 +19,7 @@ test('control' as const, t =>[
 
 test('$Constrain changes the constraints and return type without affecting the behaviour' as const, t =>[
     t.equal<$Str2Or3Tuple['constraints'], [string, 2|3]>(),
-    t.equal<
-        $Str2Or3Tuple['type'],
-        [string, string] | [string, string, string]
-    >(),
+    t.equal<$Str2Or3Tuple['type'], apply<$Tuple, Constraints>>(),
     t.equal<apply<$Str2Or3Tuple, ['a', 2]>, ['a', 'a']>()
 ])
 

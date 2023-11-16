@@ -8,8 +8,8 @@ export type Key = string | number | symbol;
 export type Obj<T = unknown> = { [k: Key]: T };
 
 export type Mappable<T = unknown> = Partial<Obj<T>> | TupleInput<T>;
-export type Input<T = unknown> = Partial<Obj<T>> | TupleInput<T>;
-export type Output<T = unknown> = Partial<Obj<T>> | TupleOutput<T>;
+export type MappableInput<T = unknown> = Partial<Obj<T>> | TupleInput<T>;
+export type MappableOutput<T = unknown> = Partial<Obj<T>> | TupleOutput<T>;
 export type NonEmptyMappable<T = unknown> =
     | Partial<Obj<T>>
     | TupleNonEmptyInput<T>;

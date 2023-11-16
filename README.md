@@ -6,7 +6,15 @@ A type-level library enabling the creation and the manipulation of type construc
 
 Such "free" type constructors can be passed around and composed, making known programming patterns also available at the type level.
 
-The goal of this library is to support type-level programming and dependency inversion. Distinctive features are support for: type constraints, partial application, composition with built-in adapters and higher order types, type constructor inference, all sorts of arities and a few experimental features such as pattern matching with destructuring.
+The goal of this library is to support type-level programming and dependency inversion. Distinctive features are support for:
+
+- type constraints;
+- flexible parameters (named, optional, variadic...);
+- partial application;
+- composition with built-in adapters;
+- higher order types with good inference in higher order scenarios with generics;
+- type constructor inference;
+- a few experimental features such as pattern matching with destructuring.
 
 Related projects: [free-types-transform](https://github.com/geoffreytools/free-types-transform), [type-lenses](https://github.com/geoffreytools/type-lenses).
 
@@ -25,10 +33,10 @@ class Foo<T extends number> {
 ```
 We can create a free type constructor:
 ```typescript
-import { Type, A } from 'free-types'
+import { Type } from 'free-types'
 
 interface $Foo extends Type<[number]> {
-    type: Foo<A<this>>
+    type: Foo<this['arg'][0]>
 }
 ```
 Which can then be passed as an argument to another type responsible for applying it.

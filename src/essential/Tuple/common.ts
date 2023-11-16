@@ -1,6 +1,15 @@
-import { Type, Checked, IsOptional, Next, apply, Slice } from 'free-types-core';
+import { Type, Checked, At, Lossy, IsOptional, Next, apply } from 'free-types-core';
 
 export { Tuple as From } from 'free-types-core/dist/utils';
+
+
+export type ExcludeOptional<
+    T extends readonly unknown[],
+    I extends number = 0,
+    R extends unknown[] = []
+> = number extends T['length'] ? T
+    : I extends T['length'] ? R
+    : ExcludeOptional<T, Next<I>, [...R, T[I]]>;
 
 /** Type definition for strict tuples */
 export type Tuple<T = unknown> = readonly [] | NonEmptyTuple<T>;
@@ -27,41 +36,65 @@ export type Fallback<
 export type Append<T extends Input, U> =
     T extends unknown[] ? [...T, U] : readonly [...T, U]
 
-/** concat tuples, preserving the write mode of the first one */
+/** concat 2 tuples, preserving the write mode of the first one */
 export type Concat<T extends Input, U  extends Input> =
     T extends unknown[] ? [...T, ...U] : readonly [...T, ...U]
 
-/** create an empty tuple, optionally based of a model */
+/** create an empty tuple, optionally copying the write mode of a Model */
 export type Empty<Model = Input> =
     Model extends unknown[] ? [] : readonly [];
 
-/** create an empty tuple, optionally based of a model */
+/** create an array, optionally copying the write mode of a Model */
 export type Of<T, Model = Input> =
     Model extends unknown[] ? T[] : readonly T[];
 
-/** Interface for iteration callback */
-export interface $Reducer extends Type<number, Input> {
-    Acc: Checked<0, this>
-    'T[I]': this[1]
-    I: this[2] & number
-    T: Checked<3, this>
+/** Interface with baked type parameters for your reducers.
+ * 
+ * Makes the following fields available:
+ * - `this['Acc']`: the accumulator
+ * - `this['Val']`: the current value
+ * - `this['I']`: the current index
+ * - `this['Src']`: the source tuple
+*/
+
+export interface $Reducer extends Type<
+    { Acc: [0, Input], Val: 1, I: [2, number], Src: [3, Input] },
+    Input
+> {
+    Acc: Checked<'Acc', this>
+    Val: At<'Val', this>
+    I: Lossy<'I', this>
+    Src: Checked<'Src', this>
+}
+
+/** Interface with baked type parameters for your transforms.
+ * 
+ * Makes the following fields available:
+ * - `Val`: the current value
+ * - `Index`: the current index
+ * - `Source`: the source tuple
+*/
+export interface $Transform extends Type<number, Input> {
+    Val: this[0]
+    I: this[1] & number
+    Src: Checked<2, this>
     
     constraints: [
-        Acc: Input,
-        TI: unknown,
+        Val: unknown,
         I: number,
         T: Input
     ]
 }
 
-export type WrapOptional<T extends Input, I extends number, TI = T[I]> =
-    IsOptional<T, I> extends true ? [TI?] : [TI]
+export type WrapOptional<Src extends Input, I extends number, Val = Src[I]> =
+    IsOptional<Src, I> extends true ? [Val?] : [Val]
 
-export type Reduce<
-    T extends Input,
-    $F extends $Reducer,
-    L = Required<T>['length'],
+export type Fold<
+    Src extends Input,
+    Init,
+    $F extends Type,
+    L = Required<Src>['length'],
     I extends number = 0,
-    R extends Input = Empty<T>
-> = I extends L ? R
-    : Reduce<T, $F, L, Next<I>, apply<$F, [R, T[I], I, T]>>;
+    Acc = Init
+> = I extends L ? Acc
+    : Fold<Src, Init, $F, L, Next<I>, apply<$F, [Acc, Src[I], I, Src]>>;

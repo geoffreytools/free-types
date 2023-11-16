@@ -1,4 +1,4 @@
-import { Type, $partial, $apply, ToTuple } from 'free-types-core/dist/';
+import { Type, _Type, $partial, $apply } from 'free-types-core/dist/';
 import { Next, ArrayKeys,} from 'free-types-core/dist/utils';
 import { LastUnionMember } from '../utils';
 import { _Ap } from './Ap';
@@ -7,17 +7,17 @@ import { Mappable } from './common';
 
 export { Lift, $Lift }
 
-interface $Lift<$T extends Type> extends Type {
+interface $Lift<$T extends _Type> extends Type {
     type: this['arguments'] extends Mappable<unknown>[]
         ? _Lift<$T, this['arguments']>
         : Mappable<$T['type']>
-    constraints: ToTuple<Check<$T['constraints']> & unknown[]>
+    constraints: Check<$T['constraints']>
 }
 
-type Lift<$T extends Type, T extends Check<$T['constraints']>> =
+type Lift<$T extends _Type, T extends Check<$T['constraints']>> =
     _Lift<$T, T>
 
-type _Lift<$T extends Type, T extends { [k: number]: unknown }> =
+type _Lift<$T extends _Type, T extends { [k: number]: unknown }> =
     __Lift<IterativeTupleMap<T[0], $partial<$T>>, T>
 
 type __Lift<$Step, T extends { [k: number]: unknown }, I extends number = 1> =

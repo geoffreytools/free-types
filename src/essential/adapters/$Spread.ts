@@ -1,5 +1,5 @@
-import { A, apply, Checked, Type } from "free-types-core";
+import { _apply, _Type, Type } from "free-types-core";
 
-export interface $Spread<$T extends Type> extends Type<[$T['constraints']]> {
-    type: apply<$T, Checked<A, this>>
+export interface $Spread<$T extends _Type> extends Type<[$T['constraints']]> {
+    type: _apply<$T, Extract<this[0], unknown[]>>
 }

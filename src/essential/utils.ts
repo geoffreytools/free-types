@@ -1,6 +1,6 @@
 import { Natural, Prev, Next } from 'free-types-core/dist/utils'
 
-export { IsAny, ArrayKeys, Next, Extends, Eq, Tuple } from 'free-types-core/dist/utils';
+export { IsAny, ArrayKeys, Next, Eq, Tuple } from 'free-types-core/dist/utils';
 
 // Numbers
 
@@ -25,8 +25,9 @@ type Compute<T> = { [K in keyof T]: T[K] } & unknown
 
 // Logic
 
-export { Assert, GetOrElse, And, Or, Not,  };
+export { Assert, GetOrElse, And, Or, Not, Extends };
 
+type Extends<A, B> = [A] extends [B] ? true : false;
 type Assert<T, U> = [T] extends [U] ? T : never;
 type GetOrElse<T, U> = [T] extends [U] ? T : U;
 type And<A, B> = A extends false ? false : B extends false ? false : B;

@@ -1,4 +1,4 @@
-import { Type, apply } from 'free-types-core';
+import { Type, _apply, _Type } from 'free-types-core';
 import { Next, ArrayKeys, Tuple } from 'free-types-core/dist/utils';
 
 export { _partial, _, PartialSparse }
@@ -9,22 +9,21 @@ type _ = typeof placeholder;
 /** Return a new type based upon `$T`, with `Args` already applied, expecting the remaining arguments.
  * 
  * Accept a placeholder `_` for skipping arguments */
-type _partial <$T extends Type, Args extends PartialSparse<$T['constraints']>> =
-    Args extends unknown[]
-    ? SparsePartialType<$T, NormalizeArgs<Args, Required<$T['constraints']>['length']>>
-    : never
+type _partial<
+    $T extends _Type,
+    Args extends PartialSparse<$T['constraints']>,
+    End extends number = Required<$T['constraints']>['length']
+> = SparsePartialType<$T, Args extends [] ? Tuple<End, _> : NormalizeArgs<Args, End>>
 
-type PartialSparse<T extends unknown[]> = Partial<{
-    [K in keyof T]: K extends ArrayKeys ? T[K] : T[K] | _
-}>
+type PartialSparse<T extends unknown[]> = {
+    [K in keyof T]?: K extends ArrayKeys ? T[K] : T[K] | _
+} & { length: number }
 
 interface SparsePartialType<
-    $T extends Type,
+    $T extends _Type,
     Applied extends unknown[],
-> extends Type {
-    type: apply<$T, FillMissingArgs<Applied, this['arguments']>>
-    constraints: Remaining<$T['constraints'], Applied>
-    arguments: unknown[]
+> extends Type<Remaining<$T['constraints'], Applied>> {
+    type: _apply<$T, FillMissingArgs<Applied, this['arguments']>>
 }
 
 type Remaining<Constraints extends unknown[], Applied extends unknown[]> =
@@ -69,17 +68,15 @@ type _FillMissingArgs<
     >
 
 type NormalizeArgs<
-    Args extends unknown[],
+    Args extends {[k: number]: unknown, length: number},
     End extends number,
     I extends number = 0,
     R extends unknown[] = [],
     Overshoot = false,
-> = Args extends [] ? Tuple<End, _>
-    : I extends End ? R
-    : NormalizeArgs<
-        Args,
-        End,
-        Next<I>,
-        [...R, Overshoot extends false ? Args[I] : _],
-        Next<I> extends Args['length'] ? true : Overshoot
-    >
+> = I extends End ? R : NormalizeArgs<
+    Args,
+    End,
+    Next<I>,
+    [...R, Overshoot extends false ? Args[I] : _],
+    Next<I> extends Args['length'] ? true : Overshoot
+>

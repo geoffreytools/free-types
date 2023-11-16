@@ -1,10 +1,11 @@
-import { Const, partial } from "free-types-core";
+import { Const, partial, Type, apply } from "free-types-core";
 import { $Fork } from "../logic";
-import { $Reduce } from "../../essential/mappables/Reduce";
+import { $Reduce, Reduce } from "../../essential/mappables/Reduce";
 import { $IsEmpty } from "../../essential/mappables/IsEmpty";
 import { $As } from "../../essential/adapters/$As";
 import { $Stitch } from "./$Stitch";
 import { Showable } from "./common";
+import { $OptionalFlip } from "../../essential";
 
 export type $Join<S extends Showable> = $As<$Fork<
     $IsEmpty,
@@ -12,3 +13,13 @@ export type $Join<S extends Showable> = $As<$Fork<
     $Reduce<partial<$Stitch, [S]>>,
     [Showable[]]
 >, string>
+
+// type $Join<S extends Showable = never> = $OptionalFlip<$Join2, [S]>
+
+// interface $Join2 extends Type<[Showable[], Showable], string> {
+//     type: Showable[] extends this[0]
+//         ? string
+//         : this['arg'][0] extends [any, ...any[]]
+//         ? Reduce<this['arg'][0], partial<$Stitch, [this['arg'][1]]>>
+//         : ''
+// }

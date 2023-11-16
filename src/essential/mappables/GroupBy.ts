@@ -1,29 +1,30 @@
-import { apply, Next, Type, Checked, A, free } from "free-types-core";
+import { apply, Next, Type, Checked, A, free, Expect } from "free-types-core";
 import { LastUnionMember, PickEntryFromUnion, StructFromTuple } from "../utils";
 
 export { GroupBy, $GroupBy, GroupUnionBy, $GroupUnionBy };
 
-type $Predicate = Type<[UnionMember: unknown], PropertyKey>
+type $Predicate<T = any> = Type<[UnionMember: T], PropertyKey>
+type $ExpectPredicate = Expect<$Predicate>
 
 type Entry = readonly [PropertyKey, unknown];
 
 type Aggregate = readonly [PropertyKey, readonly unknown[]]
 
-interface $GroupBy<$P extends $Predicate> extends Type<[readonly unknown[]]> {
+interface $GroupBy<$P extends $ExpectPredicate> extends Type<[readonly unknown[]]> {
     type: GroupBy<Checked<A, this>, $P>
 }
 
 type GroupBy<
     T extends readonly unknown[],
-    $T extends $Predicate,
+    $T extends $ExpectPredicate,
     I extends number = 0,
     R extends Aggregate[] = []
 > = I extends T['length'] ? StructFromTuple<R>
-    : GroupBy<T, $T, Next<I>, Merge<T[I], $T, R>>;
+    : GroupBy<T, $T, Next<I>, Extract<Merge<T[I], $T, R>, Aggregate[]>>;
 
 type Merge<
     T,
-    $T extends $Predicate,
+    $T extends $ExpectPredicate,
     R extends Aggregate[],
     Key extends PropertyKey = apply<$T, [T]>,
     Selected extends Aggregate = PickEntry<R, Key>
@@ -61,13 +62,14 @@ type OmitEntry<
  * ```
  */
 interface $GroupUnionBy<
-    $P extends $Predicate,
-    $T extends $Transform = free.Id
+    $P extends $ExpectPredicate,
+    $T extends $ExpectTransform = free.Id
 > extends Type<1> {
     type: unknown extends this[0] ? {} : GroupUnionBy<this[0], $P, $T>
 }
 
-type $Transform = Type<[union: unknown, length?: number]>;
+type $Transform<T = any> = Type<[union: T, length: number]>;
+type $ExpectTransform = Expect<$Transform>
 
 /**
  * ```
@@ -82,13 +84,13 @@ type $Transform = Type<[union: unknown, length?: number]>;
  * type $Transform = Type<[union: unknown, length?: number]>
  * ```
  */
-type GroupUnionBy<U, $P extends $Predicate, $T extends $Transform = free.Id> =
+type GroupUnionBy<U, $P extends $ExpectPredicate, $T extends $ExpectTransform = free.Id> =
     _GroupUnionBy<U, $P, $T>
 
 type _GroupUnionBy<
     U,
-    $P extends $Predicate,
-    $T extends $Transform = free.Id,
+    $P extends $ExpectPredicate,
+    $T extends $ExpectTransform = free.Id,
     R extends Aggregate = never,
     L = LastUnionMember<U>,
 > = [U] extends [never]
@@ -98,7 +100,7 @@ type _GroupUnionBy<
 
 type MergeUnion<
     T,
-    $P extends $Predicate,
+    $P extends $ExpectPredicate,
     R extends Aggregate,
     Key extends PropertyKey = apply<$P, [T]>,
     Selected extends Aggregate = PickEntryFromUnion<R, Key>
@@ -108,7 +110,7 @@ type MergeUnion<
 
 type StructFromUnionWith<
     T extends Aggregate,
-    $T extends $Transform,
+    $T extends $ExpectTransform,
 > = unknown & {
     [K in T[0]]:
         PickEntryFromUnion<T, K>[1] extends infer E extends unknown[]

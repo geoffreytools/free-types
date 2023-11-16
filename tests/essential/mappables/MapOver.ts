@@ -77,3 +77,35 @@ test('preserve optional fields' as const, t => [
     t.equal<MapOver<{a?: 1, b?: 2}, $Next>, {a?: 2, b?: 3}>(),
     t.equal<apply<$MapOver<$Next>, [{a?: 1, b?: 2}]>, {a?: 2, b?: 3}>()
 ])
+
+group('variance', t => {
+    interface $Exclaim extends $Transform<string> {
+        type: `${this['arg'][0]}!`
+    }
+    
+    interface $Array extends $Transform {
+        type: this[0][]
+    }
+    
+    interface $Zero extends $Transform<0> {
+        type: this[0] extends 0 ? true : false
+    }
+    
+    type Indirect<$T extends Expect<$Transform<number>>> =
+        MapOver<[1, 2, 3], $T>
+
+    test(t('accept more general Type'), t =>
+        t.equal<Indirect<$Array>, [1[], 2[], 3[]]>()
+    );
+
+    test(t('accept equivalent Type'), t =>
+        t.equal<Indirect<$Next>, [2, 3, 4]>()
+    );
+
+    // @ts-expect-error: don't accept narrower Type
+    type Narrower = Indirect<$Zero>
+
+    // @ts-expect-error: don't accept unrelated Type
+    type Unrelated = Indirect<$Exclaim>
+
+})

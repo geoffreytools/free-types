@@ -1,8 +1,8 @@
-import { Type, apply, ToTuple } from "free-types-core"
+import { Type, apply } from "free-types-core"
 import { IsTruthy } from "../../utility-types/logic/Refinement";
 import { Extends } from "../utils";
 import * as Tuple from "./common";
-import { Reduce, $Reducer, WrapOptional } from './common';
+import { Fold, $Reducer, WrapOptional } from './common';
 
 export { Filter, $Filter, FilterOut, $FilterOut }
 
@@ -10,36 +10,33 @@ type Refined<F> = [F] extends [Type] ? F['type'] : F ;
 
 type Filter<
     T extends Tuple.Input,
-    F,
-    Model = F,
+    Refinement,
+    Model = Refinement,
     Fallback = Tuple.Fallback<T, Refined<Model>>
-> = any[] extends T ? FilterArray<T, F, Model>
-    : FilterTuple<T, F, true> extends infer R
+> = any[] extends T ? FilterArray<T, Refinement, Model>
+    : FilterTuple<T, Refinement, true> extends infer R
         extends Fallback ? R : Fallback
 
 type FilterOut<
     T extends Tuple.Input,
-    F,
+    Refinement,
     Remaining = unknown,
-    Fallback = Tuple.Fallback<T, Exclude<T[number], Refined<F>>>
-> = any[] extends T ? FilterOutArray<T, F, Remaining>
-    : Refined<F> extends undefined ? CleanupTuple<T, F, Fallback>
-    : FilterTuple<T, F, false> extends infer R
-        extends Fallback ? R : Fallback
+    Fallback = Tuple.Fallback<T, Exclude<T[number], Refined<Refinement>>>
+> = any[] extends T
+    ? FilterOutArray<T, Refinement, Remaining>
+    : (
+        Refined<Refinement> extends undefined
+        ? FilterTuple<Tuple.ExcludeOptional<T>, Refinement, false>
+        : FilterTuple<T, Refinement, false>
+    ) extends infer R extends Fallback ? R : Fallback
 
-type CleanupTuple<T extends Tuple.Input, F, Fallback> =
-    FilterTuple<ToTuple<T>, F, false>  extends infer R
-    extends Fallback ? R : Fallback
-
-interface $Filter<F extends Model, Model = F> extends Type {
-    constraints: [Tuple.Input]
+interface $Filter<F extends Model, Model = F> extends Type<[Tuple.Input]> {
     type: this[0] extends Tuple.Input
         ? Filter<this[0], F, Model>
         : Tuple.Output<Refined<Model>, never>
 }
 
-interface $FilterOut<F, Remaining = unknown> extends Type {
-    constraints: [Tuple.Input]
+interface $FilterOut<F, Remaining = unknown> extends Type<[Tuple.Input]> {
     type: this[0] extends Tuple.Input
         ? FilterOut<this[0], F, Remaining>
         : Tuple.Output<Remaining, never>
@@ -55,37 +52,35 @@ type FilterOutArray<T extends Tuple.Input, F, Remaining> =
     ? Tuple.Fallback<T, Extract<Exclude<T[number], E>, Remaining>>
     : never;
 
-type FilterTuple<T extends Tuple.Input, F, Choose> = (
+type FilterTuple<T extends Tuple.Input, F, Include> = (
     [F] extends [Type]
-    ? undefined extends T[number] ? $PredicateOpt<F, Choose> : $Predicate<F, Choose>
-    : undefined extends T[number] ? $RefinementOpt<F, Choose> : $Refinement<F, Choose>
-) extends infer $T extends $Reducer ? Reduce<T, $T> : never
+    ? undefined extends T[number] ? $PredicateOpt<F, Include> : $Predicate<F, Include>
+    : undefined extends T[number] ? $RefinementOpt<F, Include> : $Refinement<F, Include>
+) extends infer $T extends $Reducer ? Fold<T, Tuple.Empty<T>, $T> : never
 
-// Reducers
-
-interface $Predicate<$F extends Type, Choose> extends $Reducer {
-    type: IsTruthy<apply<$F, [this['T[I]']]>> extends Choose
-        ? Tuple.Append<this['Acc'], this['T[I]']>
+interface $Predicate<$F extends Type, Include> extends $Reducer {
+    type: IsTruthy<apply<$F, [this['Val']]>> extends Include
+        ? Tuple.Append<this['Acc'], this['Val']>
         : this['Acc']
 }
 
-interface $Refinement<F, Choose> extends $Reducer {
-    type: Extends<this['T[I]'], F> extends Choose
-        ? Tuple.Append<this['Acc'], this['T[I]']>
+interface $Refinement<F, Include> extends $Reducer {
+    type: Extends<this['Val'], F> extends Include
+        ? Tuple.Append<this['Acc'], this['Val']>
         : this['Acc']
 }
 
-interface $PredicateOpt<$F extends Type, Choose> extends $Reducer {
-    type: IsTruthy<apply<$F, [Narrow<this['T[I]'], Choose>]>> extends Choose
-        ? Tuple.Concat<this['Acc'], WrapOptional<this['T'], this['I']>>
+interface $PredicateOpt<$F extends Type, Include> extends $Reducer {
+    type: IsTruthy<apply<$F, [Narrow<this['Val'], Include>]>> extends Include
+        ? Tuple.Concat<this['Acc'], WrapOptional<this['Src'], this['I']>>
         : this['Acc']
 }
 
-interface $RefinementOpt<F, Choose> extends $Reducer {
-    type: Extends<this['T[I]'], F | Widen<Choose>> extends Choose
-        ? Tuple.Concat<this['Acc'], WrapOptional<this['T'], this['I']>>
+interface $RefinementOpt<F, Include> extends $Reducer {
+    type: Extends<this['Val'], F | Widen<Include>> extends Include
+        ? Tuple.Concat<this['Acc'], WrapOptional<this['Src'], this['I']>>
         : this['Acc']
 }
 
-type Widen<Choose> = Choose extends false ? undefined : never
-type Narrow<T, Choose> = Exclude<T, Widen<Choose>>
+type Widen<Include> = Include extends false ? undefined : never
+type Narrow<T, Include> = Exclude<T, Widen<Include>>

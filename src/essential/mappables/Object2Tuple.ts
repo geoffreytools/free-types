@@ -1,6 +1,5 @@
 import { Type, Checked, A } from 'free-types-core';
-import { ArrayKeys, Union2Tuple } from "../utils";
-import { Key, Mappable } from "./common";
+import { ArrayKeys, Union2Tuple, Mappable } from "free-types-core/dist/utils";
 
 export { $Object2Tuple, Object2Tuple, _Object2Tuple };
 
@@ -9,7 +8,7 @@ interface $Object2Tuple extends Type<[Mappable]> {
         : Object2Tuple<Checked<A, this>>
 }
 
-type Object2Tuple<T extends {[k: Key]: any}> =
+type Object2Tuple<T extends {[k: PropertyKey]: any}> =
     _Object2Tuple<T, Union2Tuple<keyof T>>;
 
 type _Object2Tuple<T, Keys> = {

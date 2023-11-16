@@ -1,14 +1,14 @@
-import { Type, Checked, apply } from 'free-types-core';
+import { Type, _Type, Checked, apply, Expect } from 'free-types-core';
+import { PickUnionMember } from 'free-types-core/dist/utils';
 import { _NonEmptyMappable, NonEmptyMappable, Obj } from './common';
 import { Reduce as ReduceTuple } from '../Tuple/Reduce';
 import { NonEmptyTuple } from '../Tuple/common';
-import { LastUnionMember } from '../utils';
 
 export { Reduce, $Reduce }
 
 type Reduce<
     T extends Check,
-    $T extends Type<2>,
+    $T extends Expect<Type<2>>,
     Check extends {} = _NonEmptyMappable<T, ValidInput<$T>>
 > = _Reduce<T, $T>
 
@@ -20,10 +20,10 @@ type _Reduce<T extends {}, $T extends Type<2>> =
 
 type ReduceObject<
     T extends Obj,
-    $Reducer extends Type<2>,
+    $Reducer extends _Type,
     Keys extends PropertyKey = keyof T,
     Acc = never,
-    Last extends PropertyKey = LastUnionMember<Keys> & PropertyKey,
+    Last extends PropertyKey = PickUnionMember<Keys> & PropertyKey,
     Remaining extends PropertyKey = Exclude<Keys, Last>,
     R = [Acc] extends [never] ? T[Last] : apply<$Reducer, [Acc, T[Last]]>
 > = [Remaining] extends [never] ? R
@@ -31,7 +31,7 @@ type ReduceObject<
 
 type ValidInput<$T extends Type> = $T['constraints'][0] & $T['constraints'][1];
 
-interface $Reduce<$T extends Type<2>> extends Type {
+interface $Reduce<$T extends Expect<Type<2>>> extends Type {
     type: this['arguments'] extends this['constraints']
         ? this['result'] extends $T['type']
             ? this['result'] : $T['type']

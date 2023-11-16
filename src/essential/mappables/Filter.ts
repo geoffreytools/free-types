@@ -1,4 +1,4 @@
-import { Type, apply } from "free-types-core"
+import { Type, apply } from "../../core"
 import { $Not } from "../../utility-types/logic/$Not";
 import { Mappable } from "./common"
 import { Filter as FilterTuple, FilterOut as FilterOutTuple } from "../Tuple/Filter"
@@ -35,7 +35,7 @@ interface $Filter<F extends Model, Model = F> extends Type<[Mappable]> {
 type FilterOut<T extends Mappable, F> =
     T extends readonly any[]
     ? FilterOutTuple<T, F>
-    : Filter<T, F extends Type<1> ? $Not<F> : $NotExtends<F>>
+    : Filter<T, F extends Type<1> ? $Not<Extract<F, Type<1>>> : $NotExtends<F>>
 
 interface $FilterOut<F, Remaining = unknown> extends Type<[Mappable]> {
     type: this[0] extends Mappable

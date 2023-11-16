@@ -1,5 +1,5 @@
 import { Type } from "free-types-core";
-import { Extends } from "free-types-core/dist/utils";
+import { Extends } from "../../essential/utils";
 import { $OptionalFlip } from "../../essential/adapters/$Optional";
 
 export type $Includes<T = never> = $OptionalFlip<$Includes2, [T]>;

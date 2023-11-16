@@ -29,6 +29,6 @@ test('$Concat' as const, t =>[
 ])
 
 test('$Concat signature' as const, t =>[
-    t.equal<$Concat['constraints'], [unknown, unknown]>(),
+    t.equal<$Concat['constraints'], [any, any]>(),
     t.equal<$Concat['type'], unknown[]>(),
 ])
