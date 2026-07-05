@@ -1,5 +1,5 @@
 import { Type, _apply, _Type } from 'free-types-core';
-import { Next, ArrayKeys, Tuple } from 'free-types-core/dist/utils';
+import { Next, ArrayKeys, Tuple, IsOptional } from 'free-types-core/dist/utils';
 
 export { _partial, _, PartialSparse }
 
@@ -42,9 +42,6 @@ type _Remaining<
     : _Remaining<Constraints, Applied, Next<I>, [...R, ...V]>;
 
 
-type IsOptional<T extends unknown[], I extends number> = [{
-        [K in T['length'] as K]: K extends I ? never : unknown
-    }[I]] extends [never] ? true : false;
     
 
 type FillMissingArgs<Applied extends unknown[], Args extends unknown[]> =
