@@ -7,9 +7,11 @@ export type Fold<
     T extends Mappable<$T['constraints'][1]>,
     Init extends $T['constraints'][0] & $T['type'],
     $T extends Type<2>
-> = T extends readonly unknown[] ?
-        FoldTuple<T, Init, $T>
-        : Fold<Object2Tuple<T>, Init, $T>;
+> = T extends readonly unknown[]
+    ? FoldTuple<T, Init, $T>
+    : Object2Tuple<T> extends infer R extends Mappable<$T['constraints'][1]>
+        ? Fold<R, Init, $T>
+        : $T['type'];
 
 export interface $Fold<$T extends Type<2>, Init extends $T['constraints'][0]>
     extends Type<1> {
