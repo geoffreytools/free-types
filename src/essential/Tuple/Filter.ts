@@ -13,9 +13,11 @@ type Filter<
     Refinement,
     Model = Refinement,
     Fallback = Tuple.Fallback<T, Refined<Model>>
-> = any[] extends T ? FilterArray<T, Refinement, Model>
+> = T extends unknown ? (
+    any[] extends T ? FilterArray<T, Refinement, Model>
     : FilterTuple<T, Refinement, true> extends infer R
         extends Fallback ? R : Fallback
+) : never
 
 type FilterOut<
     T extends Tuple.Input,
