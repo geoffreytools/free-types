@@ -41,7 +41,9 @@ interface $Optional<$T extends _Type> extends $Reducer {
 interface $MapOver<$T extends $ExpectTransform, L extends number = never> extends Type<
     [[L] extends [never] ? Tuple.Input<$T['constraints'][0]> : Tuple.From<L>]
 > {
-    type: this[0] extends this['constraints'][0]
-        ? MapOver<this[0], $T>
-        : Tuple.Output<$T['type']>
+    type: this[0] extends infer T
+        ? T extends this['constraints'][0] & Tuple.Input<$T['constraints'][0]>
+            ? MapOver<T, $T>
+            : Tuple.Output<$T['type']>
+        : never
 }

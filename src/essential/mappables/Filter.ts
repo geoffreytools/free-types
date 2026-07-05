@@ -18,27 +18,42 @@ interface $NotExtends<F> extends Type<1> {
 
 type Filter<T extends Mappable, F, Model = F> = T extends readonly any[]
     ? FilterTuple<T, F, Model>
-    : FilterObj<T, [F] extends [Type] ? F : $Extends<F>>
+    : PickFilterObj<T, F>
+
+type PickFilterObj<T, F> =
+    [F] extends [Type] ? FilterObj<T, Extract<F, Type>> : FilterObjRaw<T, F>
 
 type FilterObj<T, $F extends Type> = {
     [K in keyof T as apply<$F, [T[K]]> extends true ? K : never]: T[K]
 }
 
+type FilterObjRaw<T, F> = {
+    [K in keyof T as [T[K]] extends [F] ? K : never]: T[K]
+}
+
+type FilterOutObjRaw<T, F> = {
+    [K in keyof T as [T[K]] extends [F] ? never : K]: T[K]
+}
+
 interface $Filter<F extends Model, Model = F> extends Type<[Mappable]> {
-    type: this[0] extends readonly any[]
-        ? GetOrElse<FilterTuple<this[0], F>, Mappable<Refined<Model>>>
-        : this[0] extends Mappable
-        ? GetOrElse<FilterObj<this[0], [F] extends [Type] ? F : $Extends<F>>, Mappable<Refined<Model>>>
-        : Mappable<Refined<Model>>
+    type: this[0] extends infer T
+        ? T extends readonly any[]
+            ? GetOrElse<FilterTuple<T, F>, Mappable<Refined<Model>>>
+            : T extends Mappable
+            ? GetOrElse<PickFilterObj<T, F>, Mappable<Refined<Model>>>
+            : Mappable<Refined<Model>>
+        : never
 }
 
 type FilterOut<T extends Mappable, F> =
     T extends readonly any[]
     ? FilterOutTuple<T, F>
-    : Filter<T, F extends Type<1> ? $Not<Extract<F, Type<1>>> : $NotExtends<F>>
+    : [F] extends [Type]
+    ? Filter<T, F extends Type<1> ? $Not<Extract<F, Type<1>>> : $NotExtends<F>>
+    : FilterOutObjRaw<T, F>
 
 interface $FilterOut<F, Remaining = unknown> extends Type<[Mappable]> {
-    type: this[0] extends Mappable
-        ? FilterOut<this[0], F>
-        : Mappable<Remaining>
+    type: this[0] extends infer T
+        ? T extends Mappable ? FilterOut<T, F> : Mappable<Remaining>
+        : never
 }

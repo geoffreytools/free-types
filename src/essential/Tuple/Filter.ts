@@ -31,21 +31,23 @@ type FilterOut<
     ) extends infer R extends Fallback ? R : Fallback
 
 interface $Filter<F extends Model, Model = F> extends Type<[Tuple.Input]> {
-    type: this[0] extends Tuple.Input
-        ? Filter<this[0], F, Model>
-        : Tuple.Output<Refined<Model>, never>
+    type: this[0] extends infer T
+        ? T extends Tuple.Input ? Filter<T, F, Model> : Tuple.Output<Refined<Model>, never>
+        : never
 }
 
 interface $FilterOut<F, Remaining = unknown> extends Type<[Tuple.Input]> {
-    type: this[0] extends Tuple.Input
-        ? FilterOut<this[0], F, Remaining>
-        : Tuple.Output<Remaining, never>
+    type: this[0] extends infer T
+        ? T extends Tuple.Input ? FilterOut<T, F, Remaining> : Tuple.Output<Remaining, never>
+        : never
 }
 
 type FilterArray<T extends Tuple.Input, F, Model> =
-    ([F] extends [Type] ? apply<F, [T[number]]> : F) extends infer E
-    ? Tuple.Fallback<Tuple.Fallback<T, Extract<T[number], E>>, Refined<Model>>
-    : never;
+    [F] extends [Type]
+    ? (apply<Extract<F, Type>, [T[number]]> extends infer E
+        ? Tuple.Fallback<Tuple.Fallback<T, Extract<T[number], E>>, Refined<Model>>
+        : never)
+    : Tuple.Fallback<Tuple.Fallback<T, Extract<T[number], F>>, Refined<Model>>;
 
 type FilterOutArray<T extends Tuple.Input, F, Remaining> =
     ([F] extends [Type] ? F['type'] : F) extends infer E
