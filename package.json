@@ -28,7 +28,7 @@
     "license": "ICS",
     "devDependencies": {
         "foo": "github:geoffreytools/foo",
-        "ts-spec": "^1.7.0",
+        "ts-spec": "^1.8.1",
         "ts-trace": "github:geoffreytools/ts-trace",
         "tsc-esm-kit": "github:geoffreytools/tsc-esm-kit#v0.3.0",
         "typescript": "^6.0.3"
@@ -43,6 +43,6 @@
         "trace": "bash ./node_modules/ts-trace/ts-trace.sh -i ./tsconfig-perf.json"
     },
     "dependencies": {
-        "free-types-core": "^1.0.3"
+        "free-types-core": "^1.1.0"
     }
 }
