@@ -1,7 +1,7 @@
 import { test } from 'ts-spec';
 import { Type, apply, A, B, C } from 'free-types-core'
-import { _$Optional } from 'src/essential/adapters/$Optional';
-import { _partial, _ } from 'src/essential/_partial';
+import { _$Optional } from 'adapters/$Optional';
+import { _partial, _ } from 'essential/_partial';
 
 interface $Cuboid extends Type<[number, number, number]> {
     type: `H${A<this>} W${B<this>} L${C<this>}`

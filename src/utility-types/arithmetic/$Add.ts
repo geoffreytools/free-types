@@ -1,6 +1,6 @@
-import { Type, A, B } from 'free-types-core';
-import { Add } from '../../essential/utils';
-import { $Optional } from '../../essential/adapters/$Optional';
+import { Type, A, B } from 'core';
+import { Add } from 'utils';
+import { $Optional } from 'adapters/$Optional';
 
 export {Add, $Add }
 

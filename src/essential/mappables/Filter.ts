@@ -1,8 +1,8 @@
-import { Type, apply } from "../../core"
-import { $Not } from "../../utility-types/logic/$Not";
-import { Mappable } from "./common"
-import { Filter as FilterTuple, FilterOut as FilterOutTuple } from "../Tuple/Filter"
-import { GetOrElse } from "../utils";
+import { Type, apply } from 'core'
+import { $Not } from 'utility-types/logic/$Not';
+import { Mappable } from './common'
+import { Filter as FilterTuple, FilterOut as FilterOutTuple } from 'essential/Tuple/Filter'
+import { GetOrElse } from 'utils';
 
 export { Filter, FilterOut, $Filter, $FilterOut };
 

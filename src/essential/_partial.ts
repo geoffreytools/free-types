@@ -1,5 +1,5 @@
-import { Type, _apply, _Type } from 'free-types-core';
-import { Next, ArrayKeys, Tuple, IsOptional } from 'free-types-core/dist/utils';
+import { Type, _apply, _Type } from 'core';
+import { Next, ArrayKeys, Tuple, IsOptional } from './utils';
 
 export { _partial, _, PartialSparse }
 

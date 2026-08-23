@@ -1,5 +1,5 @@
-import { Type, apply } from 'free-types-core/dist/';
-import { Next } from 'free-types-core/dist/utils';
+import { Type, apply } from 'core';
+import { Next } from 'utils';
 import { NonEmptyTuple } from './common';
 
 export { Reduce, $Reduce }

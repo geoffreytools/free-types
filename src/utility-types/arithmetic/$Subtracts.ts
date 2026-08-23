@@ -1,6 +1,6 @@
-import { Type, A, B } from 'free-types-core';
-import { Subtract } from 'free-types-core/dist/utils';
-import { $OptionalFlip } from '../../essential/adapters/$Optional';
+import { Type, A, B } from 'core';
+import { Subtract } from 'utils';
+import { $OptionalFlip } from 'adapters/$Optional';
 
 export { Subtract, $Subtract }
 

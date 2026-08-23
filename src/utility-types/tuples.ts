@@ -1,5 +1,5 @@
-import { Type, Checked, A, B, Head, Tail, Last, Init } from '../core';
-import { $OptionalFlip } from '../essential/adapters/$Optional';
+import { Type, Checked, A, B, Head, Tail, Last, Init } from 'core';
+import { $OptionalFlip } from 'adapters/$Optional';
 
 export { $Head, $Tail, $Last, $Init, $Concat }
 

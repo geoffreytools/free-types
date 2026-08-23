@@ -1,5 +1,5 @@
-import { Type, A } from "free-types-core";
-import { Prev } from "free-types-core/dist/utils";
+import { Type, A } from 'core';
+import { Prev } from 'utils';
 
 export { Prev, $Prev }
 

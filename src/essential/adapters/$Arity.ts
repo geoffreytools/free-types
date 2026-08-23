@@ -1,4 +1,4 @@
-import { _apply, Slice, Type } from "free-types-core";
+import { _apply, Slice, Type } from 'core';
 
 export interface $Arity<N extends number, $T extends Type>
     extends Type<Slice<Required<$T['constraints']>, 0, N>>

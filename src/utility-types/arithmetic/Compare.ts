@@ -1,5 +1,5 @@
-import { Eq, Prev } from 'free-types-core/dist/utils';
-import { And, Extends, IsNatural, Or } from '../../essential/utils';
+import { Eq, Prev } from 'utils';
+import { And, Extends, IsNatural, Or } from 'utils';
 
 export type Compare<A, B, Equal extends boolean> =
     And<IsNatural<A>, IsNatural<B>> extends true

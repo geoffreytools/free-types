@@ -1,7 +1,7 @@
 import { test } from 'ts-spec'
 import { $Const } from 'free-types-core';
-import { MapOver } from 'src/essential/mappables/MapOver'
-import { Ap } from 'src/essential/mappables/Ap'
+import { MapOver } from 'mappables/MapOver'
+import { Ap } from 'mappables/Ap'
 
 
 type $123 = MapOver<[1,2,3], $Const>;

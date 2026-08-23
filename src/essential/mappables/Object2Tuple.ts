@@ -1,5 +1,6 @@
-import { Type, Checked, A } from 'free-types-core';
-import { ArrayKeys, Union2Tuple, Mappable } from "free-types-core/dist/utils";
+import { Type, Checked, A } from 'core';
+import { ArrayKeys, Union2Tuple } from 'utils';
+import type { Mappable } from './common';
 
 export { $Object2Tuple, Object2Tuple, _Object2Tuple };
 

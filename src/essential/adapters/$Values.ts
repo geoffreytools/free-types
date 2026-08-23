@@ -1,10 +1,10 @@
-import { A, _apply, _Type, Type } from "free-types-core";
-import { Mappable } from "free-types-core/dist/utils";
+import { A, _apply, _Type, Type } from 'core';
+import { CoreMappable } from 'utils';
 
-import { Object2Tuple } from "../mappables/Object2Tuple";
+import { Object2Tuple } from 'mappables/Object2Tuple';
 
 export interface $Values<$T extends _Type>
-    extends Type<[Mappable<$T['constraints'][number]>]> {
+    extends Type<[CoreMappable<$T['constraints'][number]>]> {
         type: _apply<$T, GetArgs<this[A], $T>>
     }
 

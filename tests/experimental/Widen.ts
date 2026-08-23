@@ -1,6 +1,6 @@
 import { Type } from '../..';
 import { test, _ } from 'ts-spec'
-import { Widen } from 'src/experimental/Widen';
+import { Widen } from 'experimental/Widen';
 
 test('basic types' as const, t => [
     t.equal<Widen<1>, number>(),

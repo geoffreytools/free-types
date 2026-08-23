@@ -1,5 +1,5 @@
-import { Type, A } from "free-types-core";
-import { Natural } from "free-types-core/dist/utils";
+import { Type, A } from 'core';
+import { Natural } from 'utils';
 
 export { Abs, $Abs }
 

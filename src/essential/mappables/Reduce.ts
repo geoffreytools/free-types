@@ -1,8 +1,8 @@
-import { Type, _Type, Checked, apply, Expect } from 'free-types-core';
-import { PickUnionMember } from 'free-types-core/dist/utils';
+import { Type, _Type, Checked, apply, Expect } from 'core';
+import { PickUnionMember } from 'utils';
 import { _NonEmptyMappable, NonEmptyMappable, Obj } from './common';
-import { Reduce as ReduceTuple } from '../Tuple/Reduce';
-import { NonEmptyTuple } from '../Tuple/common';
+import { Reduce as ReduceTuple } from 'essential/Tuple/Reduce';
+import { NonEmptyTuple } from 'essential/Tuple/common';
 
 export { Reduce, $Reduce }
 

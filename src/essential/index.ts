@@ -1,5 +1,5 @@
-export * from 'free-types-core';
-export { TypesMap } from 'free-types-core/dist/TypesMap';
+export * from 'core';
+export { TypesMap } from 'core/TypesMap';
 export * from './composition';
 export * from './adapters';
 export * from './mappables';

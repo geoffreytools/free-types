@@ -1,5 +1,5 @@
-import { apply, Next, Type, Checked, A, free, Expect } from "free-types-core";
-import { LastUnionMember, PickEntryFromUnion, StructFromTuple } from "../utils";
+import { apply, Next, Type, Checked, A, free, Expect } from 'core';
+import { LastUnionMember, PickEntryFromUnion, StructFromTuple } from 'utils';
 
 export { GroupBy, $GroupBy, GroupUnionBy, $GroupUnionBy };
 

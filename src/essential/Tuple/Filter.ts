@@ -1,7 +1,7 @@
-import { Type, apply } from "free-types-core"
-import { IsTruthy } from "../../utility-types/logic/Refinement";
-import { Extends } from "../utils";
-import * as Tuple from "./common";
+import { Type, apply } from 'core'
+import { IsTruthy } from 'utility-types/logic/Refinement';
+import { Extends } from 'utils';
+import * as Tuple from './common';
 import { Fold, $Reducer, WrapOptional } from './common';
 
 export { Filter, $Filter, FilterOut, $FilterOut }

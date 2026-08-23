@@ -1,4 +1,4 @@
-import { Type } from 'free-types-core';
+import { Type } from 'core';
 import { Mappable } from './common';
 
 export { IsEmpty, $IsEmpty }

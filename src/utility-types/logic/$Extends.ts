@@ -1,6 +1,6 @@
-import { Type } from "free-types-core";
-import { Extends } from "../../essential/utils";
-import { $OptionalFlip } from "../../essential/adapters/$Optional";
+import { Type } from 'core';
+import { Extends } from 'utils';
+import { $OptionalFlip } from 'adapters/$Optional';
 
 export { Extends, $Extends };
 

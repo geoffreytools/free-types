@@ -1,4 +1,4 @@
-import { Type } from "free-types-core";
+import { Type } from 'core';
 
 export { ParseNat, $ParseNum };
 

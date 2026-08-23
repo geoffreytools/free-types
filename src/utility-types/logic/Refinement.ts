@@ -1,4 +1,4 @@
-import { Type, apply } from "free-types-core";
+import { Type, apply } from 'core';
 
 export { $Extends, $Refine, $Reject, $Flip, IsTruthy };
 

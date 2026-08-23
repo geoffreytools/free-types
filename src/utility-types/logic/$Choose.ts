@@ -1,4 +1,4 @@
-import { Type, apply, Expect } from "free-types-core";
+import { Type, apply, Expect } from 'core';
 
 export { Choose, $Choose }
 

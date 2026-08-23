@@ -1,5 +1,5 @@
-import { Type, A, B } from 'free-types-core';
-import { $OptionalFlip } from '../../essential/adapters/$Optional';
+import { Type, A, B } from 'core';
+import { $OptionalFlip } from 'adapters/$Optional';
 import { Compare } from './Compare';
 
 

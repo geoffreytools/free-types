@@ -1,4 +1,4 @@
-import { Type, _apply, _Type, Expect } from 'free-types-core';
+import { Type, _apply, _Type, Expect } from 'core';
 import * as Tuple from './common';
 import { Fold, $Reducer, WrapOptional } from './common';
 

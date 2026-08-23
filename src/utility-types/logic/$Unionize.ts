@@ -1,5 +1,5 @@
-import { $Optional } from '../../essential/adapters/$Optional';
-import { Type } from 'free-types-core';
+import { $Optional } from 'adapters/$Optional';
+import { Type } from 'core';
 
 export type $Unionize<T = never> = $Optional<$Unionize2, [T]>;
 

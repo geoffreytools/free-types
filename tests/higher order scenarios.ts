@@ -1,15 +1,15 @@
 import { test } from 'ts-spec';
 import { Type, apply, A, B, Pipe } from 'free-types-core';
-import { Mappable } from 'src/essential/mappables/common';
-import { MapOver, $MapOver } from 'src/essential/mappables/MapOver';
-import { $Filter } from 'src/essential/mappables/Filter';
-import { $Fold } from 'src/essential/mappables/Fold';
-import { $Reduce } from 'src/essential/mappables/Reduce';
-import { $Values } from 'src/essential/adapters/$Values';
-import { $Spread } from 'src/essential/adapters/$Spread';
-import { $Flip } from 'src/essential/adapters/$Flip';
-import * as Tuple from 'src/essential/Tuple';
-import { $Add, $Next } from 'src/utility-types/arithmetic';
+import { Mappable } from 'mappables/common';
+import { MapOver, $MapOver } from 'mappables/MapOver';
+import { $Filter } from 'mappables/Filter';
+import { $Fold } from 'mappables/Fold';
+import { $Reduce } from 'mappables/Reduce';
+import { $Values } from 'adapters/$Values';
+import { $Spread } from 'adapters/$Spread';
+import { $Flip } from 'adapters/$Flip';
+import * as Tuple from 'essential/Tuple';
+import { $Add, $Next } from 'utility-types/arithmetic';
 
 interface $StrNumPair extends Type<[string, number]> {
     type: [A<this>, B<this>]

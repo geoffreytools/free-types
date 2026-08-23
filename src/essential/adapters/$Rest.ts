@@ -1,4 +1,4 @@
-import { _apply, Slice, Type } from "free-types-core"
+import { _apply, Slice, Type } from 'core'
 
 type _Type<C = any> = { constraints: C, type: unknown, arguments: any };
 

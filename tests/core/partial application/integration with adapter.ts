@@ -1,7 +1,6 @@
 import { test } from 'ts-spec';
-import { apply, partialRight, free } from "../../..";
-import { $Rest } from 'src/essential/adapters/$Rest';
-import { Pipe, Flow } from 'free-types-core';
+import { apply, partialRight, free, Pipe, Flow } from 'core';
+import { $Rest } from 'adapters/$Rest';
 
 type C = [
     free.Promise,

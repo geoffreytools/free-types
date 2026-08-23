@@ -1,4 +1,4 @@
-import { Type, _Type } from 'free-types-core';
+import { Type, _Type } from 'core';
 
 
 export type Signature<$T extends _Type | _Type[]> =

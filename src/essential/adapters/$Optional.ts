@@ -1,6 +1,6 @@
-import { _apply, partial, partialRight, PartialRight, Type, _Type } from "free-types-core"
-import { TrimArgs } from "../utils"
-import { PartialSparse, _partial } from "../_partial"
+import { _apply, partial, partialRight, PartialRight, Type, _Type } from 'core'
+import { TrimArgs } from 'utils'
+import { PartialSparse, _partial } from '../_partial'
 
 export type $OptionalFlip<
     $T extends Type<2>,

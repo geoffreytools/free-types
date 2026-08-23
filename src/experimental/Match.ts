@@ -1,10 +1,9 @@
-import { Type, apply, A, inferArgs, Generic, $Before, Expect } from 'free-types-core';
-import { Next } from 'free-types-core/dist/utils'
-import { Union2Tuple, Extends } from '../essential/utils'
-import { $Exclude } from '../utility-types/logic';
-import { Fold } from '../essential/mappables/Fold';
-import { _Object2Tuple } from '../essential/mappables/Object2Tuple';
-import { Mappable } from '../essential/mappables/common';
+import { Type, apply, A, inferArgs, Generic, $Before } from 'core';
+import { Next, Union2Tuple, Extends } from 'utils'
+import { $Exclude } from 'utility-types/logic';
+import { Fold } from 'mappables/Fold';
+import { _Object2Tuple } from 'mappables/Object2Tuple';
+import { Mappable } from 'mappables/common';
 
 type Key =  string | number | symbol
 

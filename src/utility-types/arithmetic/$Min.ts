@@ -1,4 +1,4 @@
-import { $Optional } from '../../essential/adapters/$Optional';
+import { $Optional } from 'adapters/$Optional';
 import { $Choose } from '../logic/$Choose';
 import { $Lte } from './$Lte';
 

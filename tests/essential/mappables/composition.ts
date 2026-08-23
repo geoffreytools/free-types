@@ -1,16 +1,16 @@
 import { test } from 'ts-spec'
-import { A, apply, B, free, Last, Type } from 'src/core'
+import { A, apply, B, free, Last, Type } from 'core'
 import { Pipe, Flow } from 'free-types-core';
-import { $Prop } from 'src/essential/mappables/accessors'
-import { $Fold } from 'src/essential/mappables/Fold'
-import { $MapOver } from 'src/essential/mappables/MapOver'
-import { $Filter } from 'src/essential/mappables/Filter'
-import { $Reduce } from 'src/essential/mappables/Reduce'
-import { $Add, $Next } from 'src/utility-types/arithmetic'
+import { $Prop } from 'mappables/accessors'
+import { $Fold } from 'mappables/Fold'
+import { $MapOver } from 'mappables/MapOver'
+import { $Filter } from 'mappables/Filter'
+import { $Reduce } from 'mappables/Reduce'
+import { $Add, $Next } from 'utility-types/arithmetic'
 
-import * as Tuple from 'src/essential/Tuple'
-import { Refinement } from 'src'
-import { Filter } from 'src/essential/mappables/Filter'
+import * as Tuple from 'essential/Tuple'
+import { Refinement } from 'free-types'
+import { Filter } from 'mappables/Filter'
 
 type TupleInput = [{ value: 1 }, { value: 2 }]
 type TupleMixedInput = [{ value: 1 }, {value: 'a'}, { value: 2 }, {value: 'b'}]

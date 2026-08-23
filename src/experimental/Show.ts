@@ -1,16 +1,15 @@
-import { _apply, _Type, Checked, A, Const, Type, unwrap, free, partialRight, Flow, $Before } from "free-types-core";
-import { IsAny } from "free-types-core/dist/utils";
-import { $Arity } from "../essential/adapters/$Arity";
-import { $Flip } from "../essential/adapters/$Flip";
-import { IsUnion, Union2Tuple } from "../essential/utils";
-import { Key } from "../essential/mappables/common";
-import { $Lift } from "../essential/mappables/Lift";
-import { $MapOver } from "../essential/mappables/MapOver";
-import { $Join } from "../utility-types/strings/$Join";
-import { $Stitch } from "../utility-types/strings/$Stitch";
-import { Showable } from "../utility-types/strings/common";
-import { $Assert } from "../essential/composition/$Assert";
-import { $Object2Tuple } from "../essential/mappables/Object2Tuple";
+import { _apply, _Type, Checked, A, Const, Type, unwrap, free, partialRight, Flow, $Before } from 'core';
+import { IsAny, IsUnion, Union2Tuple } from 'utils';
+import { $Arity } from 'adapters/$Arity';
+import { $Flip } from 'adapters/$Flip';
+import { Key } from 'mappables/common';
+import { $Lift } from 'mappables/Lift';
+import { $MapOver } from 'mappables/MapOver';
+import { $Join } from 'utility-types/strings/$Join';
+import { $Stitch } from 'utility-types/strings/$Stitch';
+import { Showable } from 'utility-types/strings/common';
+import { $Assert } from 'essential/composition/$Assert';
+import { $Object2Tuple } from 'mappables/Object2Tuple';
 
 export { Show, $Show }
 

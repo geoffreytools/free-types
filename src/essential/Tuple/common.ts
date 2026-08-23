@@ -1,6 +1,6 @@
-import { Type, Checked, At, Lossy, IsOptional, Next, apply } from 'free-types-core';
+import { Type, Checked, At, Lossy, IsOptional, Next, apply } from 'core';
 
-export { Tuple as From } from 'free-types-core/dist/utils';
+export { Tuple as From } from 'utils';
 
 
 export type ExcludeOptional<

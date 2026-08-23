@@ -1,7 +1,7 @@
-import { Type, A, B } from 'free-types-core';
-import { Prev } from 'free-types-core/dist/utils';
-import { $Optional } from '../../essential/adapters/$Optional';
-import { Add, And, IsNatural } from '../../essential/utils';
+import { Type, A, B } from 'core';
+import { Prev } from 'utils';
+import { $Optional } from 'adapters/$Optional';
+import { Add, And, IsNatural } from 'utils';
 
 export { Multiply, $Multiply }
 

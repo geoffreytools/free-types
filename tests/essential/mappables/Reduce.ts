@@ -1,7 +1,7 @@
 import { test } from 'ts-spec'
-import { $Reduce, Reduce } from 'src/essential/mappables/Reduce'
-import { $Add } from 'src/utility-types/arithmetic'
-import { $Stitch } from 'src/utility-types/strings/$Stitch'
+import { $Reduce, Reduce } from 'mappables/Reduce'
+import { $Add } from 'utility-types/arithmetic'
+import { $Stitch } from 'utility-types/strings/$Stitch'
 
 // @ts-expect-error: reject generic empty tuple
 {type EmptyTuple<T extends number[]> = Reduce<T, $Add>}

@@ -1,7 +1,7 @@
-import { Type, A, At } from 'free-types-core/dist/';
+import { Type, A, At } from 'core';
 import { Mappable } from './common';
 import { Object2Tuple } from './Object2Tuple';
-import { _Fold as FoldTuple } from '../Tuple/Fold'
+import { _Fold as FoldTuple } from 'essential/Tuple/Fold'
 
 export type Fold<
     T extends Mappable<$T['constraints'][1]>,

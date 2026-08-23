@@ -1,7 +1,7 @@
-import { Type, A, B } from 'free-types-core';
-import { Next, Subtract } from 'free-types-core/dist/utils';
-import { $OptionalFlip } from '../../essential/adapters/$Optional';
-import { And, IsNatural } from '../../essential/utils';
+import { Type, A, B } from 'core';
+import { Next, Subtract } from 'utils';
+import { $OptionalFlip } from 'adapters/$Optional';
+import { And, IsNatural } from 'utils';
 import { Compare } from './Compare';
 
 export { Divide, $Divide }

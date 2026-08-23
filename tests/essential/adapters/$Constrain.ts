@@ -1,7 +1,7 @@
 import { Type, A, B, apply } from 'free-types-core';
 import { Tuple } from 'free-types-core/dist/utils'
 import { test } from 'ts-spec';
-import { $Constrain } from 'src/essential/adapters/$Constrain';
+import { $Constrain } from 'adapters/$Constrain';
 import { Flow } from 'free-types-core';
 
 interface $Tuple extends Type<[unknown, number]> {

@@ -1,15 +1,26 @@
 {
     "compilerOptions": {
-        "baseUrl": "./",
         "paths": {
-            "src/*": [
-                "./src/*"
-            ],
+            "core": ["./node_modules/free-types-core/dist/index"],
+            "core/*": ["./node_modules/free-types-core/dist/*"],
+            "essential": ["./src/essential/index"],
+            "essential/*": ["./src/essential/*"],
+            "utils": ["./src/essential/utils"],
+            "utils/*": ["./src/essential/utils/*"],
+            "adapters": ["./src/essential/adapters/index"],
+            "adapters/*": ["./src/essential/adapters/*"],
+            "mappables": ["./src/essential/mappables/index"],
+            "mappables/*": ["./src/essential/mappables/*"],
+            "experimental": ["./src/experimental/index"],
+            "experimental/*": ["./src/experimental/*"],
+            "utility-types": ["./src/utility-types/index"],
+            "utility-types/*": ["./src/utility-types/*"],
+            "free-types": ["./src/index"],
         },
         "noEmit": true,
         "noEmitOnError": true,
         "noErrorTruncation": true,
-        "moduleResolution": "node",
+        "moduleResolution": "bundler",
         "module": "ES2020",
         "strictFunctionTypes": true,
         "noImplicitAny": true,

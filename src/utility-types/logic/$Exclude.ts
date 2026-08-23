@@ -1,5 +1,5 @@
-import { IsUnknown, Type } from "free-types-core";
-import { $OptionalFlip } from "../../essential/adapters/$Optional";
+import { IsUnknown, Type } from 'core';
+import { $OptionalFlip } from 'adapters/$Optional';
 
 export type $Exclude<T = never> = $OptionalFlip<$Exclude2, [T]>;
 

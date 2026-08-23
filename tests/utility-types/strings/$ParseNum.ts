@@ -1,6 +1,6 @@
 import { test } from 'ts-spec';
 import { apply } from 'free-types-core';
-import { $ParseNum } from 'src/utility-types/strings/$ParseNum';
+import { $ParseNum } from 'utility-types/strings/$ParseNum';
 
 test('Parse numbers', t => [
     t.equal<apply<$ParseNum, ['0']>, 0>(),

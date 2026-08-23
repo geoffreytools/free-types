@@ -1,6 +1,6 @@
-import { Type, A, B, C } from "free-types-core";
-import { $Optional } from "../../essential/adapters/$Optional";
-import { Showable } from "./common";
+import { Type, A, B, C } from 'core';
+import { $Optional } from 'adapters/$Optional';
+import { Showable } from './common';
 
 export { $Stitch };
 

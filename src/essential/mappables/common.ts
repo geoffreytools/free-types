@@ -2,7 +2,7 @@ import {
     Input as TupleInput,
     Output as TupleOutput,
     NonEmptyInput as TupleNonEmptyInput
-} from '../Tuple/common'
+} from 'essential/Tuple/common'
 
 export type Key = string | number | symbol;
 export type Obj<T = unknown> = { [k: Key]: T };

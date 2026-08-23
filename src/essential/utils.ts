@@ -1,6 +1,9 @@
-import { Natural, Prev, Next } from 'free-types-core/dist/utils'
+import { Natural, Prev, Next } from 'core/utils'
 
-export { IsAny, ArrayKeys, Next, Eq, Tuple } from 'free-types-core/dist/utils';
+export { ArrayKeys, Eq, Int, IsAny, IsOptional, Natural, Next, PickUnionMember, Prev, Subtract, Tuple, Union2Tuple, IndexOf } from 'core/utils';
+
+// distinct kernel type from essential/mappables
+export { Mappable as CoreMappable } from 'core/utils';
 
 // Numbers
 
@@ -36,7 +39,7 @@ type Not<T> = [T] extends [false] ? true : false
 
 // Union
 
-export { IsUnion, LastUnionMember, Union2Tuple, UnionToIntersection };
+export { IsUnion, LastUnionMember, UnionToIntersection };
 
 type UnionToIntersection<U> =
     (U extends any ? (k: U) => void : never) extends
@@ -45,10 +48,6 @@ type UnionToIntersection<U> =
 type LastUnionMember<T> =
     UnionToIntersection<T extends any ? () => T : never> extends
         () => (infer R) ? R : never
-    
-type Union2Tuple<U, Last = LastUnionMember<U>> =
-    [U] extends [never] ? []
-    : [...Union2Tuple<Exclude<U, Last>>, Last];
 
 type IsUnion<T> = [T] extends [LastUnionMember<T>] ? false : true
 

@@ -1,5 +1,5 @@
-import { Type } from "free-types-core";
-import { $Optional } from "../../essential/adapters/$Optional";
+import { Type } from 'core';
+import { $Optional } from 'adapters/$Optional';
 
 export { Intersect, $Intersect };
 

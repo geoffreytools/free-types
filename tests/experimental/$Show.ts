@@ -1,5 +1,5 @@
 import { test } from 'ts-spec';
-import { Show } from 'src/experimental/Show';
+import { Show } from 'experimental/Show';
 
 test('Show base types' as const, t => [
     t.equal<Show<any>, 'any'>(),
@@ -54,8 +54,11 @@ test('Show union' as const, t => [
 ])
 
 test('Show deeply nested type' as const, t =>
-    t.equal<Show<[1, 2, {a: 3, b: Map<string, 4>, c: [(1|2)[], (a: number, b: string) => void ]}]>,
-        '[1, 2, { a: 3, b: Map<string, 4>, c: [(1 | 2)[], (a: number, b: string) => void] }]'
+    // union display order is not guaranteed by TS; accept either rendering via
+    // `extends` (matches any listed member), as the 'Show union' test does above
+    t.extends<Show<[1, 2, {a: 3, b: Map<string, 4>, c: [(1|2)[], (a: number, b: string) => void ]}]>,
+        | '[1, 2, { a: 3, b: Map<string, 4>, c: [(1 | 2)[], (a: number, b: string) => void] }]'
+        | '[1, 2, { a: 3, b: Map<string, 4>, c: [(2 | 1)[], (a: number, b: string) => void] }]'
     >()
 )
 

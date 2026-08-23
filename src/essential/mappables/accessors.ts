@@ -1,6 +1,6 @@
-import { Type, A, B, C, Checked } from 'free-types-core/dist/';
-import { Next } from 'free-types-core/dist/utils';
-import { $Optional } from '../adapters/$Optional';
+import { Type, A, B, C, Checked } from 'core';
+import { Next } from 'utils';
+import { $Optional } from 'adapters/$Optional';
 import { Key, Obj } from './common'
 
 export { $Prop, $Index, $SetProp, $SetIndex, }

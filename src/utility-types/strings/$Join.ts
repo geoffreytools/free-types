@@ -1,11 +1,11 @@
-import { Const, partial, Type, apply } from "free-types-core";
-import { $Fork } from "../logic";
-import { $Reduce, Reduce } from "../../essential/mappables/Reduce";
-import { $IsEmpty } from "../../essential/mappables/IsEmpty";
-import { $As } from "../../essential/adapters/$As";
-import { $Stitch } from "./$Stitch";
-import { Showable } from "./common";
-import { $OptionalFlip } from "../../essential";
+import { Const, partial, Type, apply } from 'core';
+import { $Fork } from '../logic';
+import { $Reduce, Reduce } from 'mappables/Reduce';
+import { $IsEmpty } from 'mappables/IsEmpty';
+import { $As } from 'adapters/$As';
+import { $Stitch } from './$Stitch';
+import { Showable } from './common';
+import { $OptionalFlip } from 'essential';
 
 export type $Join<S extends Showable> = $As<$Fork<
     $IsEmpty,

@@ -1,5 +1,5 @@
-import { _apply, _Type, Type } from "free-types-core"
-import { RelatesTo } from "../../utility-types/logic/$RelatesTo"
+import { _apply, _Type, Type } from 'core'
+import { RelatesTo } from 'utility-types/logic/$RelatesTo'
 
 export interface $As<$T extends _Type & CheckType<$T, R>, R> extends Type {
     type: this['arguments'] extends this['constraints']

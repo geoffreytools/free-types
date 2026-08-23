@@ -1,9 +1,9 @@
-import { Type, apply, Checked, Expect } from 'free-types-core/';
-import { Tuple as CreateTuple } from 'free-types-core/dist/utils';
-import { $Constrain } from '../adapters/$Constrain';
+import { Type, apply, Checked, Expect } from 'core';
+import { Tuple as CreateTuple } from 'utils';
+import { $Constrain } from 'adapters/$Constrain';
 import { Mappable, Obj } from './common';
-import { MapOverTuple, MapOverArray } from '../Tuple/MapOver'
-import { Tuple } from '../Tuple/common'
+import { MapOverTuple, MapOverArray } from 'essential/Tuple/MapOver'
+import { Tuple } from 'essential/Tuple/common'
 
 export { MapOver, $MapOver, $Transform }
 

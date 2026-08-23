@@ -1,5 +1,5 @@
-import { A, Type } from "free-types-core"
-import { Next } from "free-types-core/dist/utils"
+import { A, Type } from 'core'
+import { Next } from 'utils'
 
 export { Length, $Length }
 

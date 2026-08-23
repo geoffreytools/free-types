@@ -1,5 +1,5 @@
-import { IsAny, Next } from '../../essential/utils';
-import { _apply, _Type, Type } from 'free-types-core';
+import { IsAny, Next } from 'utils';
+import { _apply, _Type, Type } from 'core';
 
 export { Fork, $Fork }
 

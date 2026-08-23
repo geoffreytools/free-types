@@ -1,6 +1,6 @@
-import { Type } from "free-types-core";
-import { $Optional } from "../../essential/adapters/$Optional";
-import { Or } from "../../essential/utils";
+import { Type } from 'core';
+import { $Optional } from 'adapters/$Optional';
+import { Or } from 'utils';
 
 export type $Or<T = never> = $Optional<$Or2, [T]>;
 

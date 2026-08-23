@@ -1,7 +1,6 @@
-import {  Type, Tail } from 'free-types-core/dist/';
-import { IndexOf } from 'free-types-core/dist/From';
-import { ArrayKeys, Int, Next } from 'free-types-core/dist/utils';
-import { Mappable } from '../essential/mappables/common';
+import {  Type, Tail } from 'core';
+import { ArrayKeys, Int, Next, IndexOf } from 'utils';
+import { Mappable } from 'mappables/common';
 
 export { FromDeep };
 

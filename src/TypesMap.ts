@@ -1,1 +1,1 @@
-export { TypesMap } from 'free-types-core/dist/TypesMap';
+export { TypesMap } from 'core/TypesMap';
