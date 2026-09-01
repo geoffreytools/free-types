@@ -1,5 +1,5 @@
-import { apply, Next, Type, Checked, A, free, Expect } from 'core';
-import { LastUnionMember, PickEntryFromUnion, StructFromTuple } from 'utils';
+import { apply, _apply, Next, Type, Checked, A, free, Expect } from 'core';
+import { LastUnionMember, StructFromTuple } from 'utils';
 
 export { GroupBy, $GroupBy, GroupUnionBy, $GroupUnionBy };
 
@@ -87,33 +87,13 @@ type $ExpectTransform = Expect<$Transform>
 type GroupUnionBy<U, $P extends $ExpectPredicate, $T extends $ExpectTransform = free.Id> =
     _GroupUnionBy<U, $P, $T>
 
-type _GroupUnionBy<
-    U,
-    $P extends $ExpectPredicate,
-    $T extends $ExpectTransform = free.Id,
-    R extends Aggregate = never,
-    L = LastUnionMember<U>,
-> = [U] extends [never]
-    ? StructFromUnionWith<R, $T>
-    : _GroupUnionBy<Exclude<U, L>, $P, $T, MergeUnion<L, $P, R>>;
+type _GroupUnionBy<U, $P extends $ExpectPredicate, $T extends $ExpectTransform> =
+    [U] extends [never] ? {}
+    : StructFromGroupsWith<{ [M in U as _apply<$P, [M]>]: M }, $T>
 
-
-type MergeUnion<
-    T,
-    $P extends $ExpectPredicate,
-    R extends Aggregate,
-    Key extends PropertyKey = apply<$P, [T]>,
-    Selected extends Aggregate = PickEntryFromUnion<R, Key>
-> = [Selected] extends [never] ? R | [Key, [T]]
-    : Exclude<R, Selected> | [Key, [...Selected[1], T]];
-
-
-type StructFromUnionWith<
-    T extends Aggregate,
-    $T extends $ExpectTransform,
-> = unknown & {
-    [K in T[0]]:
-        PickEntryFromUnion<T, K>[1] extends infer E extends unknown[]
-        ? apply<$T, [E[number], E['length']]>
-        : never;
+type StructFromGroupsWith<Groups, $T extends $ExpectTransform> = unknown & {
+    [K in keyof Groups]: _apply<$T, [Groups[K], UnionLength<Groups[K]>]>
 }
+
+type UnionLength<U, L extends number = 0> =
+    [U] extends [never] ? L : UnionLength<Exclude<U, LastUnionMember<U>>, Next<L>>;
