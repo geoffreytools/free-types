@@ -1,4 +1,4 @@
-import { Type, _Type, $partial, $apply } from 'core';
+import { Type, _Type, $partial, $apply, AppliedArguments } from 'core';
 import { Next, ArrayKeys, LastUnionMember } from 'utils';
 import { _Ap } from './Ap';
 import { IterativeTupleMap } from './IterativeMap';
@@ -7,8 +7,8 @@ import { Mappable } from './common';
 export { Lift, $Lift }
 
 interface $Lift<$T extends _Type> extends Type {
-    type: this['arguments'] extends Mappable<unknown>[]
-        ? _Lift<$T, this['arguments']>
+    type: AppliedArguments<this> extends Mappable<unknown>[]
+        ? _Lift<$T, AppliedArguments<this>>
         : Mappable<$T['type']>
     constraints: Check<$T['constraints']>
 }

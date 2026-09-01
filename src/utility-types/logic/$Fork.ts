@@ -1,5 +1,5 @@
 import { IsAny, Next } from 'utils';
-import { _apply, _Type, Type } from 'core';
+import { _apply, _Type, Type, AppliedArguments } from 'core';
 
 export { Fork, $Fork }
 
@@ -9,7 +9,7 @@ interface $Fork<
     $B extends _Type,
     Constraints extends unknown[] = MergeConstraints<[$P, $A, $B]>
 > extends Type<Constraints> {
-    type: _Fork<$P, $A, $B, this['arguments']>
+    type: _Fork<$P, $A, $B, AppliedArguments<this>>
 }
 
 type Fork<

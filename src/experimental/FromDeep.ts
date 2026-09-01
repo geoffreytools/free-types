@@ -1,4 +1,4 @@
-import {  Type, Tail } from 'core';
+import {  Type, Tail, Applied, AppliedArguments } from 'core';
 import { ArrayKeys, Int, Next, IndexOf } from 'utils';
 import { Mappable } from 'mappables/common';
 
@@ -12,7 +12,7 @@ type FromDeep<
 > = $FromDeep<T, Extract<NormalizeArgsDeep<Paths>, unknown[][]>>
 
 interface $FromDeep<T, Paths extends unknown[][]> extends Type {
-    type: unknown[] extends this['arguments'] ? T : _FromDeep<T, Paths, this['arguments']>
+    type: Applied<this> extends false ? T : _FromDeep<T, Paths, AppliedArguments<this>>
     constraints: { [I in keyof Paths]: GetFromPath<T, Paths[I]> }
 }
 

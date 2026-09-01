@@ -1,4 +1,4 @@
-import { Type, _apply, _Type } from 'core';
+import { Type, _apply, _Type, AppliedArguments } from 'core';
 import { Next, ArrayKeys, Tuple, IsOptional } from './utils';
 
 export { _partial, _, PartialSparse }
@@ -23,7 +23,7 @@ interface SparsePartialType<
     $T extends _Type,
     Applied extends unknown[],
 > extends Type<Remaining<$T['constraints'], Applied>> {
-    type: _apply<$T, FillMissingArgs<Applied, this['arguments']>>
+    type: _apply<$T, FillMissingArgs<Applied, AppliedArguments<this>>>
 }
 
 type Remaining<Constraints extends unknown[], Applied extends unknown[]> =

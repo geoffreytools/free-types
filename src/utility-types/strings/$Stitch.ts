@@ -1,4 +1,4 @@
-import { Type, A, B, C } from 'core';
+import { Type, A, B, C, AppliedArguments } from 'core';
 import { $Optional } from 'adapters/$Optional';
 import { Showable } from './common';
 
@@ -10,6 +10,6 @@ type $Stitch<
 > = $Optional<$Stitch3, [S, A]>;
 
 interface $Stitch3 extends Type<[Showable, Showable, Showable]> {
-    type: this['arguments'] extends this['constraints']
+    type: AppliedArguments<this> extends this['constraints']
         ? `${B<this>}${A<this>}${C<this>}` : string
 }

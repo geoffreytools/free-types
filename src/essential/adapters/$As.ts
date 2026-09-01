@@ -1,9 +1,9 @@
-import { _apply, _Type, Type } from 'core'
+import { _apply, _Type, Type, AppliedArguments } from 'core'
 import { RelatesTo } from 'utility-types/logic/$RelatesTo'
 
 export interface $As<$T extends _Type & CheckType<$T, R>, R> extends Type {
-    type: this['arguments'] extends this['constraints']
-    ? _apply<$T, this['arguments']> extends infer result extends R ? result : R
+    type: AppliedArguments<this> extends this['constraints']
+    ? _apply<$T, AppliedArguments<this>> extends infer result extends R ? result : R
     : R
     constraints: $T['constraints'] extends unknown[] ? $T['constraints'] : unknown[]
 }

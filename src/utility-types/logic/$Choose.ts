@@ -1,10 +1,10 @@
-import { Type, apply, Expect } from 'core';
+import { Type, apply, Expect, AppliedArguments } from 'core';
 
 export { Choose, $Choose }
 
 interface $Choose<$P extends Expect<Type<2, boolean>>>
     extends Type<$P['constraints']> {
-        type: this['arguments'] extends $P['constraints']
+        type: AppliedArguments<this> extends $P['constraints']
             ? Choose<$P, this[0], this[1]>
             : $P['constraints'][number]
     }

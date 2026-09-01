@@ -1,4 +1,4 @@
-import { Type, _Type, Checked, apply, Expect } from 'core';
+import { Type, _Type, Checked, apply, Expect, AppliedArguments } from 'core';
 import { PickUnionMember } from 'utils';
 import { _NonEmptyMappable, NonEmptyMappable, Obj } from './common';
 import { Reduce as ReduceTuple } from 'essential/Tuple/Reduce';
@@ -32,7 +32,7 @@ type ReduceObject<
 type ValidInput<$T extends Type> = $T['constraints'][0] & $T['constraints'][1];
 
 interface $Reduce<$T extends Expect<Type<2>>> extends Type {
-    type: this['arguments'] extends this['constraints']
+    type: AppliedArguments<this> extends this['constraints']
         ? this['result'] extends $T['type']
             ? this['result'] : $T['type']
         : $T['type']

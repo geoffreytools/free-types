@@ -1,6 +1,6 @@
-import { _apply, Slice, Type } from 'core'
+import { _apply, Slice, Type, AppliedArguments } from 'core'
 
-type _Type<C = any> = { constraints: C, type: unknown, arguments: any };
+type _Type<C = any> = { constraints: C, type: unknown, appliedArguments: unknown };
 
 export type $Rest<$T extends _Type<[unknown[]]>, N extends number = never> =
     [N] extends [never] ? $RestAuto<$T> : $RestN<$T, N>;
@@ -17,6 +17,6 @@ interface $RestN<
 }
 
 type Rest<$T extends _Type, This extends _Type<any>> =
-    This['arguments'] extends This['constraints']
-    ? _apply<$T, [This['arguments'] extends unknown[] & infer Args ? Args : never]>
+    AppliedArguments<This> extends This['constraints']
+    ? _apply<$T, [AppliedArguments<This> extends unknown[] & infer Args ? Args : never]>
     : $T['type']

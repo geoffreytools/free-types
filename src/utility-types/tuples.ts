@@ -1,4 +1,4 @@
-import { Type, Checked, A, B, Head, Tail, Last, Init } from 'core';
+import { Type, Checked, A, B, Head, Tail, Last, Init, AppliedArguments } from 'core';
 import { $OptionalFlip } from 'adapters/$Optional';
 
 export { $Head, $Tail, $Last, $Init, $Concat }
@@ -11,7 +11,7 @@ interface $Init extends Type<[[unknown, ...unknown[]]]> { type: Init<Checked<A, 
 type $Concat<T = never> = $OptionalFlip<$Concat2, [T]>
 
 interface $Concat2 extends Type<2> {
-    type: [unknown, unknown] extends this['arguments']
+    type: [unknown, unknown] extends AppliedArguments<this>
         ? unknown[]
         : this[A] extends unknown[]
         ? this[B] extends unknown[]
