@@ -1,4 +1,4 @@
-import { Type, apply, Checked, Expect, Applied } from 'core';
+import { Type, apply, Checked, Expect, Applied, CreateType } from 'core';
 import { Tuple as CreateTuple } from 'utils';
 import { $Constrain } from 'adapters/$Constrain';
 import { Mappable, Obj } from './common';
@@ -16,13 +16,15 @@ type MapOver<T extends Mappable<$T['constraints'][0]>, $T extends $ExpectTransfo
     : T extends Obj ? { [K in keyof T]: apply<$T, [T[K], K]> }
     : T
 
-interface _$MapOver<$T extends $ExpectTransform> extends Type {
+interface _$MapOver<$T extends $ExpectTransform> extends CreateType<{ type: unknown }, {
+    constraints: [Mappable<$T['constraints'][0]>]
+    names: {}
+}> {
     type: Applied<this> extends false
     ? Mappable<$T['type']>
         : MapOver<Checked<0, this>, $T> extends infer R
             extends Mappable<$T['type']> ? R
             : Mappable<$T['type']>
-    constraints: [Mappable<$T['constraints'][0]>]
 }
 
 type $MapOver<$T extends $ExpectTransform, L extends number = never> =

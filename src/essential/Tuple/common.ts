@@ -74,16 +74,10 @@ export interface $Reducer extends Type<
  * - `Index`: the current index
  * - `Source`: the source tuple
 */
-export interface $Transform extends Type<number, Input> {
+export interface $Transform extends Type<[Val: unknown, I: number, T: Input], Input> {
     Val: this[0]
     I: this[1] & number
     Src: Checked<2, this>
-    
-    constraints: [
-        Val: unknown,
-        I: number,
-        T: Input
-    ]
 }
 
 export type WrapOptional<Src extends Input, I extends number, Val = Src[I]> =

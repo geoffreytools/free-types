@@ -1,4 +1,4 @@
-import { Type, apply } from 'core';
+import { Type, apply, CreateType } from 'core';
 import { Next } from 'utils';
 import { NonEmptyTuple } from './common';
 
@@ -18,10 +18,12 @@ type _Reduce<
     : I extends T['length'] ? Acc
     : _Reduce<T, $T, apply<$T, [Acc, T[I]]>, Next<I>>
 
-interface $Reduce<$T extends Type<2>> extends Type {
+interface $Reduce<$T extends Type<2>> extends CreateType<{ type: unknown }, {
+    constraints: [NonEmptyTuple<$T['constraints'][0] & $T['constraints'][1]>]
+    names: {}
+}> {
     type: this[0] extends this['constraints'][0]
         ? _Reduce<this[0], $T> extends infer R extends
             $T['type'] ? R : $T['type']
         : $T['type']
-    constraints: [NonEmptyTuple<$T['constraints'][0] & $T['constraints'][1]>]
 }

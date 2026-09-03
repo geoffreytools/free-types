@@ -1,4 +1,4 @@
-import { Type, A, B, C, Checked } from 'core';
+import { Type, A, B, C, Checked, CreateType } from 'core';
 import { Next } from 'utils';
 import { $Optional } from 'adapters/$Optional';
 import { Key, Obj } from './common'
@@ -44,29 +44,31 @@ type SetIndex<
     ? R
     : SetIndex<A, V, T, Next<I>, [...R, I extends A ? V : T[I]]>
 
-interface $Prop<K extends Key = never, R = unknown> extends Type {
+interface $Prop<K extends Key = never, R = unknown> extends CreateType<{ type: unknown }, {
+    constraints: [K] extends [never]
+        ? [Key, Record<Key, R>]
+        : [{[_ in K]: R}]
+    names: {}
+}> {
     type: [K] extends [never]
         ? this[A] extends Key
             ? this[B] extends Record<this[A], unknown>
                 ? this[B][this[A]] : never : unknown
 
         : this[A] extends Record<K, R> ? this[A][K] : R
-
-    constraints: [K] extends [never]
-        ? [Key, Record<Key, R>]
-        : [{[_ in K]: R}]
 }
 
-interface $Index<I extends number = never, R = unknown> extends Type {
+interface $Index<I extends number = never, R = unknown> extends CreateType<{ type: unknown }, {
+    constraints: [I] extends [never]
+        ? [number, R[]]
+        : [R[] & {[_ in I]: R}]
+    names: {}
+}> {
     type: [I] extends [never] 
         ? this[A] extends number
             ? this[B] extends Record<this[A], unknown>
                 ? this[B][this[A]] : never : unknown
 
         : this[A] extends Record<I, R> ? this[A][I] : R
-
-    constraints: [I] extends [never]
-        ? [number, R[]]
-        : [R[] & {[_ in I]: R}]
 }
 

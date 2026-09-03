@@ -1,5 +1,5 @@
 import { test } from 'ts-spec';
-import { Type, apply } from 'free-types-core';
+import { Type, apply, Expect } from 'free-types-core';
 import { $Flip } from 'adapters/$Flip';
 
 interface $StrNumPair extends Type<[string, number]> {
@@ -14,3 +14,10 @@ test('$Flip' as const, t => [
 
 // @ts-expect-error: type constraints are also flipped
 type WrongOrder = apply<$NumStrPair, ['a', 1]>
+
+type ExpectStrNum<$T extends Expect<Type<[string, number]>>> = apply<$T, ['a', 1]>;
+
+// @ts-expect-error: the flipped parameters are checked contravariantly
+type WrongContract = ExpectStrNum<$NumStrPair>
+
+type RightContract = ExpectStrNum<$Flip<$NumStrPair>>

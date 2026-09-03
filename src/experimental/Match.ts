@@ -1,4 +1,4 @@
-import { Type, apply, A, inferArgs, Generic, $Before } from 'core';
+import { Type, apply, A, inferArgs, Generic, $Before, CreateType } from 'core';
 import { Next, Union2Tuple, Extends } from 'utils'
 import { $Exclude } from 'utility-types/logic';
 import { Fold } from 'mappables/Fold';
@@ -18,16 +18,18 @@ type Case = [unknown, unknown, Reordering?];
 interface $Match<
     Cases extends Case[] & CheckCases<Model, Cases>,
     Model extends CheckFallThrough<Model, Cases> = never,
-> extends Type<1> {
+> extends CreateType<{ type: unknown }, {
+    constraints: [OtherwiseConstraint<GetOtherwise<Cases>>]
+    names: {}
+}> {
     type: _Match<this[A], Cases>
-    constraints: [
-        [this['__Otherwise']] extends [never] ? unknown
-        : this['__Otherwise'] extends _never ? unknown
-        : this['__Otherwise'] extends Type ? this['__Otherwise']['constraints']
-        : unknown
-    ]
-    __Otherwise: GetOtherwise<Cases>
 }
+
+type OtherwiseConstraint<Otherwise> =
+    [Otherwise] extends [never] ? unknown
+    : [Otherwise] extends [_never] ? unknown
+    : [Otherwise] extends [Type] ? Otherwise['constraints']
+    : unknown
 
 type GetOtherwise<Cases extends Case[]> = {
     [K in keyof Cases]: Cases[K] extends Case
