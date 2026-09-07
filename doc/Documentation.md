@@ -530,6 +530,35 @@ type Foo = Map<string, number>
 </td></tr><tr><td valign='top' width='210'><h6><code>apply<&#8288;$T, Args></code></td><td>
 
 
+</td></tr><tr><td valign='top'><h6><code>_apply<&#8288;$T, Args></code></td><td>
+
+Apply a free type with a tuple of positional arguments, without checking them. It costs less than `apply`, and is meant for the internal code of higher order types, where the arguments are known to be valid:
+
+```typescript
+type MapValues<T extends Record<string, unknown>, $T extends _Type> = {
+    [K in keyof T]: _apply<$T, [T[K]]>
+}
+
+type Foo = MapValues<{ a: 1, b: 2 }, $Next> // { a: 2, b: 3 }
+```
+
+The arguments are passed as they are:
+- an invalid argument is not an error;
+- a missing optional argument is `unknown` instead of `undefined`;
+- an extra argument is kept in `AppliedArguments`.
+
+Named arguments are not supported.
+
+</td></tr><tr><td valign='top'><h6><code>_Type<&#8288;In?, Out?></code></td><td>
+
+A type constraint for free types which pairs with `_apply`. `_Type<In, Out>` requires the constraints of a free type to extend `In` and its return type to extend `Out`, without the invariance of `Type`:
+
+```typescript
+type Exclaim<$T extends _Type<any, string>> = `${_apply<$T, ['hello']>}!`
+```
+
+`_Type` with no argument accepts any free type.
+
 </td></tr><tr><td valign='top'><h6><code>Generic<&#8288;$T></code></td><td>
 
 Apply a free type `$T` with its type constraints.
