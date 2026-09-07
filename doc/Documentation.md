@@ -131,8 +131,10 @@ Various shorthand notations are available if you have `unknown` constraints:
 Type<2>
 
 // is equivalent to
-Type<[unknown, unknown]>
+Type<[any, any]>
 ```
+
+As a constraint, it accepts any free type of arity 2.
 
 <td>
 
@@ -174,7 +176,7 @@ Type<[unknown, boolean, unknown]>
 
 <tr>
 <th>the "arg" field
-<th>the "arguments" field
+<th>AppliedArguments
 <th>numeric keys
 </tr>
 <tr>
@@ -196,7 +198,7 @@ interface $T extends Type<{ T:0 }> {
 
 
 interface $T extends Type {
-    type: this['arguments']
+    type: AppliedArguments<this>
 }
 ```
 </td><td width='330'>
@@ -219,15 +221,14 @@ You get auto-completion, and arguments are substituted with their constraint at 
 
 </td><td valign='top'>
 
-Lists every argument as a pseudo-tuple. Can be spread using these strategies:
-- `extends unknown[] & infer I`
-- `ToTuple<this['arguments']>`
-- `Slice<this['arguments'], 0>`
+Lists every argument as a tuple, or `unknown[]` when the free type is not applied. The tuple can be spread or passed to another free type.
+
+`this['arguments']` holds the same arguments intersected with `unknown[]`, which does not spread.
 
 
 </td><td valign='top'>
 
-This way of accessing arguments offers the most control (see the [guide](./Guide.md)).
+This way of accessing arguments offers the most control (see the [guide](./Guide.md)) and is the cheapest to evaluate, whereas `this['arg']` is computed again for every application.
 
 Pair it with [helpers](#helpers-) and/or the `arg` field to manage boilerplate.
 
@@ -236,7 +237,7 @@ Pair it with [helpers](#helpers-) and/or the `arg` field to manage boilerplate.
 
 #### Variance in higher order types
 
-Contrary to functions, free types arguments are checked covariantly by default, meaning that a free type may be unfairly rejected if it is more capable than required:
+Free types are invariant on their parameters, so a free type which is more capable than required is rejected:
 
 ```typescript
 // $T should at least be defined for the input ["foo"]
@@ -251,7 +252,7 @@ type Error = ApplyFoo<$Array>;
 // [unknown] is not assignable to ["foo"]
 ```
 
-See [Contra](#contra) to circumvent this limitation.
+Use [`Expect`](#expecttype) to make the parameters contravariant, as described in [Variance](#variance).
 
 #### Constraining the return type
 
@@ -659,52 +660,16 @@ Helpers you may use to reduce boilerplate or assist with type checking.
 ### `Expect<Type>`
 In order to work in higher order scenarios, free types need to encode type constraints covariantly. This is due to a limitation in Typescript inference, there is no way around it.
 
-On top of encoding them covariantly, the library also encodes them contravariantly (Future interations should let you set variance independently for each parameter). 
+On top of encoding them covariantly, the library also encodes them contravariantly (Future iterations should let you set variance independently for each parameter). 
 
 `Expect` removes the former covariant information from your `Type` parameters, so that when it is compared with an input, only the *desired* variance is considered.
 
 
 <table><tr><th>type</th><th>description</th></tr>
 
-</td></tr><tr><td valign='top'><h6><code>Contra<&#8288;$T, $U></code></td><td>
-
-Expect a free type with contravariant arguments.
-
-```typescript
-type Foo<$T extends Contra<$T, Type<2>>> =
-    apply<$T, ['foo', true]>
-
-type Bar = Foo<$Add>
-//             ~~~~
-```
-
-> The implementation is not type safe because the constraint is widened to `Type` (for the implementer)
-
-</td></tr><tr><td valign='top'><h6><code>At<&#8288;I, this, F?></code></td><td>
-
-Check the indexation of `this` to prevent overshooting the arity:
-
-```typescript
-interface $Foo extends Type<1> { type: At<1, this> }
-//                                           ----
-// 'this' does not satisfy the constraint 'Type<2>'
-```
-
->It mainly prevents off-by-one errors or forgetting to wrap type constraints in brackets (`Type<number> ≠ Type<[number]>`)
-
-Optionally take a fallback `F` to replace `unknown`:
-
-```typescript
-interface $UnaryFunction extends Type<2> {
-    type: (a: At<0, this, any>) => At<1, this>
-}
-
-type ReturnType = $UnaryFunction['type'] // (a: any) => unknown
-```
-
 </td></tr><tr><td valign='top' width='210'><h6><code>A|B|C|D|E<&#8288;this?></code></td><td>
 
-Similar to [`At`](#ati-this), but also defuses type constraints with an **intersection**:
+Similar to [`At`](#ati-this-f), but also defuses type constraints: the argument is returned as it is when it satisfies its constraint, and intersected with its constraint otherwise.
 
 ```typescript
 interface $Foo extends Type<[string]> {
@@ -714,7 +679,7 @@ interface $Foo extends Type<[string]> {
 Is equivalent to:
 ```typescript
 interface $Foo extends Type<[string]> {
-    type: `${this[0] & string}`
+    type: `${this[0] extends string ? this[0] : string & this[0]}`
 }
 ```
 When no argument is supplied, `A|B|C|D|E` are aliases for `0|1|2|3|4`:
@@ -731,6 +696,18 @@ interface $Foo extends Type<[unknown, unknown[]]> {
     type: [this[0], ...Checked<1, this>]
 }
 ```
+
+</td></tr><tr><td valign='top'><h6><code>Get<&#8288;K, this></code></td><td>
+
+Read the argument at the index or the name `K` and defuse its type constraint like [`A|B|C|D|E`](#abcdethis), for any arity and for named parameters:
+
+```typescript
+interface $Hello extends Type<{ name: [0, string] }> {
+    type: `Hello ${Get<'name', this>}`
+}
+```
+
+Use [`Optional`](#optionali-this-f) to read an optional parameter.
 
 </td></tr><tr><td valign='top'><h6><code>Checked<&#8288;I, this, F?></code></td><td>
 
@@ -782,6 +759,28 @@ interface $Foo extends Type<[string]> {
     type: `${this[0] & string}`
 }
 ```
+</td></tr><tr><td valign='top'><h6><code>AppliedArguments<&#8288;this></code></td><td>
+
+The arguments of the applied free type as a tuple, or `unknown[]` when it is not applied. It can be spread or passed to another free type:
+
+```typescript
+interface $Prepend extends Type {
+    type: ['foo', ...AppliedArguments<this>]
+}
+
+type Foo = apply<$Prepend, [1, 2]> // ["foo", 1, 2]
+```
+
+`this['arguments']` holds the same arguments intersected with `unknown[]`, which does not spread.
+
+</td></tr><tr><td valign='top'><h6><code>Applied<&#8288;this></code></td><td>
+
+Tell whether the free type is applied: `false` at the definition site, and `true` once arguments are applied.
+
+</td></tr><tr><td valign='top'><h6><code>Valid<&#8288;this></code></td><td>
+
+Tell whether the free type is applied with arguments which satisfy its type constraints.
+
 </td></tr><tr><td valign='top'><h6><code>IsUnknown<&#8288;T></code></td><td>
 
 Determine if `T` is strictly `unknown` (that is to say: excluding `any` and `never`).
@@ -906,7 +905,7 @@ Return the composition from left to right of the free types listed in`$T[]`.
 
 ```typescript
 type $AddNextExclaim = Flow<[$Add, $Next, $Exclaim]>
-type Foo = apply<[1, 2], $AddNextExclaim> // 4!
+type Foo = apply<$AddNextExclaim, [1, 2]> // 4!
 ```
 
 </td></tr><tr><td valign='top' width='210'><h6><code>$Arg<&#8288;I></code></td><td>
@@ -1163,7 +1162,7 @@ type Baz = MapOver<{ a: 1, b: 2 }, $Next> // { a: 2, b: 3 }
 
 `$T` can be of `Type<1>` or `Type<2>`, in which case the second argument is the key/index of the current element.
 
-</td></tr><tr><td valign='top'><h6><code>$MapOver<<&#8288;$T, L?></code></td><td>
+</td></tr><tr><td valign='top'><h6><code>$MapOver<&#8288;$T, L?></code></td><td>
 
 A free version of `MapOver`. The optional argument `L` constrains it to work with tuples of that length (or arrays if `L` is exactly `number`).
 
@@ -1244,7 +1243,7 @@ Identical to `Reduce` but requires an initialiser `I`, allowing `T` to be empty.
 
 > When `T` is an object type, `$T` **has to be** associative and commutative, because the ordering of values is not guaranteed. For example, `Fold<T, unknown, $Intersect>` can safely be used with objects and tuples, but `Fold<T, [], $Concat>` can only be used with tuples.
 
-</td></tr><tr><td valign='top'><h6><code>Fold<&#8288;$T, I></code></td><td>
+</td></tr><tr><td valign='top'><h6><code>$Fold<&#8288;$T, I></code></td><td>
 
 A free version of `Fold`.
 
@@ -1330,7 +1329,7 @@ The elements of a tuple are supplied to `R` as an arguments list:
 ```typescript
 type Answer = Match<['4', '2'],[
     [[number, number],  $Add],
-    [[string string],  $Stitch<''>]
+    [[string, string],  $Stitch<''>]
 ]>; // "42"
 ```
 ##### Objects
@@ -1485,7 +1484,7 @@ type GroupedBySize = GroupBy<NumericList, $Sizes>;
 
 A free version of `GroupBy`
 
-</td></tr><tr><td valign='top'><h6><code>GroupUnionBy<&#8288;T, $P, $T></code></td><td>
+</td></tr><tr><td valign='top'><h6><code>GroupUnionBy<&#8288;U, $P, $T?></code></td><td>
 
 
 Partition the union `U` into sub-unions and store the result in a Struct. The name and composition of the groups is decided by calling the predicate `$P` of type `Type<[member: unknown], PropertyKey>` on each member of `U`.
@@ -1500,7 +1499,7 @@ interface $Sizes extends Type<[Numbers], string> {
         : 'big'
 }
 
-type GroupedBySize = GroupByUnion<Numbers, $Sizes>;
+type GroupedBySize = GroupUnionBy<Numbers, $Sizes>;
 // {
 //     null: 0,
 //     small: 1 | 2 | 3,
@@ -1512,7 +1511,7 @@ type GroupedBySize = GroupByUnion<Numbers, $Sizes>;
 Optionally take a transfrom `$T` of type `Type<[union: unknown, length?: number]>` to map over the sub-unions as they are inserted. `$T` exposes the length of the sub-union as a second optional parameter.
 
 ```typescript
-type GroupedBySize = GroupBy<Numbers, $Sizes, $Addlen>;
+type GroupedBySize = GroupUnionBy<Numbers, $Sizes, $AddLen>;
 // {
 //     null: 1,
 //     small: 4 | 5 | 6,
@@ -1520,8 +1519,8 @@ type GroupedBySize = GroupBy<Numbers, $Sizes, $Addlen>;
 //     big: 10 | 11 | 12
 // }
 
-interface $AddLen extends $Transform {
-    type: Add<this[0], this[1]>
+interface $AddLen extends Type<[number, number]> {
+    type: Add<A<this>, B<this>>
 }
 ```
 
