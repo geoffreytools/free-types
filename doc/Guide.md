@@ -38,10 +38,10 @@ type FooBar = apply<$Foo, ['bar']> // Foo<'bar'>
 
 You can think of application as the following 2-step process:
 ```typescript
-type Step1 = $Foo & { arguments: ['bar'] };
-// { type: Foo<this['arguments'][0]>, arguments: unknown[] & ['bar'] }
+type Step1 = $Foo & { 0: 'bar' } & { arguments: ['bar'] };
+// { type: Foo<this[0]>, 0: 'bar', arguments: unknown[] & ['bar'] }
 ```
-Since `unknown` is the neutral element of intersection, `unknown[]` is replaced by `['bar']` *relatively* transparently.
+The arguments are intersected with the free type: `this[0]` reads `'bar'` from its numeric key, and `this['arguments']` becomes `unknown[] & ['bar']`. Since `unknown` is the neutral element of intersection, `unknown[]` is replaced by `['bar']` *relatively* transparently.
 
 ```typescript
 type Step2 = Step1['type'] // Foo<'bar'>
@@ -49,17 +49,18 @@ type Step2 = Step1['type'] // Foo<'bar'>
 The final evaluation is deferred until the `type` field is accessed, and that's our second step.
 
 ### The arguments list is a little broken:
-Because it is an intersection type, the arguments list has lost its capacity to spread:
+Because it is an intersection type, `this['arguments']` has lost its capacity to spread:
 
 ```typescript
-type KnownIssue = [...[1, 2] & [unknown, unknown]] // (1|2)[]
+type KnownIssue = [...[1, 2] & unknown[]] // (1|2)[]
 ```
-Utils such as [`ToTuple`](./Documentation.md/#totuplet) or [`Slice`](./Documentation.md/#slicet-from-to) which recursively construct a new tuple can be used to work around this issue:
+[`AppliedArguments`](./Documentation.md/#appliedargumentsthis) reads the arguments as a proper tuple:
 
 ```typescript
-interface $Foo extends Type { type: ['foo', ...ToTuple<this['arguments']>] }
-// now arguments can spread                    --------------------------
+interface $Foo extends Type { type: ['foo', ...AppliedArguments<this>] }
+// now arguments can spread                    ----------------------
 ```
+It reads a second field, `appliedArguments`, which `Type` declares as `unknown` rather than `unknown[]`: once applied, `unknown & [1, 2]` is simply `[1, 2]`. When the free type is not applied, `AppliedArguments` returns `unknown[]`.
 
 ## Evaluation&nbsp;[↸](#guide)
 
@@ -84,7 +85,6 @@ Typescript would expand it like so:
 ```typescript
 type TupleWrap<T, N> = N extends 0 ? [] : Tuple<T, N, [T]>
 ```
-
 We would observe a different behaviour if we wrapped it in a free type:
 
 ```typescript
@@ -212,10 +212,10 @@ Another is to use the adapter [`$Arity`](./Documentation.md/#arityn-t):
 type Ok = ExpectUnary<$Arity<1, $Foo>>;
 ```
 
-Finally, you can use [`Contra`](./Documentation.md/#contrat-u) to make the arguments contravariant, and by this mean accept the wider type:
+Finally, you can use [`Expect`](./Documentation.md/#expecttype) to make the parameters contravariant, and by this mean accept the wider type:
 
 ```typescript
-type ExpectAtLeastUnary<$T extends Contra<$T, Type<1>>> = apply<$T, ['foo']>;
+type ExpectAtLeastUnary<$T extends Expect<Type<1>>> = apply<$T, ['foo']>;
 type Ok = ExpectAtLeastUnary<$Foo>;
 ```
 
@@ -349,6 +349,8 @@ Despite the disadvantages of intersection, I would prefer it as a first-line tre
 
 Then I would choose inline conditionals if the implicit return type works out alright, or a surrounding conditional otherwise.
 
+The alphabetical helpers presented below combine the first two: an inline conditional returns a valid argument as it is, and an intersection is the fallback.
+
 ### Wiring constraints
 
 #### Constraints on the input
@@ -421,7 +423,7 @@ interface $Foo extends Type<[unknown[]]> {
 
 ##### `(A|B|C|D|E)<this?>`
 
-Alphabetical helpers are shorthands for `Lossy`. They are the go to solution for indexing `this` with arities up to 5 as they don't take more real estate than `this[i]` but offer much more functionality:
+Alphabetical helpers return the argument as it is when it satisfies its constraint, and intersect it with its constraint otherwise. They are the go to solution for indexing `this` with arities up to 5 as they don't take more real estate than `this[i]` but offer much more functionality:
 
 ```typescript
 interface $Foo extends Type<[string]> {
@@ -436,6 +438,18 @@ interface $Foo extends Type<[unknown, unknown[]]> {
     type: [A<this>, ...Checked<B, this>]
 }
 ```
+
+##### `this['arg']`
+
+The `arg` field reads arguments the same way as the alphabetical helpers, by position or by name, with auto-completion:
+
+```typescript
+interface $Foo extends Type<{ name: [0, string] }> {
+    type: `Foo_${this['arg']['name']}`
+}
+```
+
+`this['arg']` is computed again for every application, so in a type which is applied many times, the alphabetical helpers or [`Get`](./Documentation.md/#getk-this) cost less.
 
 #### Constraint on the return type
 
@@ -517,7 +531,9 @@ This is not bad, but a problem with this design is that the following edge case 
 type Foo<$T extends Type<1>> = MapOver<['a', 'b', 'c'], $T>;
 type ShouldFail = Foo<$Next>;
 ```
-Free types arguments being accidentally covariant, type safety is kind of "opt-in" and, when you do opt in, it is too restrictive:
+`Type<1>` declares a parameter of type `any`, so it accepts every unary free type, `$Next` included.
+
+A precise contract such as `Type<[string]>` rejects `$Next`, because free types are invariant on their parameters. Invariance also rejects a free type which accepts more than strings:
 
 ```typescript
 type Foo<$T extends Type<[string]>> = MapOver<['a', 'b', 'c'], $T>;
@@ -526,66 +542,46 @@ type ShouldFail = Foo<$Next>;
 //                    ~~~~~
 // Type '$Next' does not satisfy the constraint 'Type<[string]>'
 
-
-type UnfairlyRejected = Foo<free.Array> // with free.Array: Type<[unknown]>
+type UnfairlyRejected = Foo<free.Array> // with free.Array: Type<1>
 //                          ~~~~~~~~~~
 // Type '$Array' does not satisfy the constraint 'Type<[string]>'
 ```
 
-We could constrain `$T` based on the input, but then the constraint would be too narrow:
+That's where [`Expect`](./Documentation.md/#expecttype) comes in. It removes the covariant part of the parameters, so that the free type is checked contravariantly, the way the parameters of a function are:
 
 ```typescript
-type MapOver<T extends unknown[], $T extends Type<[T[number]]>> = ...
-
-type ShouldWork = MapOver<[1, 2, 3], $Next>
-//                                   ~~~~~
-// Type '$Next' does not satisfy the constraint 'Type<[1 | 2 | 3]>'.
-```
-Our [`Widen`](./Documentation.md/#wident-ts-i) helper would work around that problem, but would still be too restrictive:
-
-```typescript 
-type MapOver<T extends unknown[], $T extends Type<[Widen<T[number]>]>> =
-    T extends $T['constraints'][0][] ? {
-        [K in keyof T]: K extends keyof [] ? T[K]
-        : apply<$T, [T[K]]>
-    } : never
-
-type ShouldWork = MapOver<[1, 2, 3], $Next>;
-type UnfairlyRejected = MapOver<[1,2,3], free.Array>
-//                               ~~~~~
-// Type '$Array' does not satisfy the constraint 'Type<[number]>'
-```
-
-That's where [`Contra`](./Documentation.md/#contrat-u) comes in. It simply checks that one type extends the other, but in the opposite order than usual:
-
-```typescript
-type MapOver<T extends unknown[], $T extends Contra<$T, Type<[T[number]]>>> = {
-    [K in keyof T]: K extends keyof [] ? T[K] : apply<$T, [T[K]]>
-}
-
-type ShouldWork = MapOver<[1,2,3], free.Array>
-type ShouldWork = MapOver<[1,2,3], $Next>
-type ShouldFail = MapOver<['a', 'b', 'c'], $Next>
-//                                         ~~~~~
-// Type '$Next' does not satisfy the constraint 'Type<unknown[], unknown> & { 'Contravariance issue': { 'the input': ["a" | "b" | "c"]; 'is not assignable to': [number]; }; }'.
-```
-The error message is not beautiful but gets the job done.
-
-To covers our edge case we need the caller type to also use `Contra` with the exact same arguments: 
-
-```typescript
-type Foo<$T extends Contra<$T, Type<['a'|'b'|'c']>>> =
-    MapOver<['a', 'b', 'c'], $T>;
-
-type ShouldFail = Foo<$Next>;
-//                    ~~~~~
-// Type '$Next' does not satisfy the constraint 'Type<unknown[], unknown> & { 'Contravariance issue': { 'the input': ["a" | "b" | "c"]; 'is not assignable to': [number]; }; }'.
+type Foo<$T extends Expect<Type<[string]>>> = MapOver<['a', 'b', 'c'], $T>;
 
 type ShouldWork = Foo<free.Array>;
 type ShouldWork = Foo<$UpperCase>; // with $UpperCase: Type<[string]>
+
+type ShouldFail = Foo<$Next>;
+//                    ~~~~~
+// Type '$Next' does not satisfy the constraint '{ [x: number]: unknown; type: unknown; constraints: any; contra: (constraints: { 0: string; } & {}) => void; namedConstraints: any; arg: any; arguments: unknown[]; appliedArguments: unknown; names: any; }'.
+//   Types of property 'contra' are incompatible.
+//     Type '(constraints: { 0: number; } & {}) => void' is not assignable to type '(constraints: { 0: string; } & {}) => void'.
+//       Types of parameters 'constraints' and 'constraints' are incompatible.
+//         Type '{ 0: string; } & {}' is not assignable to type '{ 0: number; } & {}'.
+//           Type '{ 0: string; } & {}' is not assignable to type '{ 0: number; }'.
+//             Types of property '0' are incompatible.
+//               Type 'string' is not assignable to type 'number'
+```
+The error message is pretty verbose but you do get a clear answer at the end.
+
+`MapOver` itself can use `Expect` to derive the contract of `$T` from its input:
+
+```typescript
+type MapOver<T extends unknown[], $T extends Expect<Type<[T[number]]>>> = {
+    [K in keyof T]: K extends keyof [] ? T[K] : apply<$T, [T[K]]>
+}
+
+type ShouldWork = MapOver<[1, 2, 3], free.Array>
+type ShouldWork = MapOver<[1, 2, 3], $Next>
+type ShouldFail = MapOver<['a', 'b', 'c'], $Next>
+//                                         ~~~~~
 ```
 
-> I did not use either of those helpers in the actual implementation of `MapOver` but I hope this use case made the issue more concrete.
+> The actual implementation of `MapOver` constrains `T` with `$T['constraints']`, and `$T` with `Expect`.
 
 #### Other limitations
 Interdependent constraints are impossible to express: 
@@ -786,16 +782,10 @@ It enables you to express those compositions `Pipe` struggles with.
 ```typescript
 type Rejected = Flow<[$MapOver<$Prop<'value'>>, $Reduce<$Add>]>
 //                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-// Type '[$MapOver<$Prop<"value", unknown>>, $Reduce<$Add>]' does not satisfy the constraint 'Composition & [Type<[Mappable<Record<"value", unknown>>], NonEmptyMappable<number>>, $Reduce<$Add>]'.
-//   Type '[$MapOver<$Prop<"value", unknown>>, $Reduce<$Add>]' is not assignable to type '[Type<[Mappable<Record<"value", unknown>>], NonEmptyMappable<number>>, $Reduce<$Add>]'.
-//     Type at position 0 in source is not compatible with type at position 0 in target.
-//       Type '$MapOver<$Prop<"value", unknown>>' is not assignable to type 'Type<[Mappable<Record<"value", unknown>>], NonEmptyMappable<number>>'.
-//         Type '$MapOver<$Prop<"value", unknown>>' is not assignable to type 'TypeFields<[Mappable<Record<"value", unknown>>], NonEmptyMappable<number>, [Mappable<Record<"value", unknown>>], [unknown]>'.
-//           Types of property 'type' are incompatible.
-//             Type 'Mappable<unknown>' is not assignable to type 'NonEmptyMappable<number>'.
-//               Type 'unknown[]' is not assignable to type 'NonEmptyMappable<number>'.
-//                 Type 'unknown[]' is not assignable to type '[number, ...number[]]'.
-//                   Source provides no match for required element at position 0 in target
+// Type '[_$MapOver<$Prop<"value", unknown>>, $Reduce<$Add2>]' does not satisfy the constraint '[Type<[Mappable<{ value: unknown; }>], NonEmptyMappable<number>>, $Reduce<$Add2>]'.
+//   Type at position 0 in source is not compatible with type at position 0 in target.
+//     The types of 'type' are incompatible between these types.
+//       Type 'Mappable<unknown>' is not assignable to type 'NonEmptyMappable<number>'.
 ```
 
 For your comfort I suggest you inspect the signature of your types with `Signature` when you want to debug a composition:
@@ -987,7 +977,7 @@ type Indirect = Foo<SumValues>;
 type Foo<$T extends Type> = apply<$T, [Input]>;
 
 type SumValues<T extends $SumValues['constraints'][0] = never> =
-    $Alter<$SumValues [T]>
+    $Alter<$SumValues, [T]>
 ```
 
 Another option for removing boilerplate would be to contribute to the introduction of free type constructors into the language natively :grin:
