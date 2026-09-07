@@ -44,11 +44,24 @@ The goal of the library is to support dependency inversion and type-level progra
 
 Related project: [type-lenses](https://github.com/geoffreytools/type-lenses)
 
-## How to install
+## How to use
 
 ```
 npm install free-types
 ```
+
+### Import paths
+
+- `free-types`: `free-types/core` + `free-types/essential`
+- `free-types/core`: everything you need to create, apply and unwrap free types
+- `free-types/essential`: everything you need to compose, adapt and lift free types
+- `free-types/experimental`: `FromDeep`, `Match`, `Widen`, `Show`
+- `free-types/utility-types`: companion types under
+    - `/strings`
+    - `/arithmetic`
+    - `/logic/`
+    - `/tuples`
+
 
 ## A few use cases
 

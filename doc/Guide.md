@@ -12,6 +12,7 @@
 | [Constraints](#type-constraints)
 | [Contracts](#contracts)
 | [Dynamic free types](#dynamic-free-types)
+| [Performance](#performance)
 | [Boilerplate and API](#boilerplate-and-api)
 
 
@@ -941,6 +942,53 @@ type Rejected = apply<$Foo, [1, 42]>
 ```
 
 More about it in the [documentation](./Documentation.md/#fromt-args).
+
+## Performance&nbsp;[↸](#guide)
+
+Using a free type is sometimes literally free: the indirection itself costs nothing in check time and the cost of using the different utils should grow linearly with the code that uses them. But there are gotchas, which we discuss bellow.
+
+### How to diagnose slow types
+
+`tsc --extendedDiagnostics` reports the number of instantiations and the check time of a project. Check times vary from one run to the next but instantiation counts are stable. The latter is a bad proxy for check time though, you want to take multiple measurements and take the median.
+
+I use [ts-trace](https://github.com/geoffreytools/ts-trace) to trace subsections of my code with `tsc --generateTrace`. [@typescript/analyze-trace](https://github.com/microsoft/typescript-analyze-trace) can be used to quickly find hot spots in your source code.
+
+### Baseline cost
+
+The up-front cost of checking the library itself can be mitigated by these means:
+
+- using `skipLibCheck: true` in you tsconfig
+
+- importing what you need from a sub-folder\
+  (you can go arbitrarily deep except for `core/`)
+
+- using `incremental: true` and `composite: true`\
+  (this is general advice on a big codebase)
+
+### Reading arguments
+
+`this['arg']` is convenient but it builds an object of every argument for every application. In a free type which is applied a few times it is a non-issue, but if it is applied for every element of a large type used everywhere it becomes a real cost.
+
+`this[index]` costs the least, it just reads an argument as it is. The alphabetical helpers and `Get` add a conditional to defuse the constraint but are more affordable than `this['arg']`.
+
+The rule of thumb is: optimize your highly reusable and composable types.
+
+### Useless checks in internal code
+
+`apply` checks the arguments against the constraints and fits them to the arity of the free type. Inside a higher order type, where the arguments are already known to be valid, [`_apply`](./Documentation.md/#_applyt-args) and [`_Type`](./Documentation.md/#_typein-out) skip this work.
+
+### Checks on arguments which are still being inferred
+
+When the argument of a free type depends on a type parameter that TypeScript is still inferring, for example in the signature of a generic function, a checked read compares the argument with its constraint, which can expand the constraint for every candidate of the inference. `this[index]`, or `this[index] & Constraint` when the constraint must be defused, reads the argument without comparing it.
+
+### `unwrap` search
+
+[`unwrap`](./Documentation.md/#unwrapt-from) tries every free type of `TypesMap` until one matches, so you get the feeling you can infer a type constructor, it's the whole point, but when you know which free types to expect, pass them as the second argument to narrow the search.
+
+### Compositions depth
+
+Every free type of a composition is applied once per input, and every adapter wraps a free type in another. Whether this costs you depends on your types and their usage,but a deep stack of combinators is always going to costs more than a flat free type.
+
 
 ## Boilerplate and API&nbsp;[↸](#guide)
 
