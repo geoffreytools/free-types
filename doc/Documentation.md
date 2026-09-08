@@ -278,6 +278,31 @@ interface $BadType extends Type<[string]> {
 
 <p align=center>⁂</p>
 
+### `CreateType<{ type: Out }, { constraints: Constraints, names: Names }>`
+
+where `Constraints` is a tuple of constraints and `Names` a map from parameter names to their indices
+
+Extend this type with an interface to create a free type which constraints are computed from another free type.
+
+Useful for creating combinators without being coupled to free-types internals.
+
+#### Example
+
+```typescript
+import { A, B, _apply, _Type, CreateType } from 'free-types'
+
+interface $Flip<$T extends _Type<[unknown, unknown]>> extends CreateType<
+    { type: unknown },
+    { names: {}, constraints: [$T['constraints'][B], $T['constraints'][A]] }
+> {
+    type: _apply<$T, [this[B], this[A]]>
+}
+```
+
+The [guide](./Guide.md#combinators) explains the rules to follow for decoupling yourself from fee-types internals and reduce the check time and instantiations depth  of generic code.
+
+<p align=center>⁂</p>
+
 ### `TypeDoc<Type>`
 
 Enrich a free type created from scratch with helpful tooltip information.

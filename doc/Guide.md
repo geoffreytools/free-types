@@ -638,6 +638,7 @@ interface $StartingWithA extends $KeysFilter {
 | [Partial application (partial)](#partial-application)
 | [Composition](#composition)
 | [Ad hoc constructors](#ad-hoc-constructors)
+| [Combinators](#combinators)
 
 There are several ways ou can create free types dynamically.
 
@@ -942,6 +943,33 @@ type Rejected = apply<$Foo, [1, 42]>
 ```
 
 More about it in the [documentation](./Documentation.md/#fromt-args).
+
+### Combinators
+
+A combinator is a free type which takes other free types as parameters and returns a new free type.
+
+Bellow is the implementation of `$Flip`, which swaps the two parameters of a binary free type:
+
+```typescript
+import { A, B, _apply, _Type, CreateType } from 'free-types'
+
+interface $Flip<$T extends _Type<[unknown, unknown]>> extends CreateType<
+    { type: unknown },
+    { names: {},  constraints: [$T['constraints'][B], $T['constraints'][A]] }
+> {
+    type: _apply<$T, [this[B], this[A]]>
+}
+```
+
+Four rules to follow for a healthy combinator:
+
+1. Declare the parameters with `Type` when they are known, and with [`CreateType`](./Documentation.md/#createtype-type-out---constraints-constraints-names-names-) when they are computed from other free types. Both derive the variance of the parameters, their named constraints and `this['arg']` from the constraints that they receive.
+
+2. Read the arguments with `this[0]`, the alphabetical helpers, `Get` or `AppliedArguments<this>`, and test whether the combinator is applied with `Applied<this>`.
+
+3. Apply the free types that the combinator receives with `_apply`. When the constraints of the combinator are derived from those of `$T` so you don't check `$T` arguments again in generic code.
+
+4. Don't read or set the fields `arguments`, `appliedArguments`, `contra`, `namedConstraints` or `arg`: they are internal, and they can change from one version of free-types to the next.
 
 ## Performance&nbsp;[↸](#guide)
 
