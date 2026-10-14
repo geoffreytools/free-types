@@ -50,6 +50,7 @@
         "build perf": "tsc -p ./tsconfig-build-perf.json",
         "diagnostics": "tsc -p ./tsconfig-perf.json --extendedDiagnostics",
         "build watch": "tsc -p ./tsconfig-build.json --watch",
+        "bench show": "npm run build && node perf/show.mjs",
         "trace": "bash ./node_modules/ts-trace/ts-trace.sh -i ./tsconfig-perf.json"
     },
     "dependencies": {

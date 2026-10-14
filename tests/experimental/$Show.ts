@@ -33,6 +33,7 @@ test('Show function' as const, t => [
     t.equal<Show<(a: number) => string>, '(a: number) => string'>(),
     t.equal<Show<(a: number, b: string) => void>, '(a: number, b: string) => void'>(),
     t.equal<Show<(...args: any[]) => string>, '(...args: any[]) => string'>(),
+    t.extends<Show<(...args: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]) => void>, `${string}, p: 0, q: 0) => void`>(),
     // known limitation
     t.not.equal<Show<(a: number, ...args: number[]) => string>, '(a: number, ...args: number[]) => string'>()
 ])
@@ -59,6 +60,19 @@ test('Show deeply nested type' as const, t =>
     t.extends<Show<[1, 2, {a: 3, b: Map<string, 4>, c: [(1|2)[], (a: number, b: string) => void ]}]>,
         | '[1, 2, { a: 3, b: Map<string, 4>, c: [(1 | 2)[], (a: number, b: string) => void] }]'
         | '[1, 2, { a: 3, b: Map<string, 4>, c: [(2 | 1)[], (a: number, b: string) => void] }]'
+    >()
+)
+
+test('Show undefined nested in a tuple, a union or an optional property' as const, t => [
+    t.equal<Show<[undefined]>, '[undefined]'>(),
+    t.equal<Show<[a?: 1]>, '(1 | undefined)[]'>(),
+    t.equal<Show<{ a?: number }>, '{ a: (number | undefined) }'>(),
+])
+
+test('Show index signatures' as const, t =>
+    t.extends<Show<{ [k: string]: number }>,
+        | '{ string: number, number: number }'
+        | '{ number: number, string: number }'
     >()
 )
 

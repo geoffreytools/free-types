@@ -1004,7 +1004,7 @@ Here are some figures on a good laptop:
 | free-types/logic          (+core)  | 20ms | 200ms |
 | free-types/arithmetic     (+core)  | 22ms | 230ms |
 | free-types/functions      (+core)  | 18ms | 180ms |
-| free-types/strings        (+core)  | 21ms | 210ms |
+| free-types/strings        (+core)  | 24ms | 240ms |
 | free-types/utility-types  (+core)  | 29ms | 270ms |
 
 Since everything depends on `/core`, A pragmatic import pattern when you don't need composition is:
@@ -1035,8 +1035,9 @@ When the argument of a free type depends on a type parameter that TypeScript is 
 
 ### Compositions depth
 
-Every free type of a composition is applied once per input, and every adapter wraps a free type in another. Whether this costs you depends on your types and their usage,but a deep stack of combinators is always going to costs more than a flat free type.
+Every free type of a composition is applied once per input, and every adapter wraps a free type in another. Whether this costs you depends on your types and their usage,but a deep stack of combinators is always going to costs more than a flat free type:
 
+The plain implementation of `free-types/strings/Show` is 4 times cheaper than the one of `free-types/experimental/Show`, purposely written with as much combinators as conceivable.
 
 ## Boilerplate and API&nbsp;[↸](#guide)
 
