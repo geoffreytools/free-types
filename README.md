@@ -146,11 +146,11 @@ import { A } from 'free-types';
 export interface $T1 extends $TN
     { type: [A<this>] }
 
-// Compile error: $T2 incorrectly extends $TN
+// Error: $T2 incorrectly extends $TN
 export interface $T2 extends $TN
     { type: [A<this>, '2'] } 
 
-// Compile error: $Id incorrectly extends $TN
+// Error: $Id incorrectly extends $TN
 export interface $Id extends $TN
     { type: A<this> }
 
@@ -208,47 +208,54 @@ type Foo = Widen<{ a: 'foo', b: 2 }> // { a: string, b: number }
 <tr><td valign='top'>
 
 ```typescript
+//
+
 type Widen<T> =
   : T extends string ? string
   : T extends number ? number
   : T extends boolean ? boolean
-  : T extends Set<string> ? Set<string>
-  : T extends Set<number> ? Set<number>
-  : T extends Set<boolean> ? Set<boolean>
-  : T extends Promise<string> ? Promise<string>
-  : T extends Promise<number> ? Promise<number>
-  : T extends Promise<boolean> ? Promise<boolean>
-  : T extends MapOver<string, number> ? // ...
-  : T extends MapOver<string, string> ? // ... etc.
-  : T extends unknown[] | Obj
-    ? { [K in keyof T]: Widen<T[K]> }
+
+  : T extends Set<string>
+  ? Set<string>
+  : T extends Set<number>
+  ? Set<number>
+  : T extends Set<boolean>
+  ? Set<boolean>
+  // WeakSet
+  // Map
+  // WeakMap
+  // Promise
+  // ...
+
+  : T extends Mappable
+  ? { [K in keyof T]: Widen<T[K]> }
   : T
 
-type Obj = {
-    [k: string|number|symbol]: unknown
+type Mappable = unknown[] | {
+    [k: PropertyKey]: unknown
 }
 ```
 </td><td valign='top'>
 
 ```typescript
-import { apply, unwrap, Unwrapped } 
-    from 'free-types';
+import * as $ from 'free-types';
 
 type Widen<T> =
   : T extends string ? string
   : T extends number ? number
   : T extends boolean ? boolean
-  : T extends unknown[] | Obj
-    ? { [K in keyof T]: Widen<T[K]> }
-  : WidenClass<T>
 
-type WidenClass<
-    T, U extends Unwrapped = unwrap<T>
-> = [U] extends [never] ? T
-    : apply<U['type'], Widen<U['args']>>
+  : $.unwrap<T> extends {
+    type: infer $T extends $.Type,
+    args: infer A extends unknown[]
+  } ? $.apply<$T, Widen<A>>
 
-type Obj = {
-    [k: string|number|symbol]: unknown
+  : T extends Mappable
+  ? { [K in keyof T]: Widen<T[K]> }
+  : T
+
+type Mappable = unknown[] | {
+    [k: PropertyKey]: unknown
 }
 ```
 </td></tr>
@@ -265,7 +272,7 @@ type Obj = {
 
 2) `TypeMap` can be extended with module augmentation. `unwrap` also optionally  accepts a custom map/tuple of free types to narrow down the search.
 </tr>
-<table>
+</table>
 
 A more elaborate version of [`Widen`](./Documentation.md/#wident-ts-i) is exported by the library.
 
@@ -274,7 +281,7 @@ A more elaborate version of [`Widen`](./Documentation.md/#wident-ts-i) is export
 <details>
 <summary><h3>Pattern matching</h3></summary>
 
-The listing on the left is an abridged excerpt from actual code where we wanted to switch on a pair of inputs `I` and `D`.
+The listing on the left is an abridged excerpt from actual code where we wanted to switch on a pair of inputs `A` and `B`.
 
 We can't pattern match on a tuple if we need control flow analysis to carry over:
 ```typescript
@@ -293,21 +300,29 @@ Without free types, we have no other choice than to nest conditionals:
 <td valign='top'>
 
 ```typescript
-type Foo<I extends PI, D extends D, V> =
-    I extends O
-       ? D extends F ? R1<D, V> : never
-  : I extends P
-       ? D extends F ? R2<V,I,D> : never
-  : I extends K
-       ? D extends U
-            ? R3<D, I, V>
-            : D extends N
-            ? R4<V, I, D> 
-            : never
-  : I extends S
-       ? D extends D ? V : never
-  : I extends T
-       ? D extends D ? R5<I, V> : never
+type Foo<A, B, V> =
+  A extends O
+    ? B extends F
+      ? R1<B, V>
+      : never
+  : A extends P
+    ? B extends F
+      ? R2<V, A, B>
+      : never
+  : A extends K
+    ? B extends U
+      ? R3<B, A, V>
+        : B extends N
+        ? R4<V, A, B> 
+        : never
+  : A extends S
+    ? B extends W
+      ? V
+      : never
+  : A extends T
+    ? B extends W
+      ? R5<A, V>
+      : never
   : never
 ```
 </td>
@@ -315,16 +330,16 @@ type Foo<I extends PI, D extends D, V> =
 <td valign='top'>
 
 ```typescript
-import { Match, A, B } from 'free-types';
+import { Match } from 'free-types';
 
-type Foo<I extends PI, D extends D, V> =
-    Match<[I, D], [
-        [ [O, F], $R1<V>, [B] ],
+type Foo<A, B, V> =
+    Match<[A, B], [
+        [ [O, F], $R1<V>, [1] ],
         [ [P, F], $R2<V> ],
         [ [K, U], $R3<V> ],
         [ [K, N], $R4<V> ],
-        [ [S, D], V ],
-        [ [T, D], $R5<V>, [A] ]
+        [ [S, W], V ],
+        [ [T, W], $R5<V>, [0] ]
     ]>
 ```
 </td>
@@ -337,7 +352,7 @@ type Foo<I extends PI, D extends D, V> =
 1) A good part of the code is plumbing and indentation hell.
 <td valign='top'>
 
-1) Every case is scoped (notably the ones in which `I` extends `K`). The cognitive load is lower;
+1) Every case is scoped (notably the ones in which `A` extends `K`). The cognitive load is lower;
 
 2) The wiring disappears to let your domain show through.
 </tr>
@@ -355,6 +370,8 @@ We have two types, `And` and `Or`, which work with 2 arguments and we want to im
 <td valign='top'>
 
 ```typescript
+// 
+
 type List = [unknown, ...unknown[]];
 
 type AndN<
@@ -371,7 +388,8 @@ type OrN<
     R = never,
 > = I extends L['length'] ? R
     : OrN<L, Next<I>,
-        [L[I]] extends [never] ? R : L[I]
+        [L[I]] extends [never]
+        ? R : L[I]
     >;
 ```
 </td><td valign='top'>
@@ -382,8 +400,11 @@ import { Reduce } from 'free-types';
 
 type List = [unknown, ...unknown[]];
 
-type AndN<L extends List> = Reduce<L, $And>;
-type OrN<L extends List> = Reduce<L, $Or>;
+type AndN<L extends List> =
+    Reduce<L, $And>;
+
+type OrN<L extends List> =
+    Reduce<L, $Or>;
 
 interface $And extends Type<2> {
     type: And<A<this>, B<this>>
@@ -437,9 +458,9 @@ We have 2 types `F<A, B>` and `G<T>`. We want to create a type `H` such that `H<
 <tr><td valign='top'>
 
 ```typescript
-import { F, G, ConstraintA, ConstraintB} from './FG.ts';
+import { F, G, CA, CB } from './FG.ts';
 
-type H<A extends ConstraintA, B extends ConstraintB> =
+type H<A extends CA, B extends CB> =
     G<F<A, B>>;
 ```
 </td><td valign='top'>
