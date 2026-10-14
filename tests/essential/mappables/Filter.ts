@@ -2,7 +2,7 @@ import { test } from 'ts-spec'
 import { apply } from 'free-types-core';
 import { $Filter, Filter, $FilterOut, FilterOut } from 'mappables/Filter'
 import { Mappable } from 'mappables'
-import { $Extends, Refinement } from 'free-types'
+import { $Extends, Refinement } from '../../../logic'
 type MixedTuple = [1, 'a', 2, true, 3, symbol];
 type MixedObj = { a: 1, b: 'a', c: 2, d: true, e: 3, f: symbol };
 

@@ -5,9 +5,9 @@ import { $Flip } from 'adapters/$Flip';
 import { Key } from 'mappables/common';
 import { $Lift } from 'mappables/Lift';
 import { $MapOver } from 'mappables/MapOver';
-import { $Join } from 'utility-types/strings/$Join';
-import { $Stitch } from 'utility-types/strings/$Stitch';
-import { Showable } from 'utility-types/strings/common';
+import { $Join } from '../strings/$Join';
+import { $Stitch } from '../strings/$Stitch';
+import { Showable } from '../strings/common';
 import { $Assert } from 'essential/composition/$Assert';
 import { $Object2Tuple } from 'mappables/Object2Tuple';
 

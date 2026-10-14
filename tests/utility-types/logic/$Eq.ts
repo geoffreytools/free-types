@@ -1,6 +1,6 @@
 import { apply } from 'free-types-core';
 import { test } from 'ts-spec';
-import { $Eq } from 'utility-types/logic/';
+import { $Eq } from '../../../src/logic';
 
 type $Is1 = $Eq<1>;
 

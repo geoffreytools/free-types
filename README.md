@@ -52,15 +52,17 @@ npm install free-types
 
 ### Import paths
 
-- `free-types`: `free-types/core` + `free-types/essential`
-- `free-types/core`: everything you need to create, apply and unwrap free types
-- `free-types/essential`: everything you need to compose, adapt and lift free types
-- `free-types/experimental`: `FromDeep`, `Match`, `Widen`, `Show`
-- `free-types/utility-types`: companion types under
-    - `/strings`
-    - `/arithmetic`
-    - `/logic/`
-    - `/tuples`
+- `free-types`\
+  core features + compose, adapt and lift free types
+
+- `/core`\
+  create, apply and unwrap free types
+
+- `/strings` `/arithmetic` `/logic` `/tuples`\
+  ready-made free types also under the barrel `/utility-types`
+
+- `/experimental`\
+  features which API is not stable or performance not optimized
 
 
 ## A few use cases

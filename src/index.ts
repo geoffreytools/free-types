@@ -1,3 +1,3 @@
-export * from './essential';
-export * from './utility-types';
+export * from 'core';
 export { TypesMap } from 'core/TypesMap';
+export * from './essential';

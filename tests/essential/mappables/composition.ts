@@ -6,10 +6,10 @@ import { $Fold } from 'mappables/Fold'
 import { $MapOver } from 'mappables/MapOver'
 import { $Filter } from 'mappables/Filter'
 import { $Reduce } from 'mappables/Reduce'
-import { $Add, $Next } from 'utility-types/arithmetic'
+import { $Add, $Next } from '../../../src/arithmetic'
 
 import * as Tuple from 'essential/Tuple'
-import { Refinement } from 'free-types'
+import { Refinement } from '../../../logic'
 import { Filter } from 'mappables/Filter'
 
 type TupleInput = [{ value: 1 }, { value: 2 }]

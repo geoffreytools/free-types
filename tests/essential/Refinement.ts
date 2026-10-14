@@ -1,6 +1,6 @@
 import { test } from 'ts-spec'
 import { apply } from 'free-types-core';
-import { $Extends, Refinement } from 'free-types'
+import { $Extends, Refinement } from '../../logic'
 
 type $IsNumber = $Extends<number>;
 

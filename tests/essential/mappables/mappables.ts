@@ -3,7 +3,7 @@ import { apply, partial } from 'free-types-core'
 import { Flow } from 'free-types-core';
 import { $Index, $SetIndex, $SetProp } from 'mappables/accessors'
 import { $MapOver } from 'mappables/MapOver'
-import { $Next } from 'utility-types/arithmetic'
+import { $Next } from '../../../src/arithmetic'
 
 test('$Index' as const, t => [
     t.equal<apply<$Index<0>, [[string, number]]>, string>(),

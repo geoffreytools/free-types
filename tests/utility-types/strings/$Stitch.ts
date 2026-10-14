@@ -1,7 +1,7 @@
 import { apply } from 'free-types-core/dist/apply';
 import { test } from 'ts-spec';
-import { $Stitch } from 'utility-types/strings/$Stitch';
-import { Showable } from 'utility-types/strings/common';
+import { $Stitch } from '../../../src/strings/$Stitch';
+import { Showable } from '../../../src/strings/common';
 
 
 test('Concatenate the supplied Showables' as const, t => [

@@ -981,7 +981,7 @@ Using a free type is sometimes literally free: the indirection itself costs noth
 
 I use [ts-trace](https://github.com/geoffreytools/ts-trace) to trace subsections of my code with `tsc --generateTrace`. [@typescript/analyze-trace](https://github.com/microsoft/typescript-analyze-trace) can be used to quickly find hot spots in your source code.
 
-### Baseline cost
+### Up-front cost
 
 The up-front cost of checking the library itself can be mitigated by these means:
 
@@ -992,6 +992,26 @@ The up-front cost of checking the library itself can be mitigated by these means
 
 - using `incremental: true` and `composite: true`\
   (this is general advice on a big codebase)
+
+Here are some figures on a good laptop:
+
+| Import path | Checktime TS 7.0 | Checktime TS 5.9 |
+|------------------------------------|------|-------|
+| empty file          (+lib ES2015)  |  7ms |  70ms |
+| free-types/core                    | 15ms | 160ms |
+| free-types                (+core)  | 28ms | 270ms |
+| free-types/tuples         (+core)  | 17ms | 200ms |
+| free-types/logic          (+core)  | 20ms | 200ms |
+| free-types/arithmetic     (+core)  | 22ms | 230ms |
+| free-types/functions      (+core)  | 18ms | 180ms |
+| free-types/strings        (+core)  | 21ms | 210ms |
+| free-types/utility-types  (+core)  | 29ms | 270ms |
+
+Since everything depends on `/core`, A pragmatic import pattern when you don't need composition is:
+```ts
+import {...} from 'free-types/core'     // essentially free
+import {...} from 'free-types/<barrel>' // utility-types if you need more than one
+```
 
 ### Reading arguments
 

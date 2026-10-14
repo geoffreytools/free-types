@@ -1,5 +1,5 @@
 import { Type, apply } from 'core'
-import { IsTruthy } from 'utility-types/logic/Refinement';
+import { IsTruthy } from '../../logic/Refinement';
 import { Extends } from 'utils';
 import * as Tuple from './common';
 import { Fold, $Reducer, WrapOptional } from './common';

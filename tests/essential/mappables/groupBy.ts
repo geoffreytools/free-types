@@ -1,7 +1,7 @@
 import { Type, apply, A, B } from 'core';
 import { test } from 'ts-spec';
 import { GroupBy, $GroupBy, GroupUnionBy, $GroupUnionBy, MapOver, $Index } from 'mappables';
-import { Add } from 'utility-types';
+import { Add } from '../../../src/arithmetic';
 
 type OddNumbers = 1 | 3 | 5 | 7 | 9
 type EvenNumbers = 0 | 2 | 4 | 6 | 8

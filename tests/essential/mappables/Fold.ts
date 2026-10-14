@@ -1,7 +1,7 @@
 import { apply } from 'free-types-core'
 import { test } from 'ts-spec'
 import * as Mappable from 'mappables/Fold'
-import { $Add } from 'utility-types/arithmetic'
+import { $Add } from '../../../src/arithmetic'
 
 test('Fold works on tuples' as const, t => [
     t.equal<Mappable.Fold<[], 0, $Add>, 0>(),

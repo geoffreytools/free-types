@@ -13,8 +13,6 @@
             "mappables/*": ["./src/essential/mappables/*"],
             "experimental": ["./src/experimental/index"],
             "experimental/*": ["./src/experimental/*"],
-            "utility-types": ["./src/utility-types/index"],
-            "utility-types/*": ["./src/utility-types/*"],
             "free-types": ["./src/index"],
         },
         "noEmit": true,

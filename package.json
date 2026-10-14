@@ -14,11 +14,21 @@
         "./core/**/*",
         "./essential/**/*",
         "./experimental/**/*",
-        "./utility-types/**/*",
+        "./strings/**/*",
+        "./logic/**/*",
+        "./arithmetic/**/*",
         "./index.js",
         "./index.d.ts",
         "./TypesMap.js",
-        "./TypesMap.d.ts"
+        "./TypesMap.d.ts",
+        "./utility-types.js",
+        "./utility-types.d.ts",
+        "./tuples.js",
+        "./tuples.d.ts",
+        "./Signature.js",
+        "./Signature.d.ts",
+        "./functions.js",
+        "./functions.d.ts"
     ],
     "author": "Geoffrey Gourdet",
     "repository": {

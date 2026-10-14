@@ -1,7 +1,7 @@
 import { test } from 'ts-spec'
 import { apply, Type, Checked, A } from 'free-types-core';
 import * as Tuple from 'essential/Tuple';
-import { $Extends, Refinement } from 'free-types';
+import { $Extends, Refinement } from '../../../logic';
 
 type ExpectStringArr<T extends readonly string[]> = T;
 

@@ -4,7 +4,7 @@ import { test } from 'ts-spec';
 import { $As } from 'adapters/$As';
 import { $Constrain } from 'adapters/$Constrain';
 import { Flow } from 'free-types-core';
-import { $Split } from 'utility-types/strings/$Split';
+import { $Split } from '../../../src/strings/$Split';
 
 interface $Tuple extends Type<[unknown, number]> {
     type: Tuple<B<this>, A<this>>

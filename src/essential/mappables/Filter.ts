@@ -1,5 +1,5 @@
 import { Type, apply } from 'core'
-import { $Not } from 'utility-types/logic/$Not';
+import { $Not } from '../../logic/$Not';
 import { Mappable } from './common'
 import { Filter as FilterTuple, FilterOut as FilterOutTuple } from 'essential/Tuple/Filter'
 import { GetOrElse } from 'utils';

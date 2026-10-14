@@ -1,6 +1,7 @@
 import { test } from 'ts-spec';
 
-import { Type, A, B, free, apply, $Not } from 'free-types'
+import { Type, A, B, free, apply } from 'free-types'
+import { $Not } from '../../logic'
 import { $IsEmpty } from 'mappables/IsEmpty';
 import { $Match, Match, otherwise, Protect } from 'experimental/Match';
 

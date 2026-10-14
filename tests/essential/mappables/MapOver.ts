@@ -1,7 +1,7 @@
 import { group, test } from 'ts-spec'
 import { apply, Type, Checked, A, Expect } from 'free-types-core';
 import { $MapOver, MapOver, $Transform } from 'mappables/MapOver'
-import { $Next } from 'utility-types/arithmetic'
+import { $Next } from '../../../src/arithmetic'
 
 type ExpectNumericArr<T extends readonly number[]> = T;
 

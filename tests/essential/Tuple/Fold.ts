@@ -1,7 +1,7 @@
 import { apply, Type, Checked, A } from 'free-types-core'
 import { test } from 'ts-spec'
 import * as Tuple from 'essential/Tuple'
-import { $Add } from 'utility-types/arithmetic'
+import { $Add } from '../../../src/arithmetic'
 
 type ExpectNumericArr<T extends number> = T;
 

@@ -9,7 +9,7 @@ import { $Values } from 'adapters/$Values';
 import { $Spread } from 'adapters/$Spread';
 import { $Flip } from 'adapters/$Flip';
 import * as Tuple from 'essential/Tuple';
-import { $Add, $Next } from 'utility-types/arithmetic';
+import { $Add, $Next } from '../src/arithmetic';
 
 interface $StrNumPair extends Type<[string, number]> {
     type: [A<this>, B<this>]

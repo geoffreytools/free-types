@@ -1,6 +1,6 @@
 import { Type, apply, A, inferArgs, Generic, $Before, CreateType } from 'core';
 import { Next, Union2Tuple, Extends } from 'utils'
-import { $Exclude } from 'utility-types/logic';
+import { $Exclude } from '../logic';
 import { Fold } from 'mappables/Fold';
 import { _Object2Tuple } from 'mappables/Object2Tuple';
 import { Mappable } from 'mappables/common';
