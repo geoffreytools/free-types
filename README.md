@@ -279,88 +279,6 @@ A more elaborate version of [`Widen`](./Documentation.md/#wident-ts-i) is export
 </details>
 
 <details>
-<summary><h3>Pattern matching</h3></summary>
-
-The listing on the left is an abridged excerpt from actual code where we wanted to switch on a pair of inputs `A` and `B`.
-
-We can't pattern match on a tuple if we need control flow analysis to carry over:
-```typescript
-type Bar<A extends 1, B extends 1> = ...
-type Foo<A, B> = [A, B] extends [1, 1] ?  Bar<A, B> : never
-// type 'A' doesn't satisfy constraint '1'   ---
-```
-
-Without free types, we have no other choice than to nest conditionals:
-- because shutting off type checking with an intersection would be error prone, moreover intersections are not always transparent and can produce unwanted results;
-- because an implementation of `Match` taking plain utility types would eagerly evaluate them, regardless of which clause (if any) is a match.
-
-<table>
-<tr><th align='center' width='50%'>vanilla<th align='center' width='50%'>free-type</tr>
-<tr>
-<td valign='top'>
-
-```typescript
-type Foo<A, B, V> =
-  A extends O
-    ? B extends F
-      ? R1<B, V>
-      : never
-  : A extends P
-    ? B extends F
-      ? R2<V, A, B>
-      : never
-  : A extends K
-    ? B extends U
-      ? R3<B, A, V>
-        : B extends N
-        ? R4<V, A, B> 
-        : never
-  : A extends S
-    ? B extends W
-      ? V
-      : never
-  : A extends T
-    ? B extends W
-      ? R5<A, V>
-      : never
-  : never
-```
-</td>
-
-<td valign='top'>
-
-```typescript
-import { Match } from 'free-types';
-
-type Foo<A, B, V> =
-    Match<[A, B], [
-        [ [O, F], $R1<V>, [1] ],
-        [ [P, F], $R2<V> ],
-        [ [K, U], $R3<V> ],
-        [ [K, N], $R4<V> ],
-        [ [S, W], V ],
-        [ [T, W], $R5<V>, [0] ]
-    ]>
-```
-</td>
-</tr>
-<tr>
-<td valign='top'>
-
-1) Clauses depend on each-other, making it is easy to miss a case or misinterpret what falls through to the last branch;
-
-1) A good part of the code is plumbing and indentation hell.
-<td valign='top'>
-
-1) Every case is scoped (notably the ones in which `A` extends `K`). The cognitive load is lower;
-
-2) The wiring disappears to let your domain show through.
-</tr>
-</table>
-
-</details>
-
-<details>
 <summary><h3>Higher level utility types</h3></summary>
 
 We have two types, `And` and `Or`, which work with 2 arguments and we want to implement the same behaviour for any number or arguments.
@@ -449,6 +367,88 @@ and `$OrN` with `apply`.
 </details>
 
 <details>
+<summary><h3>Pattern matching</h3></summary>
+
+The listing on the left is an abridged excerpt from actual code where we wanted to switch on a pair of inputs `A` and `B`.
+
+We can't pattern match on a tuple if we need control flow analysis to carry over:
+```typescript
+type Bar<A extends 1, B extends 1> = ...
+type Foo<A, B> = [A, B] extends [1, 1] ?  Bar<A, B> : never
+// type 'A' doesn't satisfy constraint '1'   ---
+```
+
+Without free types, we have no other choice than to nest conditionals:
+- because shutting off type checking with an intersection would be error prone, moreover intersections are not always transparent and can produce unwanted results;
+- because an implementation of `Match` taking plain utility types would eagerly evaluate them, regardless of which clause (if any) is a match.
+
+<table>
+<tr><th align='center' width='50%'>vanilla<th align='center' width='50%'>free-type</tr>
+<tr>
+<td valign='top'>
+
+```typescript
+type Foo<A, B, V> =
+  A extends O
+    ? B extends F
+      ? R1<B, V>
+      : never
+  : A extends P
+    ? B extends F
+      ? R2<V, A, B>
+      : never
+  : A extends K
+    ? B extends U
+      ? R3<B, A, V>
+        : B extends N
+        ? R4<V, A, B> 
+        : never
+  : A extends S
+    ? B extends W
+      ? V
+      : never
+  : A extends T
+    ? B extends W
+      ? R5<A, V>
+      : never
+  : never
+```
+</td>
+
+<td valign='top'>
+
+```typescript
+import { Match } from 'free-types/experimental';
+
+type Foo<A, B, V> =
+    Match<[A, B], [
+        [ [O, F], $R1<V>, [1] ],
+        [ [P, F], $R2<V> ],
+        [ [K, U], $R3<V> ],
+        [ [K, N], $R4<V> ],
+        [ [S, W], V ],
+        [ [T, W], $R5<V>, [0] ]
+    ]>
+```
+</td>
+</tr>
+<tr>
+<td valign='top'>
+
+1) Clauses depend on each-other, making it is easy to miss a case or misinterpret what falls through to the last branch;
+
+1) A good part of the code is plumbing and indentation hell.
+<td valign='top'>
+
+1) Every case is scoped (notably the ones in which `A` extends `K`). The cognitive load is lower;
+
+2) The wiring disappears to let your domain show through.
+</tr>
+</table>
+
+</details>
+
+<details>
 <summary><h3>Composition</h3></summary>
 
 We have 2 types `F<A, B>` and `G<T>`. We want to create a type `H` such that `H<A, B> = G<F<A, B>>` (provided the types line up).
@@ -489,16 +489,15 @@ type $H = Flow<[$F, $G]>;
 </tr>
 </table>
 
-</details>
 
-<details>
-<summary><h3>Reuse</h3></summary>
+### Other composition patterns
 
 A single free type can have a fertile and type-safe life.
 
 Take the procedural type `$Stitch`:
 ```typescript
-import { $Stitch } from 'free-types';
+import { apply } from 'free-types';
+import { $Stitch } from 'free-types/strings';
 
 type FooBar = apply<$Stitch, ['-', 'foo', 'bar']> // "foo-bar"
 ```
