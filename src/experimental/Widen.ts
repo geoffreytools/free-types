@@ -1,4 +1,4 @@
-import { _apply, Unwrapped, unwrap, _Type, Generic } from 'core';
+import { _apply, unwrap, _Type, Generic } from 'core';
 import { Compute } from 'utils';
 
 import { TypesMap } from 'core/TypesMap';
@@ -7,17 +7,12 @@ export { Widen };
 
 type Widen<T, Fs extends _Type[] | TypesMap = TypesMap, Ignore = `_${string}`> =
     T extends number | string | boolean | bigint ? WidenPrimitive<T>
-  : T extends unknown[] | { [k: string | number | symbol]: unknown }
+  : T extends unknown[] | { [k: PropertyKey]: unknown }
     ? {[K in keyof T]: K extends Ignore ? T[K] : Widen<T[K], Fs, Ignore>}
-  : WidenClass<T, Fs, Ignore>
-
-type WidenClass<
-    T,
-    Fs extends _Type[] | TypesMap,
-    Ignore,
-    U extends Unwrapped = unwrap<T, Fs>
-> = [U] extends [never] ? T
-    : applyIfNotTooWide<U['type'], Widen<U['args'], Fs, Ignore>>;
+    : unwrap<T, Fs> extends {
+        type: infer $T extends _Type,
+        args: infer Args extends unknown[]
+    } ? applyIfNotTooWide<$T, Widen<Args, Fs, Ignore>> : T;
 
 type applyIfNotTooWide<$T extends _Type, Args extends unknown[]> =
     Args extends $T['constraints'] ? _apply<$T, Args> : Generic<$T>;
