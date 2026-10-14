@@ -39,7 +39,7 @@ type MapOverOptionalTuple<
     R extends Tuple.Input = Tuple.Empty<T>
 > = I extends L ? R
     : MapOverOptionalTuple<T, $T, L, Next<I>,
-        Tuple.Concat<R, WrapOptional<T, I, _apply<$T, [Exclude<T[I], undefined>]>>>
+        Tuple.Concat<R, WrapOptional<T, I, _apply<$T, [Required<T>[I]]>>>
     >;
 
 interface $MapOver<$T extends $ExpectTransform, L extends number = never> extends Type<

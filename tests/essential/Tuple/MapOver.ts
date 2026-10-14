@@ -65,6 +65,13 @@ test('preserve optional array elements' as const, t => [
     t.equal<[...apply<Tuple.$MapOver<$Next>, [readonly [1,2?,3?]]>], [2,3?,4?]>()
 ])
 
+interface $Wrap extends Type<1> { type: [this[A]] }
+
+test('map required undefined elements as undefined' as const, t => [
+    t.equal<Tuple.MapOver<[1, undefined], $Wrap>, [[1], [undefined]]>(),
+    t.equal<Tuple.MapOver<[1, undefined, 3?], $Wrap>, [[1], [undefined], [3]?]>(),
+])
+
 test('preserve open-ended' as const, t => [
     t.equal<[...Tuple.MapOver<[1,2, ...3[]], $Next>], [2, 3, ...4[]]>(),
     t.equal<[...apply<Tuple.$MapOver<$Next>, [[1,2, ...3[]]]>], [2, 3, ...4[]]>(),
